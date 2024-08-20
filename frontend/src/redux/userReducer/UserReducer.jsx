@@ -2,6 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentUser: null,
+  register: false,
 };
 
 const userSlice = createSlice({
@@ -13,6 +14,12 @@ const userSlice = createSlice({
     },
     signinFailure: (state) => {
       state.currentUser = null;
+    },
+    userFound: (state, action) => {
+      state.register = true;
+    },
+    userNotFound: (state) => {
+      state.register = false;
     },
   },
 });

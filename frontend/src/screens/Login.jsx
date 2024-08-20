@@ -12,7 +12,7 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { signinFailure, signinSuccess } from "../redux/userReducer/UserReducer";
 import { replace, useNavigate } from "react-router-dom";
-import { HOME, REGISTER } from "../router/Routes";
+import { HOME, MAINPAGE, REGISTER } from "../router/Routes";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -35,28 +35,29 @@ const Login = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           email: email,
           password: password,
         }),
       })
         .then((response) => {
-          if (response.ok) {
+          if (response.status == 200) {
             return response.json();
           } else {
-            alert('user not found')
-            navigate(REGISTER);
+            navigate(REGISTER, { state: true });
           }
         })
         .then((data) => {
-          dispatch(signinSuccess(data));
-          navigate(HOME);
+          if (data) {
+            dispatch(signinSuccess(data));
+            navigate(MAINPAGE);
+          }
         })
         .catch((error) => {
           dispatch(signinFailure());
           setError(error.message);
-          alert(JSON.stringify(error));
-          navigate(REGISTER);
+          navigate(REGISTER, { state: true });
         });
     } catch {
       setError("signin failed");
@@ -107,11 +108,16 @@ const Login = () => {
           Sign in
         </Button>
         <div
-          style={{ padding: "1px", backgroundColor: "#c4c4c4", marginTop: 10}}
+          style={{ padding: "1px", backgroundColor: "#c4c4c4", marginTop: 10 }}
         ></div>
-        <Typography variant="caption" sx={{mt:4}}>
+        <Typography variant="caption" sx={{ mt: 4 }}>
           <span>Not Registered?</span>{" "}
-          <Button variant="outlined" onClick={()=>navigate(REGISTER)}>Register</Button>
+          <Button
+            variant="outlined"
+            onClick={() => navigate(REGISTER, { state: false })}
+          >
+            Register
+          </Button>
         </Typography>
       </Card>
     </div>

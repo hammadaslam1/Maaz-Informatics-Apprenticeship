@@ -7,7 +7,6 @@ export const signup = async (req, res, next) => {
   const existingEmail = users != "" ? true : false;
   if (existingEmail) {
     return res.status(400).json({ message: "Email Already Exists" });
-    
   }
   if (
     !name ||
@@ -27,9 +26,16 @@ export const signup = async (req, res, next) => {
     password: password,
   });
   console.log(newUser);
+
   try {
+    const { password: password, ...rest } = newUser;
     await newUser.save();
-    return res.status(200).json({ message: "signup successful" });
+    return res
+      .status(200)
+      .cookie("access_token", {
+        httpOnly: true,
+      })
+      .json(rest);
   } catch (error) {
     return res.status(500).json({ message: "Signup Failed" });
   }
@@ -56,6 +62,17 @@ export const signin = async (req, res, next) => {
       })
       .json(rest);
   } catch (error) {
-    return res.status(500).json({ message: 'Signin Failed' });
+    return res.status(500).json({ message: "Signin Failed" });
+  }
+};
+
+export const signout = (req, res, next) => {
+  try {
+    res
+      .clearCookie("access_token")
+      .status(200)
+      .json({ message: "User has been signed out" });
+  } catch (error) {
+    next(errorHandler(404, "User not found"));
   }
 };

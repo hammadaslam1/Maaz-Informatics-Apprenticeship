@@ -9,17 +9,22 @@ import {
   Alert,
   TextField,
 } from "@mui/material";
-import { useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { LOGIN } from "../router/Routes";
+import { useEffect, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { HOME, LOGIN, MAINPAGE } from "../router/Routes";
 
 const Register = () => {
+  const location = useLocation();
+  const navigate = useNavigate();
+  if (location && !location.state) {
+    // alert('run')
+    navigate(LOGIN);
+  }
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
-  const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
@@ -43,19 +48,20 @@ const Register = () => {
         headers: {
           "Content-Type": "application/json",
         },
+        credentials: "include",
         body: JSON.stringify({
           name: name,
           email: email,
           password: password,
         }),
-      })
-        .then((response) => {
-          console.log(response);
-          if (response.ok) {
-          } else {
-            return response.json();
-          }
-        })
+      }).then((response) => {
+        console.log(response);
+        if (response.ok) {
+          navigate(MAINPAGE);
+        } else {
+          return setError("signup failed");
+        }
+      });
     } catch {
       return setError("Sign Up Failed");
     }
