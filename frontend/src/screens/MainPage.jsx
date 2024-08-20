@@ -7,17 +7,14 @@ const MainPage = () => {
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const handleSignout = async () => {
-    // alert('clicked')
     try {
       await fetch("http://localhost:3002/api/auth/signout", {
         method: "POST",
         credentials: "include",
       })
         .then((response) => {
-          //   if (response.status == 200) {
           alert(response.status.toString());
           navigate(LOGIN);
-          //   }
         })
         .catch(() => {
           alert("signout failed");

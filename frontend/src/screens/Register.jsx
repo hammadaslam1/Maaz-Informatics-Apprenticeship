@@ -16,16 +16,21 @@ import { HOME, LOGIN, MAINPAGE } from "../router/Routes";
 const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  if (location && !location.state) {
-    // alert('run')
-    navigate(LOGIN);
-  }
+  const [isTried, setIsTried] = useState(true);
+  //   alert(isTried)
+
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [error, setError] = useState("");
 
+  useEffect(() => {
+    setIsTried((prev) => location.state.isTried);
+    if (!isTried) {
+      navigate(LOGIN);
+    }
+  }, [location.state?.isTried]);
   const handleRegister = async () => {
     try {
       const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;

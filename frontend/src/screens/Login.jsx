@@ -45,7 +45,7 @@ const Login = () => {
           if (response.status == 200) {
             return response.json();
           } else {
-            navigate(REGISTER, { state: true });
+            navigate(REGISTER, { state: { isTried: true } });
           }
         })
         .then((data) => {
@@ -57,7 +57,7 @@ const Login = () => {
         .catch((error) => {
           dispatch(signinFailure());
           setError(error.message);
-          navigate(REGISTER, { state: true });
+          navigate(REGISTER, { state: { isTried: true } });
         });
     } catch {
       setError("signin failed");
