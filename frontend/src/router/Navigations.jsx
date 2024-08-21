@@ -9,7 +9,7 @@ import PrivateRoute from "./PrivateRoute";
 import MainRoute from "./MainRoute";
 
 const Navigations = () => {
-  const { currentUser, isTried } = useSelector((state) => state.user);
+  const { isTried } = useSelector((state) => state.user);
   return (
     <BrowserRouter>
       <Routes>
@@ -17,7 +17,7 @@ const Navigations = () => {
           <Route exact path={HOME} element={<Home />} />
         </Route>
         <Route path={LOGIN} element={<Login />} />
-        <Route path={REGISTER} element={<Register isTried={isTried} />} />
+        <Route path={REGISTER} element={<Register />} />
         <Route element={<PrivateRoute />}>
           <Route path={MAINPAGE} element={<MainPage />} />
         </Route>

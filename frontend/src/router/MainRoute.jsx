@@ -3,8 +3,9 @@ import { Navigate, Outlet } from "react-router-dom";
 import { MAINPAGE } from "./Routes";
 
 const MainRoute = () => {
-  const currentUser = useSelector((state) => state.user.currentUser);
-  return !currentUser ? <Outlet /> : <Navigate to={MAINPAGE} />;
+  const { loggedIn } = useSelector((state) => state.user);
+  // alert(JSON.stringify(loggedIn));
+  return !loggedIn ? <Outlet /> : <Navigate to={MAINPAGE} />;
 };
 
 export default MainRoute;

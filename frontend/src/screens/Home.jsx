@@ -1,11 +1,16 @@
 import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { LOGIN, REGISTER } from "../router/Routes";
+import { LOGIN, MAINPAGE, REGISTER } from "../router/Routes";
 import { Button } from "@mui/material";
 
 const Home = () => {
   const navigate = useNavigate();
-  const currentUser = useSelector((state) => state.user.currentUser);
+  const { loggedIn, loggedOut } = useSelector((state) => state.user);
+  if (loggedIn) {
+    navigate(MAINPAGE);
+  } else if (loggedOut) {
+    navigate(LOGIN);
+  }
 
   return (
     <div

@@ -15,11 +15,8 @@ import { HOME, LOGIN, MAINPAGE } from "../router/Routes";
 import { useSelector } from "react-redux";
 
 const Register = () => {
-  const location = useLocation();
   const navigate = useNavigate();
-  // const [isTried, setIsTried] = useState(true);
-  const { currentUser, isTried } = useSelector((state) => state.user);
-  //   alert(isTried)
+  const { isTried } = useSelector((state) => state.user);
 
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");

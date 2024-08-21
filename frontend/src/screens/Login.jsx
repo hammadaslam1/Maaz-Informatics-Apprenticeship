@@ -1,22 +1,16 @@
 /* eslint-disable eqeqeq */
-import {
-  Alert,
-  Box,
-  Button,
-  Card,
-  Input,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Card, Input, TextField, Typography } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  setLoggedIn,
   signinFailure,
   signinSuccess,
   userNotFound,
 } from "../redux/userReducer/UserReducer";
 import { replace, useNavigate } from "react-router-dom";
 import { HOME, MAINPAGE, REGISTER } from "../router/Routes";
+import { Alert } from "@mui/joy";
 
 const Login = () => {
   const [email, setEmail] = useState("");
@@ -28,8 +22,9 @@ const Login = () => {
   const handleSignin = async () => {
     try {
       const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
-
-      if (!emailRegex.test(email)) {
+      if (email == "" || password == "") {
+        return setError("Please fill out all fields");
+      } else if (!emailRegex.test(email)) {
         return setError("invalid email");
       } else if (password == "") {
         return setError("Please enter your password");
@@ -46,23 +41,25 @@ const Login = () => {
         }),
       })
         .then((response) => {
+          // alert(JSON.stringify(response));
           if (response.status == 200) {
-            return response.json();
-          } else {
-            navigate(REGISTER);
-          }
-        })
-        .then((data) => {
-          if (data) {
-            dispatch(signinSuccess(data));
+            dispatch(setLoggedIn());
+            dispatch(signinSuccess(response.json()));
             navigate(MAINPAGE);
+          } else if (response.status == 401) {
+            dispatch(userNotFound());
+            navigate(REGISTER);
+          } else if (response.status == 400) {
+            dispatch(signinFailure());
+            setError("Invalid Password");
+          } else if (response.status == 500) {
+            dispatch(signinFailure());
+            setError("Server Error");
           }
         })
         .catch((error) => {
           dispatch(signinFailure());
           setError(error.message);
-          dispatch(userNotFound());
-          navigate(REGISTER);
         });
     } catch {
       setError("signin failed");
@@ -92,6 +89,7 @@ const Login = () => {
           }}
           placeholder="Email Address"
           sx={{ mx: 2, my: 1 }}
+          label="Email"
         />
         <TextField
           type="password"
@@ -102,10 +100,15 @@ const Login = () => {
           }}
           placeholder="Password"
           variant="outlined"
+          label="Password"
           sx={{ mx: 2, my: 1 }}
         />
         {error && (
-          <Alert variant="solid" color="danger" sx={{ textAlign: "center" }}>
+          <Alert
+            variant="plain"
+            color="danger"
+            sx={{ textAlign: "center", p: 0, mx: 3 }}
+          >
             {error}
           </Alert>
         )}

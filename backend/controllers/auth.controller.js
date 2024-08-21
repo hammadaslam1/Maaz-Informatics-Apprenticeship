@@ -45,24 +45,30 @@ export const signin = async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!email || !password || email === "" || password === "") {
-    return res.status(500).json({ message: "All fields are required" });
+    res.status(400).json({ message: "All fields are required" });
   }
 
   try {
     const validUser = await User.findOne({ email });
-    if (!validUser) {
-      return res.status(500).json({ message: "User is not valid" });
-    }
-    const { password: password, ...rest } = validUser._doc;
+    // console.log(validUser);
+    if (validUser == null) {
+      res.status(401).json({ message: "not found" });
+    } else {
+      const { password: password, ...rest } = validUser._doc;
 
-    return res
-      .status(200)
-      .cookie("access_token", {
-        httpOnly: true,
-      })
-      .json(rest);
+      if (password == validUser.password) {
+        res
+          .status(200)
+          .cookie("access_token", {
+            httpOnly: true,
+          })
+          .json(rest);
+      } else {
+        res.status(400).json({ message: "Invalid Password" });
+      }
+    }
   } catch (error) {
-    return res.status(500).json({ message: "Signin Failed" });
+    res.status(500).json({ message: "Signin Failed" });
   }
 };
 
