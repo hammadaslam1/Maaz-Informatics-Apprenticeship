@@ -2,15 +2,19 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { LOGIN, MAINPAGE, REGISTER } from "../router/Routes";
 import { Button } from "@mui/material";
+import { useEffect } from "react";
 
 const Home = () => {
   const navigate = useNavigate();
-  const { loggedIn, loggedOut } = useSelector((state) => state.user);
-  if (loggedIn) {
-    navigate(MAINPAGE);
-  } else if (loggedOut) {
-    navigate(LOGIN);
-  }
+  const { loggedIn, isTried } = useSelector((state) => state.user);
+  useEffect(() => {
+    alert(loggedIn)
+    if (loggedIn) {
+      navigate(MAINPAGE);
+    } else {
+      navigate(LOGIN);
+    }
+  }, [isTried, loggedIn]);
 
   return (
     <div

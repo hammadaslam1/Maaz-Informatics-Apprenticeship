@@ -12,12 +12,13 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HOME, LOGIN, MAINPAGE } from "../router/Routes";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
+import { setLoggedIn } from "../redux/userReducer/UserReducer";
 
 const Register = () => {
   const navigate = useNavigate();
-  const { isTried } = useSelector((state) => state.user);
-
+  const { isTried, loggedIn } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [name, setName] = useState("");
@@ -26,10 +27,12 @@ const Register = () => {
 
   useEffect(() => {
     // setIsTried((prev) => location.state.isTried);
-    if (!isTried) {
+    if (loggedIn) {
+      navigate(MAINPAGE);
+    } else if (!isTried) {
       navigate(LOGIN);
     }
-  }, [isTried]);
+  }, [isTried, loggedIn]);
   const handleRegister = async () => {
     try {
       const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
@@ -60,10 +63,13 @@ const Register = () => {
         }),
       }).then((response) => {
         console.log(response);
-        if (response.ok) {
+        if (response.status === 200) {
+          dispatch(setLoggedIn());
           navigate(MAINPAGE);
+        } else if (response.status === 409) {
+          return setError("Email Already In-Use");
         } else {
-          return setError("signup failed");
+          setError("Signup failed");
         }
       });
     } catch {
