@@ -5,15 +5,22 @@ import Home from "../screens/Home";
 import { HOME, LOGIN, MAINPAGE, REGISTER } from "./Routes";
 import { useSelector } from "react-redux";
 import MainPage from "../screens/MainPage";
+import PrivateRoute from "./PrivateRoute";
+import MainRoute from "./MainRoute";
 
 const Navigations = () => {
+  const { currentUser, isTried } = useSelector((state) => state.user);
   return (
     <BrowserRouter>
       <Routes>
-        <Route exact path={HOME} element={<Home />} />
+        <Route element={<MainRoute />}>
+          <Route exact path={HOME} element={<Home />} />
+        </Route>
         <Route path={LOGIN} element={<Login />} />
-        <Route path={REGISTER} element={<Register />} />
-        <Route path={MAINPAGE} element={<MainPage />} />
+        <Route path={REGISTER} element={<Register isTried={isTried} />} />
+        <Route element={<PrivateRoute />}>
+          <Route path={MAINPAGE} element={<MainPage />} />
+        </Route>
       </Routes>
     </BrowserRouter>
   );

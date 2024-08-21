@@ -12,11 +12,13 @@ import {
 import { useEffect, useState } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { HOME, LOGIN, MAINPAGE } from "../router/Routes";
+import { useSelector } from "react-redux";
 
 const Register = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const [isTried, setIsTried] = useState(true);
+  // const [isTried, setIsTried] = useState(true);
+  const { currentUser, isTried } = useSelector((state) => state.user);
   //   alert(isTried)
 
   const [password, setPassword] = useState("");
@@ -26,11 +28,11 @@ const Register = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    setIsTried((prev) => location.state.isTried);
+    // setIsTried((prev) => location.state.isTried);
     if (!isTried) {
       navigate(LOGIN);
     }
-  }, [location.state?.isTried]);
+  }, [isTried]);
   const handleRegister = async () => {
     try {
       const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;

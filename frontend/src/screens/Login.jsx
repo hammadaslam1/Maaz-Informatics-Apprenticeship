@@ -10,7 +10,11 @@ import {
 } from "@mui/material";
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { signinFailure, signinSuccess } from "../redux/userReducer/UserReducer";
+import {
+  signinFailure,
+  signinSuccess,
+  userNotFound,
+} from "../redux/userReducer/UserReducer";
 import { replace, useNavigate } from "react-router-dom";
 import { HOME, MAINPAGE, REGISTER } from "../router/Routes";
 
@@ -45,7 +49,7 @@ const Login = () => {
           if (response.status == 200) {
             return response.json();
           } else {
-            navigate(REGISTER, { state: { isTried: true } });
+            navigate(REGISTER);
           }
         })
         .then((data) => {
@@ -57,7 +61,8 @@ const Login = () => {
         .catch((error) => {
           dispatch(signinFailure());
           setError(error.message);
-          navigate(REGISTER, { state: { isTried: true } });
+          dispatch(userNotFound());
+          navigate(REGISTER);
         });
     } catch {
       setError("signin failed");
