@@ -6,10 +6,7 @@ import { useSelector } from "react-redux";
 import Navigations from "./router/Navigations";
 
 function App() {
-  const currentUser = useSelector((state) => state.user.currentUser);
-  if (currentUser) {
-    alert(JSON.stringify(currentUser));
-  }
+  
   return (
     <div className="App">
       <Navigations />

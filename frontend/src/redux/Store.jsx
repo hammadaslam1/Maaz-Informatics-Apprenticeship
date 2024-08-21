@@ -9,12 +9,15 @@ import { persistReducer, persistStore } from "redux-persist";
 const reducers = combineReducers({
   user: userReducer,
 });
+
 const persistConfig = {
   key: "root",
   storage,
   version: 1,
 };
+
 const persistedReducer = persistReducer(persistConfig, reducers);
+
 export const Store = configureStore({
   reducer: persistedReducer,
   middleware: (getDefaultMiddleware) =>

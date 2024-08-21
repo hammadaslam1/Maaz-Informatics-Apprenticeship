@@ -6,7 +6,6 @@ import {
   Typography,
   DialogActions,
   Button,
-  Alert,
   TextField,
 } from "@mui/material";
 import { useEffect, useState } from "react";
@@ -14,6 +13,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { HOME, LOGIN, MAINPAGE } from "../router/Routes";
 import { useDispatch, useSelector } from "react-redux";
 import { setLoggedIn } from "../redux/userReducer/UserReducer";
+import {Alert} from '@mui/joy'
 
 const Register = () => {
   const navigate = useNavigate();
@@ -26,7 +26,6 @@ const Register = () => {
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // setIsTried((prev) => location.state.isTried);
     if (loggedIn) {
       navigate(MAINPAGE);
     } else if (!isTried) {
@@ -36,7 +35,6 @@ const Register = () => {
   const handleRegister = async () => {
     try {
       const emailRegex = /^[\w.-]+@[a-zA-Z\d.-]+\.[a-zA-Z]{2,}$/;
-
       if (
         password == "" ||
         email == "" ||
@@ -62,7 +60,6 @@ const Register = () => {
           password: password,
         }),
       }).then((response) => {
-        console.log(response);
         if (response.status === 200) {
           dispatch(setLoggedIn());
           navigate(MAINPAGE);
@@ -100,6 +97,7 @@ const Register = () => {
           }}
           placeholder="Full Name"
           sx={{ mx: 2, my: 1 }}
+          label="Full Name"
         />
         <TextField
           variant="outlined"
@@ -111,6 +109,7 @@ const Register = () => {
           }}
           placeholder="Email Address"
           sx={{ mx: 2, my: 1 }}
+          label="Email"
         />
         <TextField
           type="password"
@@ -122,6 +121,7 @@ const Register = () => {
           placeholder="Password"
           variant="outlined"
           sx={{ mx: 2, my: 1 }}
+          label="Password"
         />
         <TextField
           type="password"
@@ -133,9 +133,10 @@ const Register = () => {
           placeholder="Confirm Password"
           variant="outlined"
           sx={{ mx: 2, my: 1 }}
+          label="Confirm Password"
         />
         {error && (
-          <Alert variant="solid" color="danger" sx={{ textAlign: "center" }}>
+          <Alert variant="solid" color="danger" sx={{ textAlign: "center", p:0, mx:3 }}>
             {error}
           </Alert>
         )}
@@ -145,7 +146,7 @@ const Register = () => {
         <div
           style={{ padding: "1px", backgroundColor: "#c4c4c4", marginTop: 10 }}
         ></div>
-        <Typography variant="caption" sx={{ mt: 4 }}>
+        <Typography variant="body1" fontWeight={500} fontStyle={'italic'} sx={{ mt: 4 }}>
           <span>Already Registered?</span>{" "}
           <Button variant="outlined" onClick={() => navigate(LOGIN)}>
             Login

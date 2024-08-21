@@ -1,7 +1,6 @@
 import User from "../models/auth.model.js";
 
 export const signup = async (req, res, next) => {
-  console.log("Signup request received");
   const { name, email, password } = req.body;
   const users = await User.find({ email: email });
   const existingEmail = users != "";
@@ -39,7 +38,6 @@ export const signin = async (req, res, next) => {
 
   try {
     const validUser = await User.findOne({ email });
-    // console.log(validUser);
     if (validUser == null) {
       res.status(401).json({ message: "not found" });
     } else {

@@ -9,7 +9,6 @@ import PrivateRoute from "./PrivateRoute";
 import MainRoute from "./MainRoute";
 
 const Navigations = () => {
-  const { isTried } = useSelector((state) => state.user);
   return (
     <BrowserRouter>
       <Routes>

@@ -1,15 +1,15 @@
 /* eslint-disable eqeqeq */
-import { Box, Button, Card, Input, TextField, Typography } from "@mui/material";
+import { Button, Card, TextField, Typography } from "@mui/material";
 import { useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import {
   setLoggedIn,
   signinFailure,
   signinSuccess,
   userNotFound,
 } from "../redux/userReducer/UserReducer";
-import { replace, useNavigate } from "react-router-dom";
-import { HOME, MAINPAGE, REGISTER } from "../router/Routes";
+import { useNavigate } from "react-router-dom";
+import { MAINPAGE, REGISTER } from "../router/Routes";
 import { Alert } from "@mui/joy";
 
 const Login = () => {
@@ -41,7 +41,6 @@ const Login = () => {
         }),
       })
         .then((response) => {
-          // alert(JSON.stringify(response));
           if (response.status == 200) {
             dispatch(setLoggedIn());
             dispatch(signinSuccess(response.json()));
@@ -118,12 +117,9 @@ const Login = () => {
         <div
           style={{ padding: "1px", backgroundColor: "#c4c4c4", marginTop: 10 }}
         ></div>
-        <Typography variant="caption" sx={{ mt: 4 }}>
+        <Typography variant="body1" fontWeight={500} fontStyle={'italic'} sx={{ mt: 4 }}>
           <span>Not Registered?</span>{" "}
-          <Button
-            variant="outlined"
-            onClick={() => navigate(REGISTER, { state: false })}
-          >
+          <Button variant="outlined" onClick={() => navigate(REGISTER)}>
             Register
           </Button>
         </Typography>
