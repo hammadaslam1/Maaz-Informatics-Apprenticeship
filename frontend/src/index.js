@@ -6,6 +6,11 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import { Persistor, Store } from "./redux/Store";
 import { PersistGate } from "redux-persist/integration/react";
+import firebase from "firebase/compact/app";
+
+const firebaseConfig = {};
+
+firebase.initializeApp(firebaseConfig);
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(

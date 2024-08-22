@@ -136,7 +136,7 @@ const Register = () => {
           label="Confirm Password"
         />
         {error && (
-          <Alert variant="solid" color="danger" sx={{ textAlign: "center", p:0, mx:3 }}>
+          <Alert variant="plain" color="danger" sx={{ textAlign: "center", p:0, mx:3 }}>
             {error}
           </Alert>
         )}

@@ -36,3 +36,13 @@ export const createBlog = async (req, res, next) => {
     res.status(500).json({ message: "Server Error" });
   }
 };
+
+export const getBlogs = async (req, res) => {
+  try {
+    const blogs = await Blog.find();
+    res.status(200).json(blogs);
+  } catch (error) {
+    console.error("Error fetching blogs:", error.message);
+    res.status(500).json("Nothing to Show");
+  }
+};

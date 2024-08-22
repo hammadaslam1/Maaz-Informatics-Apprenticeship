@@ -8,6 +8,7 @@ export const signup = async (req, res, next) => {
     return res.status(409).json({ message: "Email Already Exists" });
   } else {
     const newUser = new User({
+      _id: email,
       username: email.split("@")[0],
       name,
       email,
@@ -17,6 +18,8 @@ export const signup = async (req, res, next) => {
     try {
       const { password: password, ...rest } = newUser;
       await newUser.save();
+      console.log(newUser);
+      
       return res
         .status(200)
         .cookie("access_token", {
