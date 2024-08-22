@@ -1,5 +1,11 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable no-undef */
+/* eslint-disable react-hooks/rules-of-hooks */
 import { Button, Card, TextField, Typography } from "@mui/material";
-import { useState } from "react";
+import { useRef, useState } from "react";
+import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import { app } from "../firebase/firebase";
+import { Input } from "@mui/joy";
 
 const AddNew = () => {
   //   const [form, setForm] = useState({
@@ -16,6 +22,29 @@ const AddNew = () => {
   const [email, setEmail] = useState("");
   const [tags, setTags] = useState([]);
   const [image, setImage] = useState("");
+  const [imageFile, setImageFile] = useState("");
+  const [downloadedURL, setDownloadedURL] = useState(null);
+
+  const inputRef = useRef(null);
+  const handleImageChange = (e) => {
+    alert(e.target.files[0].name);
+    setImageFile((prev) => e.target.files[0].name);
+    handleImage(e.target.files[0]);
+  };
+  const handleImage = async (file) => {
+    const storage = getStorage(app);
+    try {
+      const imageRef = ref(storage, `images/${file.name}`);
+      uploadBytes(imageRef, file).then((snapshot) => {
+        getDownloadURL(imageRef).then((url) => {
+          setDownloadedURL((prev) => url);
+          alert("image uploaded successfully");
+        });
+      });
+    } catch {
+      alert("Failed to upload image");
+    }
+  };
   return (
     <div
       style={{
@@ -26,7 +55,7 @@ const AddNew = () => {
         alignItems: "center",
       }}
     >
-      <Card sx={{ maxWidth: "800px", minWidth: "700px" }} elevation={10}>
+      <Card sx={{ maxWidth: "800px", minWidth: "700px", m: 3 }} elevation={10}>
         <div>
           <Typography
             variant="h4"
@@ -77,15 +106,14 @@ const AddNew = () => {
                 //     setTags(e.target.value);
                 //   }}
               />
-              <TextField
-                id="outlined-textarea"
-                type="url"
-                label="Image URL"
-                placeholder="https://image.png"
-                //   value={image}
-                //   onChange={(e) => setImage(e.target.value)}
-                sx={{ gridColumn: "1/3" }}
+              <input
+                type="file"
+                style={{ display: "none" }}
+                accept="image/*"
+                ref={inputRef}
+                onChange={handleImageChange}
               />
+
               <TextField
                 id="outlined-textarea"
                 label="Blog"
@@ -97,12 +125,37 @@ const AddNew = () => {
                 sx={{ gridColumn: "1/3" }}
                 required
               />
+              <Input
+                placeholder="Upload Image"
+                value={imageFile}
+                startDecorator={
+                  <Button
+                    variant="contained"
+                    color="primary"
+                    sx={{ p: 2, px: 4 }}
+                    onClick={() => inputRef.current.click()}
+                    // startDecorator={<LocationOn />}
+                  >
+                    Upload
+                  </Button>
+                }
+                // onClick={() => inputRef.current.click()}
+                sx={{ gridColumn: "1/3", px: 0 }}
+                label="Image"
+              />
+              {downloadedURL && (
+                <img
+                  src={downloadedURL}
+                  // loading="lazy"
+                  style={{ height: "100px" }}
+                />
+              )}
               <Button
                 variant="contained"
                 sx={{
                   gridColumn: "1/3",
                 }}
-                //   onClick={handleBlog}
+                onClick={handleImage}
               >
                 Submit
               </Button>
