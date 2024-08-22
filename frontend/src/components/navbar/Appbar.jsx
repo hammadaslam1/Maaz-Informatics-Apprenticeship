@@ -9,12 +9,12 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoggedOut } from "../../redux/userReducer/UserReducer";
-import { LOGIN } from "../../router/Routes";
+import { ADDNEW, LOGIN } from "../../router/Routes";
 
 const Appbar = () => {
-    const dispatch = useDispatch();
-    const navigate = useNavigate();
-    const { loggedIn } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { loggedIn } = useSelector((state) => state.user);
   const handleSignout = async () => {
     try {
       await fetch("http://localhost:3002/api/auth/signout", {
@@ -35,7 +35,7 @@ const Appbar = () => {
     }
   };
   return (
-    <AppBar position="static">
+    <AppBar position="sticky">
       <Container maxWidth="xl">
         <Toolbar disableGutters>
           <Typography
@@ -64,7 +64,7 @@ const Appbar = () => {
             </Button>
             <Button
               color="success"
-              //   onClick={handleCloseNavMenu}
+              onClick={() => navigate(ADDNEW)}
               sx={{ my: 2, color: "white" }}
             >
               Add New
