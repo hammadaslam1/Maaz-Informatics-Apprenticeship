@@ -7,10 +7,14 @@ import { useSelector } from "react-redux";
 import MainPage from "../screens/MainPage";
 import PrivateRoute from "./PrivateRoute";
 import MainRoute from "./MainRoute";
+import Appbar from "../components/navbar/Appbar";
 
 const Navigations = () => {
+  const { loggedIn } = useSelector((state) => state.user);
+
   return (
     <BrowserRouter>
+      {loggedIn && <Appbar />}
       <Routes>
         <Route element={<MainRoute />}>
           <Route exact path={HOME} element={<Home />} />

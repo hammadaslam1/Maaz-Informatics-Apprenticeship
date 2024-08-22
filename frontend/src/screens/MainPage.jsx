@@ -48,9 +48,6 @@ const MainPage = () => {
       <h1>Welcome to Maaz Informatics</h1>
       <h2>This is the main page.</h2>
       <h3>This is a test.</h3>
-      <Button variant="contained" color="error" onClick={handleSignout}>
-        Logout
-      </Button>
     </div>
   );
 };

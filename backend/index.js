@@ -1,10 +1,11 @@
 import mongoose from "mongoose";
 import express from "express";
 import cors from "cors";
-import bodyParser from 'body-parser';
+import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { connString } from "./secret.js";
 import authRoutes from "./routes/auth.routes.js";
+import blogRoutes from "./routes/blog.routes.js";
 
 mongoose
   .connect(connString, {
@@ -16,7 +17,13 @@ mongoose
   .finally(() => console.log("start"));
 
 const app = express();
-app.use(cors({ origin: 'http://localhost:3000', credentials: true, exposedHeaders: ['Set-Cookie', 'Date', 'ETag'] }))
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+    exposedHeaders: ["Set-Cookie", "Date", "ETag"],
+  })
+);
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser());
@@ -31,3 +38,4 @@ app.listen(3002, () => {
 });
 
 app.use("/api/auth", authRoutes);
+app.use("/api/blogs", blogRoutes);
