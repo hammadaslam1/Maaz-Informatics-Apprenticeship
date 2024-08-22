@@ -141,7 +141,7 @@ const AddNew = () => {
         </div>
         {/* <CircularProgress color="inherit" /> */}
       </Backdrop>
-      <Card sx={{ maxWidth: "800px", minWidth: "700px", m: 3 }} elevation={10}>
+      <Card sx={{ width: "clamp(1000px, 70vw, 500px)", m: 3 }} elevation={10}>
         <div>
           <Typography
             variant="h4"
@@ -218,7 +218,12 @@ const AddNew = () => {
                   <Button
                     variant="contained"
                     color="primary"
-                    sx={{ p: 2, px: 4 }}
+                    sx={{
+                      p: 1.5,
+                      px: 4,
+                      textTransform: "capitalize",
+                      fontSize: 16,
+                    }}
                     onClick={() => inputRef.current.click()}
                     // startDecorator={<LocationOn />}
                   >
@@ -240,6 +245,9 @@ const AddNew = () => {
                 variant="contained"
                 sx={{
                   gridColumn: "1/3",
+                  p: 1,
+                  fontSize: 24,
+                  textTransform: "capitalize",
                 }}
                 onClick={handleSubmit}
               >

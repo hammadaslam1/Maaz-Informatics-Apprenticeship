@@ -1,54 +1,63 @@
-import { Button } from "@mui/material";
+import {
+  Backdrop,
+  Box,
+  Button,
+  CircularProgress,
+  Typography,
+} from "@mui/material";
 import { HOME, LOGIN } from "../router/Routes";
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
 import { setLoggedOut } from "../redux/userReducer/UserReducer";
+import BlogCard from "../components/cards/BlogCard";
 
 const MainPage = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const handleSignout = async () => {
+  const [loading, setLoading] = useState(true);
+  const [blogs, setBlogs] = useState(null);
+  const getBlogs = async () => {
     try {
-      await fetch("http://localhost:3002/api/auth/signout", {
-        method: "POST",
-        credentials: "include",
-      })
-        .then((response) => {
+      await fetch("http://localhost:3002/api/blogs/get-blogs").then(
+        async (response) => {
           if (response.status === 200) {
-            dispatch(setLoggedOut());
-            navigate(LOGIN);
+            const data = await response.json();
+            setBlogs(data);
+            setLoading(false);
+          } else {
+            alert("Failed to fetch blogs");
           }
-        })
-        .catch(() => {
-          alert("signout failed");
-        });
-    } catch (error) {
-      alert("some problem");
+        }
+      );
+    } catch {
+      alert("Failed to fetch blogs");
     }
   };
+  useEffect(() => {
+    getBlogs();
+  }, []);
   return (
-    <div
-      style={{
-        height: "100vh",
-        display: "flex",
-        flexDirection: "column",
-        gap: "20px",
-        justifyContent: "center",
-        alignItems: "center",
-      }}
-    >
-      <Button
-        variant="contained"
-        color="success"
-        onClick={() => navigate(HOME)}
+    <Box sx={{ textAlign: "center", p: 3 }}>
+      <Backdrop
+        open={loading}
+        sx={{
+          color: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
       >
-        Home
-      </Button>
-      <h1>Welcome to Maaz Informatics</h1>
-      <h2>This is the main page.</h2>
-      <h3>This is a test.</h3>
-    </div>
+        <CircularProgress color="inherit" />
+      </Backdrop>
+      <Typography variant="h2" fontWeight={500}>
+        Let's <strong style={{ color: "#1075ff" }}>Blog</strong> your stories
+        and Experiences
+      </Typography>
+      <Box sx={{ display: "flex", gap: 10, py: 16, p: 10, flexWrap: 'wrap' }}>
+        {blogs && blogs.map((data, index) => <BlogCard data={data} />)}
+      </Box>
+    </Box>
   );
 };
 

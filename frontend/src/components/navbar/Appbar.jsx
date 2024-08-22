@@ -41,8 +41,6 @@ const Appbar = () => {
           <Typography
             variant="h6"
             noWrap
-            component="a"
-            href={MAINPAGE}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
@@ -57,7 +55,7 @@ const Appbar = () => {
           </Typography>
           <Box sx={{ flexGrow: 1, display: { xs: "none", md: "flex" } }}>
             <Button
-              //   onClick={handleCloseNavMenu}
+              onClick={() => navigate(MAINPAGE)}
               sx={{ my: 2, color: "white" }}
             >
               Blogs
