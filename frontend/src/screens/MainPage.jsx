@@ -27,11 +27,13 @@ const MainPage = () => {
             setLoading(false);
           } else {
             alert("Failed to fetch blogs");
+            setLoading(false);
           }
         }
       );
     } catch {
       alert("Failed to fetch blogs");
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -54,8 +56,8 @@ const MainPage = () => {
         Let's <strong style={{ color: "#1075ff" }}>Blog</strong> your stories
         and Experiences
       </Typography>
-      <Box sx={{ display: "flex", gap: 10, py: 16, p: 10, flexWrap: 'wrap' }}>
-        {blogs && blogs.map((data, index) => <BlogCard data={data} />)}
+      <Box sx={{ display: "flex", gap: 10, py: 16, p: 10, flexWrap: "wrap" }}>
+        {blogs && blogs.map((data, index) => <BlogCard key={index} data={data} />)}
       </Box>
     </Box>
   );

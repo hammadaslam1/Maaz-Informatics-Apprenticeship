@@ -1,18 +1,18 @@
 import {
-  Button,
   Card,
   CardActionArea,
-  CardActions,
   CardContent,
   CardMedia,
   Typography,
 } from "@mui/material";
-import OpenInNewIcon from "@mui/icons-material/OpenInNew";
+import { useNavigate } from "react-router-dom";
+import { BLOG } from "../../router/Routes";
 
-const BlogCard = ({ data }) => {
+const BlogCard = ({ data, key }) => {
+  const navigate = useNavigate();
   return (
-    <Card sx={{ width: 345 }} elevation={10}>
-      <CardActionArea onClick={()=>alert('clicked')}>
+    <Card key={key} sx={{ width: 345 }} elevation={10}>
+      <CardActionArea onClick={() => navigate(BLOG)}>
         <CardMedia component="img" height="240" image={data.image} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
@@ -21,7 +21,7 @@ const BlogCard = ({ data }) => {
           <Typography
             variant="body2"
             color="text.secondary"
-            sx={{ height: "200px", overflow: "hidden", textAlign: 'justify' }}
+            sx={{ height: "200px", overflow: "hidden", textAlign: "justify" }}
           >
             {data.content}
           </Typography>
