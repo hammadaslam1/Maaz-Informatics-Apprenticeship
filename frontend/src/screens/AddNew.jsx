@@ -1,21 +1,30 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable jsx-a11y/alt-text */
 /* eslint-disable no-undef */
 /* eslint-disable react-hooks/rules-of-hooks */
-import { Button, Card, TextField, Typography } from "@mui/material";
+import {
+  Backdrop,
+  Button,
+  Card,
+  CircularProgress,
+  TextField,
+  Typography,
+} from "@mui/material";
 import { useRef, useState } from "react";
-import { getDownloadURL, getStorage, ref, uploadBytes } from "firebase/storage";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
 import { app } from "../firebase/firebase";
 import { Input } from "@mui/joy";
+import { MAINPAGE } from "../router/Routes";
+import { useNavigate } from "react-router-dom";
 
 const AddNew = () => {
-  //   const [form, setForm] = useState({
-  //     title: "",
-  //     content: "",
-  //     author: "",
-  //     email: "",
-  //     tags: "",
-  //     image: "",
-  //   });
+  const navigate = useNavigate();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [author, setAuthor] = useState("");
@@ -24,26 +33,72 @@ const AddNew = () => {
   const [image, setImage] = useState("");
   const [imageFile, setImageFile] = useState("");
   const [downloadedURL, setDownloadedURL] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [imageProgress, setImageProgress] = useState(0);
 
   const inputRef = useRef(null);
   const handleImageChange = (e) => {
-    alert(e.target.files[0].name);
     setImageFile((prev) => e.target.files[0].name);
     handleImage(e.target.files[0]);
   };
   const handleImage = async (file) => {
+    setLoading(true);
     const storage = getStorage(app);
     try {
       const imageRef = ref(storage, `images/${file.name}`);
-      uploadBytes(imageRef, file).then((snapshot) => {
-        getDownloadURL(imageRef).then((url) => {
-          setDownloadedURL((prev) => url);
-          alert("image uploaded successfully");
-        });
-      });
+      const uploadImage = uploadBytesResumable(imageRef, file);
+      uploadImage.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          setImageProgress(progress.toFixed(0));
+          console.log(`Upload is ${progress}% done`);
+          if (progress.toFixed(0) == 100) {
+            getDownloadURL(imageRef).then((url) => {
+              setDownloadedURL((prev) => url);
+              alert(url);
+              setLoading(false);
+            });
+            setLoading(false);
+          }
+        },
+        () => {
+          getDownloadURL(imageRef).then((url) => {
+            setDownloadedURL((prev) => url);
+            alert(url);
+            setLoading(false);
+          });
+        }
+      );
     } catch {
-      alert("Failed to upload image");
+      setLoading(false);
+      alert("Error uploading image");
     }
+  };
+
+  const handleSubmit = async () => {
+    const newPost = {
+      title,
+      content,
+      author,
+      email,
+      tags,
+      image: downloadedURL,
+    };
+    await fetch("http://localhost:3002/api/blogs/create-blog", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(newPost),
+    }).then((response) => {
+      if (response.status == 200) {
+        navigate(MAINPAGE);
+      } else {
+        alert(JSON.stringify(response));
+      }
+    });
   };
   return (
     <div
@@ -55,6 +110,37 @@ const AddNew = () => {
         alignItems: "center",
       }}
     >
+      <Backdrop
+        sx={{
+          color: "#fff",
+          display: "flex",
+          flexDirection: "column",
+          zIndex: (theme) => theme.zIndex.drawer + 1,
+        }}
+        open={loading}
+      >
+        <Typography variant="h6" color="#fff">
+          {`${imageProgress}%`}
+        </Typography>
+        <div
+          style={{
+            border: "2px solid #fff",
+            height: "14px",
+            width: "70%",
+            borderRadius: "20px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              height: "100%",
+              backgroundColor: "#fff",
+              width: `${imageProgress}%`,
+            }}
+          ></div>
+        </div>
+        {/* <CircularProgress color="inherit" /> */}
+      </Backdrop>
       <Card sx={{ maxWidth: "800px", minWidth: "700px", m: 3 }} elevation={10}>
         <div>
           <Typography
@@ -85,26 +171,38 @@ const AddNew = () => {
                 id="outlined-textarea"
                 label="Author"
                 placeholder="Enter your name"
-                //   value={author}
-                //   onChange={(e) => setAuthor(e.target.value)}
+                value={author}
+                onChange={(e) => setAuthor(e.target.value)}
                 required
               />
               <TextField
                 id="outlined-textarea"
-                label="Author"
-                placeholder="Enter your email"
-                //   value={email}
-                //   onChange={(e) => setAuthor(e.target.value)}
+                label="Email Address"
+                placeholder="Enter your email address"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 required
               />
               <TextField
                 id="outlined-textarea"
                 label="Tags"
                 placeholder="Enter tags here"
-                //   value={tags}
-                //   onChange={(e) => {
-                //     setTags(e.target.value);
-                //   }}
+                value={tags}
+                onChange={(e) => {
+                  setTags(e.target.value);
+                }}
+              />
+              <TextField
+                id="outlined-textarea"
+                label="Blog"
+                placeholder="Enter your blog"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                multiline
+                minRows={5}
+                maxRows={15}
+                sx={{ gridColumn: "1/3" }}
+                required
               />
               <input
                 type="file"
@@ -113,20 +211,8 @@ const AddNew = () => {
                 ref={inputRef}
                 onChange={handleImageChange}
               />
-
-              <TextField
-                id="outlined-textarea"
-                label="Blog"
-                placeholder="Enter your blog"
-                //   value={blog}
-                //   onChange={(e) => setBlog(e.target.value)}
-                multiline
-                minRows={5}
-                sx={{ gridColumn: "1/3" }}
-                required
-              />
               <Input
-                placeholder="Upload Image"
+                placeholder="Image Path"
                 value={imageFile}
                 startDecorator={
                   <Button
@@ -155,7 +241,7 @@ const AddNew = () => {
                 sx={{
                   gridColumn: "1/3",
                 }}
-                onClick={handleImage}
+                onClick={handleSubmit}
               >
                 Submit
               </Button>

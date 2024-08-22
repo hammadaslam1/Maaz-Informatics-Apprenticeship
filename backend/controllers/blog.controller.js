@@ -1,6 +1,7 @@
 import Blog from "../models/blog.model.js";
 
 export const createBlog = async (req, res, next) => {
+  console.log(req.body);
   const { title, image, email, author, tags, content } = req.body;
 
   if (
@@ -8,14 +9,12 @@ export const createBlog = async (req, res, next) => {
     !image ||
     !email ||
     !author ||
-    !tags ||
     !content ||
     title === "" ||
     content === "" ||
     image === "" ||
     email === "" ||
-    author === "" ||
-    tags === ""
+    author === ""
   ) {
     return res.status(400).json({ message: "All fields are required" });
   }
@@ -24,13 +23,13 @@ export const createBlog = async (req, res, next) => {
     const newBlog = new Blog({
       title: title,
       author: author,
-      tags: tags,
+      tags: tags.length > 0 && tags.split(","),
       content: content,
       image: image,
       email: email,
     });
     await newBlog.save();
-    res.status(20).json(newBlog);
+    res.status(200).json(newBlog);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Server Error" });

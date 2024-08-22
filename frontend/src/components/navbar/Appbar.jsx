@@ -9,7 +9,7 @@ import {
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { setLoggedOut } from "../../redux/userReducer/UserReducer";
-import { ADDNEW, LOGIN } from "../../router/Routes";
+import { ADDNEW, LOGIN, MAINPAGE } from "../../router/Routes";
 
 const Appbar = () => {
   const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const Appbar = () => {
             variant="h6"
             noWrap
             component="a"
-            href="#app-bar-with-responsive-menu"
+            href={MAINPAGE}
             sx={{
               mr: 2,
               display: { xs: "none", md: "flex" },
