@@ -31,7 +31,7 @@ export const styles = {
   sidebar: {
     // position: "fixed",
     // top: 60,
-    // bottom: 0,
+    bottom: 0,
     // left: 0,
     // index: 1,
     width: "100%",
