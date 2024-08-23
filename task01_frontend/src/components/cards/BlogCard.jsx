@@ -12,7 +12,7 @@ const BlogCard = ({ data, key }) => {
   const navigate = useNavigate();
   return (
     <Card key={key} sx={{ width: 345 }} elevation={10}>
-      <CardActionArea onClick={() => navigate(BLOG)}>
+      <CardActionArea onClick={() => navigate(BLOG, { state: data })}>
         <CardMedia component="img" height="240" image={data.image} />
         <CardContent>
           <Typography gutterBottom variant="h5" component="div">
