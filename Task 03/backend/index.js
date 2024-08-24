@@ -6,6 +6,12 @@ import cookieParser from "cookie-parser";
 import { connString } from "./secret.js";
 import studentRoutes from "./routes/student.routes.js";
 import addressRoutes from "./routes/address.routes.js";
+import path from "path";
+import { fileURLToPath } from "url";
+
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 mongoose
   .connect(connString, {
@@ -24,6 +30,8 @@ app.use(
     exposedHeaders: ["Set-Cookie", "Date", "ETag"],
   })
 );
+app.use("/images", express.static(path.join(__dirname, "images")));
+
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(cookieParser());

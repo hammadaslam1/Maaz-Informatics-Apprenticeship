@@ -18,20 +18,81 @@ import UpdateIcon from "@mui/icons-material/Update";
 import UploadIcon from "@mui/icons-material/Upload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
-const StudentTable = ({
-  students,
-  handleImage,
-  handleImageUpload,
-  handleStudentDelete,
-  handleStudentUpdate,
-  handleStudentUpload,
-  imageName,
-  getStudents,
-  setID,
-  setName,
-  setEmail,
-}) => {
+const StudentTable = () => {
   const imageRef = useRef();
+  const [students, setStudents] = useState(null);
+  const [imageName, setImageName] = useState(null);
+  const [id, setID] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [imageFile, setImageFile] = useState("");
+  const handleImage = (e) => {
+    setImageFile((prev) => e.target.files[0]);
+    setImageName((prev) => e.target.files[0]?.name);
+    // handleImageUpload();
+  };
+  const handleImageUpload = async () => {
+    const formData = new FormData();
+    formData.append("id", id);
+    formData.append("name", name);
+    formData.append("email", email);
+    formData.append("image", imageFile);
+    // alert(formData);
+    try {
+      await fetch(`http://localhost:3001/api/students/create-student/`, {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          getStudents();
+          setID("");
+          setName("");
+          setEmail("");
+          setImageFile(null);
+          // alert(`Image uploaded successfully with id: ${data.student_id}`);
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+  };
+
+  const handleStudentUpload = () => {};
+
+  const handleStudentDelete = (id) => {};
+
+  const handleStudentUpdate = (id) => {};
+  const getStudents = async () => {
+    try {
+      await fetch("http://localhost:3001/api/students/get-students", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          setStudents(data);
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+  };
+
   useEffect(() => {
     getStudents();
   }, []);
@@ -58,7 +119,11 @@ const StudentTable = ({
               <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
                 Student ID
               </Typography>
-              <Input sx={{ flex: 3 }} onChange={(e) => setID(e.target.value)} />
+              <Input
+                sx={{ flex: 3 }}
+                value={id}
+                onChange={(e) => setID(e.target.value)}
+              />
             </TableCell>
             <TableCell sx={{}} colSpan={2}>
               <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
@@ -66,6 +131,7 @@ const StudentTable = ({
               </Typography>
               <Input
                 sx={{ flex: 3 }}
+                value={name}
                 onChange={(e) => setName(e.target.value)}
               />
             </TableCell>
@@ -77,6 +143,7 @@ const StudentTable = ({
               </Typography>
               <Input
                 sx={{ flex: 3 }}
+                value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
             </TableCell>
@@ -182,13 +249,17 @@ const StudentTable = ({
                 key={i}
                 // sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
               >
-                <TableCell>{row._id}</TableCell>
+                <TableCell>{row.student_id}</TableCell>
                 {/* <TableCell>{row.id}</TableCell> */}
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.email}</TableCell>
                 <TableCell>
                   {/* {row.image} */}
-                  <img src={row.image} height={"170px"} alt="" />
+                  <img
+                    src={`http://localhost:3001/${row.image}`}
+                    height={"170px"}
+                    alt={row.name}
+                  />
                 </TableCell>
               </TableRow>
             ))

@@ -1,21 +1,23 @@
 import Student from "../models/student.model.js";
 
 export const createStudent = async (req, res, next) => {
-  const { path, filename } = req.file;
-  console.log(req.body);
-
+  console.log('createStudent')
   try {
+    const { path, filename } = req.file;
+    console.log(filename)
     const { id, name, email } = req.body;
-    if (id == "" || name == "" || email == "") {
+    const newPath = path.replace(/\\/g, "/")
+    if (id == "" || name == "" || email == "" || !id || !name || !email) {
       return res
         .status(500)
         .json({ message: "Please fill all required fields." });
     }
+    console.log(req.body);
     const newStudent = new Student({
       student_id: id,
       name,
       email,
-      image: path,
+      image: newPath,
     });
 
     await newStudent.save();
