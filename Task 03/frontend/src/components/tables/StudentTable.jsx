@@ -121,7 +121,7 @@ const StudentTable = () => {
 
   useEffect(() => {
     getStudents();
-  }, []);
+  }, [open]);
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
       <input
@@ -279,7 +279,7 @@ const StudentTable = () => {
                 <TableCell>
                   <img
                     src={`http://localhost:3001/${row.image}`}
-                    height={"100px"}
+                    height={"70px"}
                     alt={row.name}
                   />
                 </TableCell>

@@ -28,9 +28,9 @@ const StudentUpdateDialog = ({
   index = 0,
 }) => {
   const imageRef = useRef();
-  const [id, setID] = useState(students[index]?.id);
-  const [name, setName] = useState(students[index]?.name);
-  const [email, setEmail] = useState(students[index]?.email);
+  const [id, setID] = useState(students[index].student_id);
+  const [name, setName] = useState(students[index].name);
+  const [email, setEmail] = useState(students[index].email);
   const [imageFile, setImageFile] = useState(null);
   const [imageName, setImageName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -50,7 +50,7 @@ const StudentUpdateDialog = ({
 
   const handleStudentUpdate = async (_id) => {
     setIsLoading(true);
-    if (id == "" || name == "" || email == "") {
+    if (id == "" || name == "" || email == "" || !id || !name || !email) {
       setIsLoading(false);
       alert("Please fill all required fields");
       return;
@@ -66,7 +66,6 @@ const StudentUpdateDialog = ({
         body: formData,
       })
         .then((response) => {
-          alert(response.status);
           if (response.status == 200) {
             const data = response.json();
             setIsLoading(false);
@@ -75,22 +74,20 @@ const StudentUpdateDialog = ({
             setEmail("");
             setImageFile(null);
             setImageName("");
-            //   setOpen(false);
             getStudents();
-            alert("response 200", JSON.stringify(data));
+            setOpen(false);
           } else {
             setIsLoading(false);
-            alert(JSON.stringify(response));
+            alert(response.status);
           }
         })
         .catch((error) => {
           setIsLoading(false);
-          alert(error);
+          alert(error.message);
         });
     } catch (error) {
       setIsLoading(false);
-      alert(error);
-      alert(JSON.stringify(error));
+      alert(error.message);
     }
   };
   return (
@@ -100,7 +97,7 @@ const StudentUpdateDialog = ({
       keepMounted
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
-      sx={{ display: "flex", flexDirection: "column", textAlign: "center" }}
+      sx={{ display: "flex", flexDirection: "column", textAlign: "center", borderRadius: 4 }}
       fullWidth={true}
     >
       <Backdrop open={isLoading} sx={{ zIndex: 999 }}>
@@ -127,15 +124,18 @@ const StudentUpdateDialog = ({
               style={{ cursor: "pointer" }}
             />
             <Input
-              defaultValue={students[index].student_id}
+              value={id}
+            //   defaultValue={students[index].student_id}
               onChange={(e) => setID(e.target.value)}
             />
             <Input
-              defaultValue={students[index].name}
+              value={name}
+            //   defaultValue={students[index].name}
               onChange={(e) => setName(e.target.value)}
             />
             <Input
-              defaultValue={students[index].email}
+              value={email}
+            //   defaultValue={students[index].email}
               onChange={(e) => setEmail(e.target.value)}
             />
           </DialogContent>
@@ -160,7 +160,7 @@ const StudentUpdateDialog = ({
           color="warning"
           startIcon={<UpdateIcon />}
           sx={{ textTransform: "capitalize" }}
-          onClick={() => handleStudentUpdate()}
+          onClick={() => handleStudentUpdate(students[index]._id)}
         >
           Update
         </Button>

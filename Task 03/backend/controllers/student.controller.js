@@ -53,7 +53,7 @@ export const updateStudent = async (req, res) => {
     const { path, filename } = req.file;
     const { id, name, email } = req.body;
     const newPath = path.replace(/\\/g, "/");
-    console.log(req.body)
+
     if (id == "" || name == "" || email == "" || !id || !name || !email) {
       return res
         .status(500)
@@ -65,9 +65,11 @@ export const updateStudent = async (req, res) => {
       email: req.body.email,
       image: newPath,
     };
-    const student = await Student.findByIdAndUpdate(req.params.id, newObject, {
-      new: true,
-    });
+    console.log(newObject);
+    const student = await Student.findOneAndUpdate(
+      { _id: req.params.id },
+      newObject
+    );
     if (!student) return res.status(404).json({ message: "Student not found" });
     // await student.save();
     res.status(200).json(student);
