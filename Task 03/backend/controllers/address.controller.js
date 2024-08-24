@@ -13,16 +13,15 @@ export const getAddresses = async (req, res, next) => {
   next();
 };
 export const createAddress = async (req, res) => {
-  const { student_id, street, hometown } = req.body;
+  const { student_id, student_name, street, hometown } = req.body;
   try {
-    const address = new Address({ student_id, street, hometown });
+    const address = new Address({ student_id, student_name, street, hometown });
     await address.save();
-    res.status(201).json(address);
+    res.status(200).json(address);
   } catch (error) {
     res.status(500).json({ message: "Error saving address" });
   }
 
-  next();
 };
 
 export const getAddressesByID = async (req, res) => {

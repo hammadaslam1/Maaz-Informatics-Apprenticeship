@@ -4,7 +4,10 @@ const addressSchema = new mongoose.Schema(
   {
     student_id: {
       type: String,
-      ref: "Student",
+      required: true,
+    },
+    student_name: {
+      type: String,
       required: true,
     },
     street: {

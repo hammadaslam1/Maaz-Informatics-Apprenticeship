@@ -25,8 +25,36 @@ const AddressTable = () => {
   const [open, setOpen] = useState(false);
   const [allStudents, setAllStudents] = useState(null);
   const [student, setStudent] = useState("");
+  const [street, setStreet] = useState("");
+  const [hometown, setHometown] = useState("");
   //   const
 
+  const handleAddressUpload = async () => {
+    try {
+      const formData = new FormData();
+      formData.append("student_id", student.split(" | ")[0]);
+      formData.append("student_name", student.split(" | ")[1]);
+      formData.append("street", street);
+      formData.append("hometown", hometown);
+
+      await fetch("http://localhost:3001/api/addresses/create-address", {
+        method: "POST",
+        body: formData,
+      })
+        .then((response) => {
+            alert(response.status)
+          if (response.status === 200) {
+            // alert("Address uploaded successfully!");
+            getAddresses();
+          } else {
+            alert("Failed to upload address!");
+          }
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    } catch (error) {}
+  };
   const getAddresses = async () => {
     try {
       await fetch("http://localhost:3001/api/addresses/get-addresses", {
@@ -98,9 +126,9 @@ const AddressTable = () => {
             </TableCell>
           </TableRow>
           <TableRow sx={{ p: 3 }}>
-            <TableCell sx={{ flex: 1 }} colSpan={2}>
+            <TableCell sx={{ flex: 1 }} colSpan={3}>
               <Typography variant="h6" fontWeight={600}>
-                Student ID
+                Student Name
               </Typography>
               <Select
                 onChange={(e) => {
@@ -110,21 +138,28 @@ const AddressTable = () => {
               >
                 {allStudents &&
                   allStudents.map((data, i) => (
-                    <MenuItem value={`${data.student_id} | ${data.name}`}>
-                      {data.name}
+                    <MenuItem
+                      value={`${data.student_id} | ${data.name}`}
+                      sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                      }}
+                    >
+                      <Typography>{data.name}</Typography>
+                      {/* <img
+                        src={`http://localhost:3001/${data.image}`}
+                        height={50}
+                        alt=""
+                      /> */}
                     </MenuItem>
                   ))}
               </Select>
             </TableCell>
-            <TableCell sx={{ flex: 1 }} colSpan={2}>
+            {/* <TableCell sx={{ flex: 1 }} colSpan={2}>
               <Typography variant="h6" fontWeight={600}>
                 Student Name
               </Typography>
-              {/* <Input
-                sx={{ flex: 3 }}
-                value={name}
-                // onChange={(e) => setName(e.target.value)}
-              /> */}
               <Typography
                 sx={{
                   border: "1px solid #ddd",
@@ -137,15 +172,15 @@ const AddressTable = () => {
               >
                 {student?.split(" | ")[1]}
               </Typography>
-            </TableCell>
-            <TableCell sx={{ flex: 1 }} colSpan={2}>
+            </TableCell> */}
+            <TableCell sx={{ flex: 1 }} colSpan={3}>
               <Typography variant="h6" fontWeight={600}>
-                Street
+                Street Address
               </Typography>
               <Input
                 sx={{ flex: 3 }}
-                // value={name}
-                // onChange={(e) => setName(e.target.value)}
+                value={street}
+                onChange={(e) => setStreet(e.target.value)}
               />
             </TableCell>
           </TableRow>
@@ -156,8 +191,8 @@ const AddressTable = () => {
               </Typography>
               <Input
                 sx={{ flex: 3 }}
-                // value={email}
-                // onChange={(e) => setEmail(e.target.value)}
+                value={hometown}
+                onChange={(e) => setHometown(e.target.value)}
               />
             </TableCell>
             <TableCell sx={{ alignContent: "center" }} colSpan={2}>
@@ -170,7 +205,7 @@ const AddressTable = () => {
                   width: "100%",
                   alignSelf: "flex-end",
                 }}
-                // onClick={handleStudentUpload}
+                onClick={handleAddressUpload}
               >
                 Add Address
               </Button>
@@ -183,21 +218,15 @@ const AddressTable = () => {
                 fontWeight: 700,
               }}
             >
-              Student ID
+              Student Name
             </TableCell>
             <TableCell
               sx={{
                 fontWeight: 700,
               }}
+              colSpan={2}
             >
-              Image
-            </TableCell>
-            <TableCell
-              sx={{
-                fontWeight: 700,
-              }}
-            >
-              Street
+              Street Address
             </TableCell>
             <TableCell
               sx={{
@@ -225,17 +254,9 @@ const AddressTable = () => {
                 key={i}
                 // sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
               >
-                <TableCell>{row.student_id}</TableCell>
-                {/* <TableCell>{row.id}</TableCell> */}
-                <TableCell>{row.name}</TableCell>
-                <TableCell>{row.email}</TableCell>
-                <TableCell>
-                  <img
-                    src={`http://localhost:3001/${row.image}`}
-                    height={"70px"}
-                    alt={row.name}
-                  />
-                </TableCell>
+                <TableCell>{row.student_name}</TableCell>
+                <TableCell colSpan={2}>{row.street}</TableCell>
+                <TableCell>{row.hometown}</TableCell>
                 <TableCell colSpan={2}>
                   <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
                     <Button
@@ -245,7 +266,7 @@ const AddressTable = () => {
                       sx={{ textTransform: "capitalize" }}
                       //   onClick={() => handleOpen(i)}
                     >
-                      Update Student
+                      Update
                     </Button>
                     <Button
                       variant="contained"
@@ -254,7 +275,7 @@ const AddressTable = () => {
                       sx={{ textTransform: "capitalize" }}
                       //   onClick={() => handleStudentDelete(row._id)}
                     >
-                      Delete Student
+                      Delete
                     </Button>
                   </Box>
                 </TableCell>
