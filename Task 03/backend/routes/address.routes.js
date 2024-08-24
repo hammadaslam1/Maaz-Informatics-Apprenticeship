@@ -2,6 +2,7 @@ import express from "express";
 import {
   createAddress,
   deleteAddress,
+  getAddresses,
   getAddressesByID,
   getAddressesByStudentID,
   updateAddress,
@@ -9,6 +10,7 @@ import {
 
 const router = express.Router();
 
+router.get("/get-addresses", getAddresses);
 router.post("/create-address", createAddress);
 router.get("/get-address-by-student-id/:id", getAddressesByStudentID);
 router.get("/get-address-by-id/:id", getAddressesByID);

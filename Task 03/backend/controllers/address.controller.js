@@ -1,5 +1,17 @@
 import Address from "../models/address.model.js";
 
+export const getAddresses = async (req, res, next) => {
+  try {
+    const addresses = await Address.find({});
+    if (!addresses) {
+      return res.status(404).json({ message: "No addresses found" });
+    }
+    res.status(200).json(addresses);
+  } catch (error) {
+    res.status(500).json({ message: "Error retrieving addresses" });
+  }
+  next();
+};
 export const createAddress = async (req, res) => {
   const { student_id, street, hometown } = req.body;
   try {
