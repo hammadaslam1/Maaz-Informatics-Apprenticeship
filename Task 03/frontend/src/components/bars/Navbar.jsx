@@ -20,6 +20,7 @@ const Navbar = () => {
           display: "flex",
           justifyContent: "space-between",
           alignItems: "center",
+          backgroundColor: '#333'
         }}
       >
         <Box sx={{ display: "flex", alignItems: "center" }}>
@@ -45,7 +46,7 @@ const Navbar = () => {
               "&:hover": {
                 border: "2px solid #fff",
                 backgroundColor: "#fff",
-                color: "#1976D2",
+                color: "#333",
               },
             }}
             onClick={() => navigate(HOME)}
@@ -62,7 +63,7 @@ const Navbar = () => {
               "&:hover": {
                 border: "2px solid #fff",
                 backgroundColor: "#fff",
-                color: "#1976D2",
+                color: "#333",
               },
             }}
             onClick={() => navigate(ADDSTUDENT)}
@@ -79,7 +80,7 @@ const Navbar = () => {
               "&:hover": {
                 border: "2px solid #fff",
                 backgroundColor: "#fff",
-                color: "#1976D2",
+                color: "#333",
               },
             }}
             onClick={() => navigate(ADDADDRESS)}

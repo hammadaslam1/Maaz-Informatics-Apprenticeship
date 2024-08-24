@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 
 const studentSchema = new mongoose.Schema(
   {
-    _id: {
+    student_id: {
       type: String,
       required: true,
       unique: true,
@@ -15,6 +15,10 @@ const studentSchema = new mongoose.Schema(
       type: String,
       required: true,
       unique: true,
+    },
+    image: {
+      type: String,
+      required: true,
     },
   },
   { timestamps: true }

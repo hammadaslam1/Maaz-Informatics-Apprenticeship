@@ -12,17 +12,38 @@ import {
   TableRow,
   Typography,
 } from "@mui/material";
-import { useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import UpdateIcon from "@mui/icons-material/Update";
 import UploadIcon from "@mui/icons-material/Upload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 
-const StudentTable = ({ students }) => {
+const StudentTable = ({
+  students,
+  handleImage,
+  handleImageUpload,
+  handleStudentDelete,
+  handleStudentUpdate,
+  handleStudentUpload,
+  imageName,
+  getStudents,
+  setID,
+  setName,
+  setEmail,
+}) => {
   const imageRef = useRef();
+  useEffect(() => {
+    getStudents();
+  }, []);
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-      <input type="file" ref={imageRef} hidden />
+      <input
+        type="file"
+        ref={imageRef}
+        onChange={handleImage}
+        accept="image/*"
+        hidden
+      />
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow sx={{ backgroundColor: "#444", p: 3 }}>
@@ -37,13 +58,16 @@ const StudentTable = ({ students }) => {
               <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
                 Student ID
               </Typography>
-              <Input sx={{ flex: 3 }} />
+              <Input sx={{ flex: 3 }} onChange={(e) => setID(e.target.value)} />
             </TableCell>
             <TableCell sx={{}} colSpan={2}>
               <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
                 Student Name
               </Typography>
-              <Input sx={{ flex: 3 }} />
+              <Input
+                sx={{ flex: 3 }}
+                onChange={(e) => setName(e.target.value)}
+              />
             </TableCell>
           </TableRow>
           <TableRow sx={{ p: 3 }}>
@@ -51,7 +75,10 @@ const StudentTable = ({ students }) => {
               <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
                 Student Email
               </Typography>
-              <Input sx={{ flex: 3 }} />
+              <Input
+                sx={{ flex: 3 }}
+                onChange={(e) => setEmail(e.target.value)}
+              />
             </TableCell>
             <TableCell sx={{}} colSpan={2}>
               <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
@@ -59,7 +86,8 @@ const StudentTable = ({ students }) => {
               </Typography>
               <Input
                 placeholder="Student Image"
-                // value={imageFile}
+                value={imageName || ""}
+                onClick={() => imageRef.current.click()}
                 startDecorator={
                   <Button
                     variant="contained"
@@ -68,7 +96,6 @@ const StudentTable = ({ students }) => {
                     sx={{
                       textTransform: "capitalize",
                     }}
-                    onClick={() => imageRef.current.click()}
                   >
                     Upload
                   </Button>
@@ -87,6 +114,7 @@ const StudentTable = ({ students }) => {
                   color="success"
                   startIcon={<PersonAddIcon />}
                   sx={{ textTransform: "capitalize" }}
+                  onClick={handleImageUpload}
                 >
                   Add Student
                 </Button>
@@ -141,7 +169,7 @@ const StudentTable = ({ students }) => {
           </TableRow>
         </TableHead>
         <TableBody>
-          {students &&
+          {students && students.length > 0 ? (
             // (rowsPerPage > 0
             //   ? users.slice(
             //       page * rowsPerPage,
@@ -154,13 +182,30 @@ const StudentTable = ({ students }) => {
                 key={i}
                 // sx={{ "&:last-child td, &:last-child th": { border: 1 } }}
               >
-                <TableCell>{row.id}</TableCell>
+                <TableCell>{row._id}</TableCell>
                 {/* <TableCell>{row.id}</TableCell> */}
                 <TableCell>{row.name}</TableCell>
-                <TableCell>{row.username}</TableCell>
                 <TableCell>{row.email}</TableCell>
+                <TableCell>
+                  {/* {row.image} */}
+                  <img src={row.image} height={"170px"} alt="" />
+                </TableCell>
               </TableRow>
-            ))}
+            ))
+          ) : (
+            <TableRow>
+              <TableCell colSpan={4} sx={{ p: 3, px: 8 }}>
+                <Typography
+                  variant="h4"
+                  textAlign={"center"}
+                  fontWeight={700}
+                  color={"#888"}
+                >
+                  No Result found.
+                </Typography>
+              </TableCell>
+            </TableRow>
+          )}
         </TableBody>
         {/* <TableFooter>
           <TableRow>

@@ -1,9 +1,22 @@
 import Student from "../models/student.model.js";
 
 export const createStudent = async (req, res, next) => {
-  const { id, name, email } = req.body;
+  const { path, filename } = req.file;
+  console.log(req.body);
+
   try {
-    const newStudent = new Student({ _id: id, name, email });
+    const { id, name, email } = req.body;
+    if (id == "" || name == "" || email == "") {
+      return res
+        .status(500)
+        .json({ message: "Please fill all required fields." });
+    }
+    const newStudent = new Student({
+      student_id: id,
+      name,
+      email,
+      image: path,
+    });
 
     await newStudent.save();
     res.status(200).json(newStudent);
@@ -31,3 +44,12 @@ export const deleteStudent = async (req, res) => {
     res.status(500).json({ message: "Error deleting student" });
   }
 };
+
+// export const uploadImage = async (req, res) => {
+//   const { path, filename } = req.file;
+//   try {
+//     const
+//   } catch (error) {
+
+//   }
+// }
