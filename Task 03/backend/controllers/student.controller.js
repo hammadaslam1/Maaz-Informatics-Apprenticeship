@@ -1,9 +1,9 @@
 import Student from "../models/student.model.js";
 
 export const createStudent = (req, res, next) => {
-  const { id, name, email, street, hometown } = req.body;
+  const { id, name, email } = req.body;
   try {
-    const newStudent = new Student({ _id: id, name, email, street, hometown });
+    const newStudent = new Student({ _id: id, name, email });
 
     newStudent.save();
     res.status(200).json(newStudent);

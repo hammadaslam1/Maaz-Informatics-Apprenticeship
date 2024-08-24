@@ -5,6 +5,7 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import { connString } from "./secret.js";
 import studentRoutes from "./routes/student.routes.js";
+import addressRoutes from "./routes/address.routes.js";
 
 mongoose
   .connect(connString, {
@@ -37,3 +38,4 @@ app.listen(3001, () => {
 });
 
 app.use("/api/students", studentRoutes);
+app.use("/api/addresses", addressRoutes);
