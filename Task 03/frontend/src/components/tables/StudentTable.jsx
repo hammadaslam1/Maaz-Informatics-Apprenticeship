@@ -17,6 +17,7 @@ import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import UpdateIcon from "@mui/icons-material/Update";
 import UploadIcon from "@mui/icons-material/Upload";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
+import StudentUpdateDialog from "../dialogs/StudentUpdateDialog";
 
 const StudentTable = () => {
   const imageRef = useRef();
@@ -26,18 +27,22 @@ const StudentTable = () => {
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [imageFile, setImageFile] = useState("");
+  const [open, setOpen] = useState(false);
+  const [index, setIndex] = useState(null);
   const handleImage = (e) => {
     setImageFile((prev) => e.target.files[0]);
     setImageName((prev) => e.target.files[0]?.name);
-    // handleImageUpload();
   };
-  const handleImageUpload = async () => {
+  const handleStudentUpload = async () => {
+    if (id == "" || name == "" || email == "") {
+      alert("Please fill all required fields");
+      return;
+    }
     const formData = new FormData();
     formData.append("id", id);
     formData.append("name", name);
     formData.append("email", email);
     formData.append("image", imageFile);
-    // alert(formData);
     try {
       await fetch(`http://localhost:3001/api/students/create-student/`, {
         method: "POST",
@@ -54,7 +59,7 @@ const StudentTable = () => {
           setName("");
           setEmail("");
           setImageFile(null);
-          // alert(`Image uploaded successfully with id: ${data.student_id}`);
+          setImageName("");
         })
         .catch((error) => {
           alert(error);
@@ -64,11 +69,27 @@ const StudentTable = () => {
     }
   };
 
-  const handleStudentUpload = () => {};
+  const handleStudentDelete = async (id) => {
+    try {
+      await fetch(`http://localhost:3001/api/students/delete-student/${id}`, {
+        method: "GET",
+      })
+        .then((response) => {
+          if (response.status == 200) {
+            return response.json();
+          }
+        })
+        .then((data) => {
+          getStudents();
+        })
+        .catch((error) => {
+          alert(error);
+        });
+    } catch (error) {
+      alert(JSON.stringify(error));
+    }
+  };
 
-  const handleStudentDelete = (id) => {};
-
-  const handleStudentUpdate = (id) => {};
   const getStudents = async () => {
     try {
       await fetch("http://localhost:3001/api/students/get-students", {
@@ -93,6 +114,11 @@ const StudentTable = () => {
     }
   };
 
+  const handleOpen = (i) => {
+    setIndex((prev) => i);
+    setOpen((prev) => true);
+  };
+
   useEffect(() => {
     getStudents();
   }, []);
@@ -105,18 +131,27 @@ const StudentTable = () => {
         accept="image/*"
         hidden
       />
+      {open && (
+        <StudentUpdateDialog
+          open={open}
+          setOpen={setOpen}
+          getStudents={getStudents}
+          index={index}
+          students={students}
+        />
+      )}
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow sx={{ backgroundColor: "#444", p: 3 }}>
-            <TableCell colSpan={4} sx={{ p: 3, px: 8 }}>
+            <TableCell colSpan={6} sx={{ p: 3, px: 8 }}>
               <Typography variant="h4" fontWeight={600} color={"#fff"}>
                 Students
               </Typography>
             </TableCell>
           </TableRow>
-          <TableRow sx={{ p: 3 }} colSpan={4}>
-            <TableCell sx={{}} colSpan={2}>
-              <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
+          <TableRow sx={{ p: 3 }}>
+            <TableCell sx={{ flex: 1 }} colSpan={2}>
+              <Typography variant="h6" fontWeight={600}>
                 Student ID
               </Typography>
               <Input
@@ -125,8 +160,8 @@ const StudentTable = () => {
                 onChange={(e) => setID(e.target.value)}
               />
             </TableCell>
-            <TableCell sx={{}} colSpan={2}>
-              <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
+            <TableCell sx={{ flex: 1 }} colSpan={2}>
+              <Typography variant="h6" fontWeight={600}>
                 Student Name
               </Typography>
               <Input
@@ -135,10 +170,8 @@ const StudentTable = () => {
                 onChange={(e) => setName(e.target.value)}
               />
             </TableCell>
-          </TableRow>
-          <TableRow sx={{ p: 3 }}>
-            <TableCell sx={{}} colSpan={2}>
-              <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
+            <TableCell sx={{ flex: 1 }} colSpan={2}>
+              <Typography variant="h6" fontWeight={600}>
                 Student Email
               </Typography>
               <Input
@@ -147,10 +180,13 @@ const StudentTable = () => {
                 onChange={(e) => setEmail(e.target.value)}
               />
             </TableCell>
-            <TableCell sx={{}} colSpan={2}>
+          </TableRow>
+          <TableRow sx={{ p: 3 }}>
+            <TableCell sx={{}} colSpan={4}>
               <Typography variant="h6" fontWeight={600} sx={{ flex: 1 }}>
                 Student Image
               </Typography>
+
               <Input
                 placeholder="Student Image"
                 value={imageName || ""}
@@ -167,43 +203,27 @@ const StudentTable = () => {
                     Upload
                   </Button>
                 }
-                // onClick={() => inputRef.current.click()}
                 sx={{ gridColumn: "1/3", px: 0 }}
                 label="Image"
               />
             </TableCell>
-          </TableRow>
-          <TableRow>
-            <TableCell sx={{}} colSpan={4}>
-              <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
-                <Button
-                  variant="contained"
-                  color="success"
-                  startIcon={<PersonAddIcon />}
-                  sx={{ textTransform: "capitalize" }}
-                  onClick={handleImageUpload}
-                >
-                  Add Student
-                </Button>
-                <Button
-                  variant="contained"
-                  color="warning"
-                  startIcon={<UpdateIcon />}
-                  sx={{ textTransform: "capitalize" }}
-                >
-                  Update Student
-                </Button>
-                <Button
-                  variant="contained"
-                  color="error"
-                  startIcon={<DeleteForeverIcon />}
-                  sx={{ textTransform: "capitalize" }}
-                >
-                  Delete Student
-                </Button>
-              </Box>
+            <TableCell sx={{ alignContent: "center" }} colSpan={2}>
+              <Button
+                variant="contained"
+                color="success"
+                startIcon={<PersonAddIcon />}
+                sx={{
+                  textTransform: "capitalize",
+                  width: "100%",
+                  alignSelf: "flex-end",
+                }}
+                onClick={handleStudentUpload}
+              >
+                Add Student
+              </Button>
             </TableCell>
           </TableRow>
+
           <TableRow>
             <TableCell
               sx={{
@@ -233,6 +253,9 @@ const StudentTable = () => {
             >
               Image
             </TableCell>
+            <TableCell colSpan={2} sx={{ fontWeight: 700 }}>
+              Actions
+            </TableCell>
           </TableRow>
         </TableHead>
         <TableBody>
@@ -254,18 +277,39 @@ const StudentTable = () => {
                 <TableCell>{row.name}</TableCell>
                 <TableCell>{row.email}</TableCell>
                 <TableCell>
-                  {/* {row.image} */}
                   <img
                     src={`http://localhost:3001/${row.image}`}
-                    height={"170px"}
+                    height={"100px"}
                     alt={row.name}
                   />
+                </TableCell>
+                <TableCell colSpan={2}>
+                  <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
+                    <Button
+                      variant="contained"
+                      color="warning"
+                      startIcon={<UpdateIcon />}
+                      sx={{ textTransform: "capitalize" }}
+                      onClick={() => handleOpen(i)}
+                    >
+                      Update Student
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="error"
+                      startIcon={<DeleteForeverIcon />}
+                      sx={{ textTransform: "capitalize" }}
+                      onClick={() => handleStudentDelete(row._id)}
+                    >
+                      Delete Student
+                    </Button>
+                  </Box>
                 </TableCell>
               </TableRow>
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={4} sx={{ p: 3, px: 8 }}>
+              <TableCell colSpan={6} sx={{ p: 3, px: 8 }}>
                 <Typography
                   variant="h4"
                   textAlign={"center"}

@@ -3,6 +3,7 @@ import {
   createStudent,
   deleteStudent,
   getStudents,
+  updateStudent,
 } from "../controllers/student.controller.js";
 import multer from "multer";
 import fs from "fs";
@@ -13,7 +14,7 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     console.log("Storage destination " + file);
-    console.log(req.body);
+    // console.log(req.body);
     const { id } = req.body;
     const dir = path.join("images", id);
 
@@ -33,6 +34,7 @@ const upload = multer({ storage: storage });
 
 router.post("/create-student", upload.single("image"), createStudent);
 router.get("/get-students", getStudents);
-router.delete("/delete-student/:id", deleteStudent);
+router.get("/delete-student/:id", deleteStudent);
+router.post("/update-student/:id", upload.single("image"), updateStudent);
 
 export default router;

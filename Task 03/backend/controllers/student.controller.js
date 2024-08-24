@@ -1,12 +1,13 @@
+import { request } from "express";
 import Student from "../models/student.model.js";
 
 export const createStudent = async (req, res, next) => {
-  console.log('createStudent')
+  console.log("createStudent");
   try {
     const { path, filename } = req.file;
-    console.log(filename)
+    console.log(filename);
     const { id, name, email } = req.body;
-    const newPath = path.replace(/\\/g, "/")
+    const newPath = path.replace(/\\/g, "/");
     if (id == "" || name == "" || email == "" || !id || !name || !email) {
       return res
         .status(500)
@@ -47,11 +48,30 @@ export const deleteStudent = async (req, res) => {
   }
 };
 
-// export const uploadImage = async (req, res) => {
-//   const { path, filename } = req.file;
-//   try {
-//     const
-//   } catch (error) {
-
-//   }
-// }
+export const updateStudent = async (req, res) => {
+  try {
+    const { path, filename } = req.file;
+    const { id, name, email } = req.body;
+    const newPath = path.replace(/\\/g, "/");
+    console.log(req.body)
+    if (id == "" || name == "" || email == "" || !id || !name || !email) {
+      return res
+        .status(500)
+        .json({ message: "Please fill all required fields." });
+    }
+    const newObject = {
+      student_id: req.body.id,
+      name: req.body.name,
+      email: req.body.email,
+      image: newPath,
+    };
+    const student = await Student.findByIdAndUpdate(req.params.id, newObject, {
+      new: true,
+    });
+    if (!student) return res.status(404).json({ message: "Student not found" });
+    // await student.save();
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating student" });
+  }
+};
