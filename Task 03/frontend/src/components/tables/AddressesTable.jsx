@@ -162,11 +162,6 @@ const AddressTable = () => {
                       }}
                     >
                       <Typography>{data.name}</Typography>
-                      {/* <img
-                        src={`http://localhost:3001/${data.image}`}
-                        height={50}
-                        alt=""
-                      /> */}
                     </MenuItem>
                   ))}
               </Select>

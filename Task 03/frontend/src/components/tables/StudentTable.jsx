@@ -29,6 +29,7 @@ const StudentTable = () => {
   const [imageFile, setImageFile] = useState("");
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(null);
+  const [flag, setFlag] = useState(0);
   const handleImage = (e) => {
     setImageFile((prev) => e.target.files[0]);
     setImageName((prev) => e.target.files[0]?.name);
@@ -121,7 +122,7 @@ const StudentTable = () => {
 
   useEffect(() => {
     getStudents();
-  }, [open]);
+  }, [flag, open]);
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
       <input
@@ -138,6 +139,8 @@ const StudentTable = () => {
           getStudents={getStudents}
           index={index}
           students={students}
+          setFlag={setFlag}
+          setStudents={setStudents}
         />
       )}
       <Table sx={{ minWidth: 650 }} aria-label="simple table">

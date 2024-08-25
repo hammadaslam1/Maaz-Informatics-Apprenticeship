@@ -1,7 +1,9 @@
 /* eslint-disable eqeqeq */
 import { Input } from "@mui/joy";
 import {
+  Avatar,
   Backdrop,
+  Box,
   Button,
   CircularProgress,
   Dialog,
@@ -9,12 +11,18 @@ import {
   DialogContent,
   DialogContentText,
   DialogTitle,
+  FormControl,
+  FormHelperText,
+  FormLabel,
+  IconButton,
   Slide,
   Typography,
 } from "@mui/material";
-import { forwardRef, useRef, useState } from "react";
+import { forwardRef, useEffect, useRef, useState } from "react";
 import UpdateIcon from "@mui/icons-material/Update";
 import CancelIcon from "@mui/icons-material/Cancel";
+import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
+import { styles } from "./DialogsStyles";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -24,8 +32,10 @@ const StudentUpdateDialog = ({
   open,
   setOpen,
   getStudents,
+  setStudents,
   students = [],
   index = 0,
+  setFlag,
 }) => {
   const imageRef = useRef();
   const [id, setID] = useState(students[index].student_id);
@@ -35,7 +45,7 @@ const StudentUpdateDialog = ({
   const [imageName, setImageName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [defaultImage, setDefaultImage] = useState(
-    `http://localhost:3001/${students[index]?.image}`
+    `http://localhost:3001/${students[index].image}`
   );
   const handleImage = (e) => {
     setImageFile((prev) => e.target.files[0]);
@@ -45,7 +55,8 @@ const StudentUpdateDialog = ({
   };
   const handleClose = () => {
     setOpen(false);
-    setDefaultImage(`http://localhost:3001/${students[index]?.image}`);
+    setDefaultImage(`http://localhost:3001/${students[index].image}`);
+    setFlag((prev) => prev + 1);
   };
 
   const handleStudentUpdate = async (_id) => {
@@ -62,28 +73,41 @@ const StudentUpdateDialog = ({
     formData.append("image", imageFile);
     try {
       await fetch(`http://localhost:3001/api/students/update-student/${_id}`, {
-        method: "POST",
+        method: "PUT",
         body: formData,
       })
         .then((response) => {
           if (response.status == 200) {
-            const data = response.json();
             setIsLoading(false);
+            getStudents();
             setID("");
             setName("");
             setEmail("");
             setImageFile(null);
             setImageName("");
-            getStudents();
-            setOpen(false);
+            setFlag((prev) => prev + 1);
+            return response.json();
           } else {
-            setIsLoading(false);
+            setIsLoading((prev) => false);
             alert(response.status);
           }
+        }).then((data)=> {
+          // alert(JSON.stringify(data));
+          setStudents((prevUsers) =>
+            prevUsers.map((user) =>
+              user._id == data._id ? data : user
+            ))
+          getStudents();
         })
         .catch((error) => {
           setIsLoading(false);
+          setOpen(false);
+          setFlag((prev) => prev + 1);
           alert(error.message);
+        })
+        .finally(() => {
+          getStudents();
+          setOpen(false);
         });
     } catch (error) {
       setIsLoading(false);
@@ -95,9 +119,15 @@ const StudentUpdateDialog = ({
       open={open}
       TransitionComponent={Transition}
       keepMounted
+      scroll="body"
       onClose={handleClose}
       aria-describedby="alert-dialog-slide-description"
-      sx={{ display: "flex", flexDirection: "column", textAlign: "center", borderRadius: 4 }}
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        textAlign: "center",
+        borderRadius: 4,
+      }}
       fullWidth={true}
     >
       <Backdrop open={isLoading} sx={{ zIndex: 999 }}>
@@ -113,31 +143,86 @@ const StudentUpdateDialog = ({
       {open ? (
         <>
           <DialogTitle>
-            <Typography variant="h4">{students[index]?.name}</Typography>
+            <Typography variant="h4" textAlign={'center'} fontWeight={600} color={'#333'}>{students[index]?.name}</Typography>
           </DialogTitle>
-          <DialogContent>
-            <img
+          <DialogContent sx={{}}>
+            <Box
               src={defaultImage}
-              height={"200px"}
               alt={students[index].name}
-              onClick={() => imageRef.current.click()}
-              style={{ cursor: "pointer" }}
-            />
-            <Input
-              value={id}
-            //   defaultValue={students[index].student_id}
-              onChange={(e) => setID(e.target.value)}
-            />
-            <Input
-              value={name}
-            //   defaultValue={students[index].name}
-              onChange={(e) => setName(e.target.value)}
-            />
-            <Input
-              value={email}
-            //   defaultValue={students[index].email}
-              onChange={(e) => setEmail(e.target.value)}
-            />
+              sx={{
+                p: 0,
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+              }}
+              disableTouchRipple
+              disableFocusRipple
+              disableRipple
+            >
+              <Avatar
+                // src={defaultImage}
+                sx={[
+                  { backgroundImage: `url('${defaultImage}')` },
+                  styles.avatar,
+                ]}
+              >
+                <IconButton
+                  onClick={() => imageRef.current.click()}
+                  className="icon-button"
+                  sx={styles.iconButton}
+                >
+                  <AddPhotoAlternateIcon
+                    className="edit-icon"
+                    sx={{
+                      transform: "translateY(-200%)",
+                      transition: "all 0.5s ease-in-out",
+                    }}
+                  />
+                </IconButton>
+              </Avatar>
+            </Box>
+            <Box sx={{ m: 5 }}>
+              <FormControl sx={{ m: 1, mb: 0 }} fullWidth>
+                <FormLabel sx={{ textAlign: "left", mx: 1 }}>
+                  Student ID:
+                </FormLabel>
+                <Input
+                  value={id}
+                  //   defaultValue={students[index].student_id}
+                  onChange={(e) => setID(e.target.value)}
+                />
+                <FormHelperText>
+                  Please ensure to enter correct student id
+                </FormHelperText>
+              </FormControl>
+              <FormControl sx={{ m: 1, mb: 0 }} fullWidth>
+                <FormLabel sx={{ textAlign: "left", mx: 1 }}>
+                  Full Name:
+                </FormLabel>
+                <Input
+                  value={name}
+                  //   defaultValue={students[index].name}
+                  onChange={(e) => setName(e.target.value)}
+                />
+                <FormHelperText>
+                  Please write name as per cnic or form-b
+                </FormHelperText>
+              </FormControl>
+              <FormControl sx={{ m: 1, mb: 0 }} fullWidth>
+                <FormLabel sx={{ textAlign: "left", mx: 1 }}>
+                  Email Address:
+                </FormLabel>
+                <Input
+                  value={email}
+                  //   defaultValue={students[index].email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+                <FormHelperText>
+                  Email will be used to contact you so, please write it
+                  correctly
+                </FormHelperText>
+              </FormControl>
+            </Box>
           </DialogContent>
         </>
       ) : (
@@ -151,7 +236,7 @@ const StudentUpdateDialog = ({
           color="secondary"
           startIcon={<CancelIcon />}
           sx={{ textTransform: "capitalize" }}
-          onClick={() => handleClose()}
+          onClick={() => setOpen(false)}
         >
           Cancel
         </Button>

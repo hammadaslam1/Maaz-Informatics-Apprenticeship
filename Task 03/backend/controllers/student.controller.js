@@ -72,6 +72,7 @@ export const updateStudent = async (req, res) => {
     );
     if (!student) return res.status(404).json({ message: "Student not found" });
     // await student.save();
+    const allStudents = await Student.find({})
     res.status(200).json(student);
   } catch (error) {
     res.status(500).json({ message: "Error updating student" });

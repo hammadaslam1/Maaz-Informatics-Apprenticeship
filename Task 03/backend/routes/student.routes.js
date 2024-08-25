@@ -35,6 +35,6 @@ const upload = multer({ storage: storage });
 router.post("/create-student", upload.single("image"), createStudent);
 router.get("/get-students", getStudents);
 router.get("/delete-student/:id", deleteStudent);
-router.post("/update-student/:id", upload.single("image"), updateStudent);
+router.put("/update-student/:id", upload.single("image"), updateStudent);
 
 export default router;
