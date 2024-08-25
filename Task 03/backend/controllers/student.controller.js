@@ -72,7 +72,36 @@ export const updateStudent = async (req, res) => {
     );
     if (!student) return res.status(404).json({ message: "Student not found" });
     // await student.save();
-    const allStudents = await Student.find({})
+    const allStudents = await Student.find({});
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(500).json({ message: "Error updating student" });
+  }
+};
+export const updateStudentWithoutImage = async (req, res) => {
+  try {
+    const { id, name, email } = req.body;
+
+    if (id === "" || name === "" || email === "" || !id || !name || !email) {
+      console.log(`id: ${id}\nname: ${name}\nemail: ${email}`);
+      // console.log(req);
+      return res
+        .status(500)
+        .json({ message: "Please fill all required fields." });
+    }
+    const newObject = {
+      student_id: req.body.id,
+      name: req.body.name,
+      email: req.body.email,
+    };
+    console.log(newObject);
+    const student = await Student.findOneAndUpdate(
+      { _id: req.params.id },
+      { ...newObject }
+    );
+    if (!student) return res.status(404).json({ message: "Student not found" });
+    // await student.save();
+    const allStudents = await Student.find({});
     res.status(200).json(student);
   } catch (error) {
     res.status(500).json({ message: "Error updating student" });

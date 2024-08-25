@@ -67,16 +67,32 @@ const StudentUpdateDialog = ({
       return;
     }
     const formData = new FormData();
+    const formDataWithoutImage = {
+      id: id,
+      name: name,
+      email: email,
+    };
+    // formDataWithoutImage.append("id", id);
+    // formDataWithoutImage.append("name", name);
+    // formDataWithoutImage.append("email", email);
     formData.append("id", id);
     formData.append("name", name);
     formData.append("email", email);
     formData.append("image", imageFile);
+    const routeWithImage = "update-student";
+    const routeWithoutImage = "update-student-no-image";
+    console.log(formDataWithoutImage);
     try {
-      await fetch(`http://localhost:3001/api/students/update-student/${_id}`, {
-        method: "PUT",
-        body: formData,
-      })
-        .then((response) => {
+      await fetch(
+        `http://localhost:3001/api/students/${
+          imageFile ? routeWithImage : routeWithoutImage
+        }/${_id}`,
+        {
+          method: "PUT",
+          body: !imageFile ? JSON.stringify(formDataWithoutImage) : formData,
+        }
+      )
+        .then(async (response) => {
           if (response.status == 200) {
             setIsLoading(false);
             getStudents();
@@ -86,18 +102,18 @@ const StudentUpdateDialog = ({
             setImageFile(null);
             setImageName("");
             setFlag((prev) => prev + 1);
-            return response.json();
+            const data = await response.json();
+            setStudents((prevUsers) =>
+              prevUsers.map((user) => (user._id == data._id ? data : user))
+            );
+            getStudents();
           } else {
             setIsLoading((prev) => false);
             alert(response.status);
           }
-        }).then((data)=> {
+        })
+        .then((data) => {
           // alert(JSON.stringify(data));
-          setStudents((prevUsers) =>
-            prevUsers.map((user) =>
-              user._id == data._id ? data : user
-            ))
-          getStudents();
         })
         .catch((error) => {
           setIsLoading(false);
@@ -143,7 +159,14 @@ const StudentUpdateDialog = ({
       {open ? (
         <>
           <DialogTitle>
-            <Typography variant="h4" textAlign={'center'} fontWeight={600} color={'#333'}>{students[index]?.name}</Typography>
+            <Typography
+              variant="h4"
+              textAlign={"center"}
+              fontWeight={600}
+              color={"#333"}
+            >
+              {students[index]?.name}
+            </Typography>
           </DialogTitle>
           <DialogContent sx={{}}>
             <Box
