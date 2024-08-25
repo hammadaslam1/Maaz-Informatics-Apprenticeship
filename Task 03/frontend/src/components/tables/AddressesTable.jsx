@@ -19,6 +19,9 @@ import {
 import AddressTableBody from "./AddressTableBody";
 import { useEffect, useState } from "react";
 import { Input } from "@mui/joy";
+import AddHomeIcon from "@mui/icons-material/AddHome";
+import UpdateIcon from "@mui/icons-material/Update";
+import DeleteForeverIcon from "@mui/icons-material/Delete";
 
 const AddressTable = () => {
   const [addresses, setAddresses] = useState(null);
@@ -36,16 +39,27 @@ const AddressTable = () => {
       formData.append("student_name", student.split(" | ")[1]);
       formData.append("street", street);
       formData.append("hometown", hometown);
-
+      console.log(`${student}\n${street}\n${hometown}`);
       await fetch("http://localhost:3001/api/addresses/create-address", {
         method: "POST",
-        body: formData,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          student_id: student.split(" | ")[0],
+          student_name: student.split(" | ")[1],
+          street,
+          hometown,
+        }),
       })
         .then((response) => {
-            alert(response.status)
+          alert(response.status);
           if (response.status === 200) {
             // alert("Address uploaded successfully!");
             getAddresses();
+            setStudent('');
+            setStreet('');
+            setHometown('');
           } else {
             alert("Failed to upload address!");
           }
@@ -131,6 +145,7 @@ const AddressTable = () => {
                 Student Name
               </Typography>
               <Select
+              value={student}
                 onChange={(e) => {
                   setStudent(e.target.value);
                 }}
@@ -156,23 +171,6 @@ const AddressTable = () => {
                   ))}
               </Select>
             </TableCell>
-            {/* <TableCell sx={{ flex: 1 }} colSpan={2}>
-              <Typography variant="h6" fontWeight={600}>
-                Student Name
-              </Typography>
-              <Typography
-                sx={{
-                  border: "1px solid #ddd",
-                  borderRadius: 1.5,
-                  height: 35,
-                  display: "flex",
-                  alignItems: "center",
-                  px: 2,
-                }}
-              >
-                {student?.split(" | ")[1]}
-              </Typography>
-            </TableCell> */}
             <TableCell sx={{ flex: 1 }} colSpan={3}>
               <Typography variant="h6" fontWeight={600}>
                 Street Address
@@ -185,7 +183,7 @@ const AddressTable = () => {
             </TableCell>
           </TableRow>
           <TableRow sx={{ p: 3 }}>
-            <TableCell sx={{ flex: 1 }} colSpan={3}>
+            <TableCell sx={{ flex: 1 }} colSpan={4}>
               <Typography variant="h6" fontWeight={600}>
                 Home Town
               </Typography>
@@ -199,7 +197,7 @@ const AddressTable = () => {
               <Button
                 variant="contained"
                 color="success"
-                // startIcon={<PersonAddIcon />}
+                startIcon={<AddHomeIcon />}
                 sx={{
                   textTransform: "capitalize",
                   width: "100%",
@@ -262,7 +260,7 @@ const AddressTable = () => {
                     <Button
                       variant="contained"
                       color="warning"
-                      //   startIcon={<UpdateIcon />}
+                      startIcon={<UpdateIcon />}
                       sx={{ textTransform: "capitalize" }}
                       //   onClick={() => handleOpen(i)}
                     >
@@ -271,7 +269,7 @@ const AddressTable = () => {
                     <Button
                       variant="contained"
                       color="error"
-                      //   startIcon={<DeleteForeverIcon />}
+                      startIcon={<DeleteForeverIcon />}
                       sx={{ textTransform: "capitalize" }}
                       //   onClick={() => handleStudentDelete(row._id)}
                     >

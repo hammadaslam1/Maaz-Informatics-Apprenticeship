@@ -14,6 +14,7 @@ export const getAddresses = async (req, res, next) => {
 };
 export const createAddress = async (req, res) => {
   const { student_id, student_name, street, hometown } = req.body;
+  console.log(req.body)
   try {
     const address = new Address({ student_id, student_name, street, hometown });
     await address.save();
