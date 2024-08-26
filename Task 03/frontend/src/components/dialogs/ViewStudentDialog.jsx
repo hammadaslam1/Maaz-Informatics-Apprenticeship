@@ -7,12 +7,10 @@ import {
   Dialog,
   DialogContent,
   DialogTitle,
-  Paper,
   Slide,
   Table,
   TableBody,
   TableCell,
-  TableContainer,
   TableHead,
   TableRow,
   Typography,
@@ -39,7 +37,6 @@ const ViewStudentDialog = ({ view, setView, studentData }) => {
             setStudentAddresses(data);
           } else {
             alert("Error: " + response.status);
-            return;
           }
         })
         .catch(() => {

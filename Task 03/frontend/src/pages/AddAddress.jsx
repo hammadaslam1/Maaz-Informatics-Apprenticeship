@@ -7,7 +7,6 @@ const AddAddress = () => {
       <Card
         sx={{
           mx: 14,
-          //   width: "clamp(600px, 40vw, 400px)",
           borderRadius: 4,
         }}
         elevation={10}

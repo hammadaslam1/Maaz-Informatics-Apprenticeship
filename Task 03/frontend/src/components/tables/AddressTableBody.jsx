@@ -6,11 +6,7 @@ const AddressTableBody = ({ address, student_id, key }) => {
       <TableCell>{address.student_id}</TableCell>
       <TableCell>{address.street}</TableCell>
       <TableCell>{address.hometown}</TableCell>
-      <TableCell>
-        {/* <IconButton onClick={() => deleteAddress(address._id)}> */}
-        {/* <DeleteForeverIcon /> */}
-        {/* </IconButton> */}
-      </TableCell>
+      <TableCell></TableCell>
     </TableRow>
   );
 };

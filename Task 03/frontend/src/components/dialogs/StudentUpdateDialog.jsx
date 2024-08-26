@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 /* eslint-disable eqeqeq */
 import { Input } from "@mui/joy";
 import {
@@ -9,7 +10,6 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   FormControl,
   FormHelperText,
@@ -18,7 +18,7 @@ import {
   Slide,
   Typography,
 } from "@mui/material";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useRef, useState } from "react";
 import UpdateIcon from "@mui/icons-material/Update";
 import CancelIcon from "@mui/icons-material/Cancel";
 import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
@@ -48,8 +48,8 @@ const StudentUpdateDialog = ({
     `http://localhost:3001/${students[index].image}`
   );
   const handleImage = (e) => {
-    setImageFile((prev) => e.target.files[0]);
-    setImageName((prev) => e.target.files[0]?.name);
+    setImageFile(() => e.target.files[0]);
+    setImageName(() => e.target.files[0]?.name);
     const newImage = URL.createObjectURL(e.target.files[0]);
     setDefaultImage(newImage);
   };
@@ -67,30 +67,18 @@ const StudentUpdateDialog = ({
       return;
     }
     const formData = new FormData();
-
-    // // formDataWithoutImage.append("id", id);
-    // // formDataWithoutImage.append("name", name);
-    // // formDataWithoutImage.append("email", email);
     formData.append("id", id);
     formData.append("name", name);
     formData.append("email", email);
     formData.append("image", imageFile);
     const routeWithImage = "update-student";
     const routeWithoutImage = "update-student-no-image";
-    // console.log(formDataWithoutImage);
     try {
       const formDataWithoutImage = {
         id: id,
         name: name,
         email: email,
       };
-      // const formData = {
-      //   id: id,
-      //   name: name,
-      //   email: email,
-      //   image: imageFile,
-      // };
-      console.log(formData);
       await fetch(
         `http://localhost:3001/api/students/${
           imageFile ? routeWithImage : routeWithoutImage
@@ -106,7 +94,6 @@ const StudentUpdateDialog = ({
         }
       )
         .then(async (response) => {
-          console.log(response.data);
           if (response.status == 200) {
             setIsLoading(false);
             getStudents();
@@ -122,12 +109,9 @@ const StudentUpdateDialog = ({
             );
             getStudents();
           } else {
-            setIsLoading((prev) => false);
+            setIsLoading(() => false);
             alert(response.status);
           }
-        })
-        .then((data) => {
-          // alert(JSON.stringify(data));
         })
         .catch((error) => {
           setIsLoading(false);
