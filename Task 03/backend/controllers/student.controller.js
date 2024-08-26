@@ -1,5 +1,6 @@
 import { request } from "express";
 import Student from "../models/student.model.js";
+import Address from "../models/address.model.js";
 
 export const createStudent = async (req, res, next) => {
   console.log("createStudent");
@@ -70,6 +71,10 @@ export const updateStudent = async (req, res) => {
       { _id: req.params.id },
       newObject
     );
+    const address = await Address.findOneAndUpdate(
+      { _id: student._id },
+      { student_name: student.name }
+    );
     if (!student) return res.status(404).json({ message: "Student not found" });
     // await student.save();
     const allStudents = await Student.find({});
@@ -86,7 +91,7 @@ export const updateStudentWithoutImage = async (req, res) => {
       console.log(`id: ${id}\nname: ${name}\nemail: ${email}`);
       // console.log(req);
       return res
-        .status(500)
+        .status(404)
         .json({ message: "Please fill all required fields." });
     }
     const newObject = {
@@ -99,7 +104,15 @@ export const updateStudentWithoutImage = async (req, res) => {
       { _id: req.params.id },
       { ...newObject }
     );
+    const addresses = await Address.updateMany(
+      { student_id: req.params.id },
+      {
+        student_name: req.body.name,
+      }
+    );
+    console.log(addresses);
     if (!student) return res.status(404).json({ message: "Student not found" });
+
     // await student.save();
     const allStudents = await Student.find({});
     res.status(200).json(student);

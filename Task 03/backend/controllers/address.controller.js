@@ -43,7 +43,6 @@ export const getAddressesByStudentID = async (req, res) => {
   } catch (error) {
     res.status(500).json({ message: "Error retrieving addresses" });
   }
-  next();
 };
 
 export const updateAddress = async (req, res) => {
