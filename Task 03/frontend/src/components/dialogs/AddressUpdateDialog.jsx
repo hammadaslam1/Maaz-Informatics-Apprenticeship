@@ -1,7 +1,6 @@
 /* eslint-disable eqeqeq */
 import { Input } from "@mui/joy";
 import {
-  Avatar,
   Backdrop,
   Box,
   Button,
@@ -9,20 +8,16 @@ import {
   Dialog,
   DialogActions,
   DialogContent,
-  DialogContentText,
   DialogTitle,
   FormControl,
   FormHelperText,
   FormLabel,
-  IconButton,
   Slide,
   Typography,
 } from "@mui/material";
-import { forwardRef, useEffect, useRef, useState } from "react";
+import { forwardRef, useState } from "react";
 import UpdateIcon from "@mui/icons-material/Update";
 import CancelIcon from "@mui/icons-material/Cancel";
-import AddPhotoAlternateIcon from "@mui/icons-material/AddPhotoAlternate";
-import { styles } from "./DialogsStyles";
 
 const Transition = forwardRef(function Transition(props, ref) {
   return <Slide direction="down" ref={ref} {...props} />;
@@ -36,7 +31,6 @@ const AddressUpdateDialog = ({
   addresses = [],
   index = 0,
 }) => {
-  const imageRef = useRef();
   const [street, setStreet] = useState(addresses[index].street);
   const [hometown, setHometown] = useState(addresses[index].hometown);
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +49,6 @@ const AddressUpdateDialog = ({
     formData.append("street", street);
     formData.append("hometown", hometown);
 
-    console.log(JSON.stringify(formData));
     try {
       const obj = {
         street,
@@ -69,7 +62,6 @@ const AddressUpdateDialog = ({
         body: JSON.stringify(obj),
       })
         .then(async (response) => {
-          console.log(response);
           if (response.status == 200) {
             setIsLoading(false);
             getAddresses();
@@ -81,12 +73,9 @@ const AddressUpdateDialog = ({
             );
             getAddresses();
           } else {
-            setIsLoading((prev) => false);
+            setIsLoading(() => false);
             alert(response.status);
           }
-        })
-        .then((data) => {
-          // alert(JSON.stringify(data));
         })
         .catch((error) => {
           setIsLoading(false);

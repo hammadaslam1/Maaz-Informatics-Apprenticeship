@@ -1,8 +1,8 @@
+/* eslint-disable eqeqeq */
 import { Input } from "@mui/joy";
 import {
   Box,
   Button,
-  ButtonGroup,
   Paper,
   Table,
   TableBody,

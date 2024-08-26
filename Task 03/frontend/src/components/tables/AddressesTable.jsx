@@ -1,8 +1,6 @@
 import {
-  Alert,
   Box,
   Button,
-  IconButton,
   MenuItem,
   Paper,
   Select,
@@ -10,20 +8,16 @@ import {
   TableBody,
   TableCell,
   TableContainer,
-  TableFooter,
   TableHead,
-  TablePagination,
   TableRow,
   Typography,
 } from "@mui/material";
-import AddressTableBody from "./AddressTableBody";
 import { useEffect, useState } from "react";
 import { Input } from "@mui/joy";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import UpdateIcon from "@mui/icons-material/Update";
 import DeleteForeverIcon from "@mui/icons-material/Delete";
 import AddressUpdateDialog from "../dialogs/AddressUpdateDialog";
-import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const AddressTable = () => {
   const [addresses, setAddresses] = useState(null);
@@ -33,7 +27,6 @@ const AddressTable = () => {
   const [index, setIndex] = useState(null);
   const [street, setStreet] = useState("");
   const [hometown, setHometown] = useState("");
-  //   const
 
   const handleAddressUpload = async () => {
     try {
@@ -42,7 +35,6 @@ const AddressTable = () => {
       formData.append("student_name", student.split(" | ")[1]);
       formData.append("street", street);
       formData.append("hometown", hometown);
-      console.log(`${student}\n${street}\n${hometown}`);
       await fetch("http://localhost:3001/api/addresses/create-address", {
         method: "POST",
         headers: {
@@ -56,9 +48,7 @@ const AddressTable = () => {
         }),
       })
         .then((response) => {
-          alert(response.status);
           if (response.status === 200) {
-            // alert("Address uploaded successfully!");
             getAddresses();
             setStudent("");
             setStreet("");
@@ -104,7 +94,7 @@ const AddressTable = () => {
         },
       })
         .then((response) => {
-          if (response.status == 200) {
+          if (response.status === 200) {
             return response.json();
           }
         })
@@ -127,7 +117,6 @@ const AddressTable = () => {
         },
       })
         .then((response) => {
-          // alert(response.status);
           if (response.status === 200) {
             getAddresses();
           } else {
@@ -137,7 +126,9 @@ const AddressTable = () => {
         .catch((error) => {
           alert(error.message);
         });
-    } catch (error) {}
+    } catch (error) {
+      alert(error.message);
+    }
   };
   const handleOpen = (i) => {
     setIndex((prev) => i);

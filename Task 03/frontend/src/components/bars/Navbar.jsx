@@ -2,7 +2,6 @@ import {
   AppBar,
   Box,
   Button,
-  Container,
   IconButton,
   Toolbar,
   Typography,
@@ -28,7 +27,6 @@ const Navbar = () => {
             color="inherit"
             aria-label="open drawer"
             edge="start"
-            // onClick={handleDrawerToggle}
             sx={{ mr: 2 }}
           >
             <MenuIcon />

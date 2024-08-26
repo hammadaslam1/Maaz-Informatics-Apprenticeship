@@ -15,12 +15,9 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
 
-    console.log("Storage destination " + file);
-    console.log(req.body);
     const { id } = req.body;
     const dir = path.join("images", id);
 
-    // Create the directory if it doesn't exist
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
@@ -30,7 +27,6 @@ const storage = multer.diskStorage({
   filename: (req, file, cb) => {
     const { name } = req.body;
     cb(null, name + path.extname(file.originalname));
-    console.log(file.path);
   },
 });
 const upload = multer({ storage: storage });

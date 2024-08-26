@@ -1,12 +1,9 @@
-import { request } from "express";
 import Student from "../models/student.model.js";
 import Address from "../models/address.model.js";
 
-export const createStudent = async (req, res, next) => {
-  console.log("createStudent");
+export const createStudent = async (req, res) => {
   try {
     const { path, filename } = req.file;
-    console.log(filename);
     const { id, name, email } = req.body;
     const newPath = path.replace(/\\/g, "/");
     if (id == "" || name == "" || email == "" || !id || !name || !email) {
@@ -14,7 +11,6 @@ export const createStudent = async (req, res, next) => {
         .status(500)
         .json({ message: "Please fill all required fields." });
     }
-    console.log(req.body);
     const newStudent = new Student({
       student_id: id,
       name,
@@ -27,7 +23,6 @@ export const createStudent = async (req, res, next) => {
   } catch {
     res.status(500).json({ message: "Error saving student" });
   }
-  next();
 };
 
 export const getStudents = async (req, res) => {
@@ -54,7 +49,6 @@ export const deleteStudent = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   try {
-    console.log(req.file, req.body);
     const { path, filename } = req.file;
     const { id, name, email } = req.body;
     const newPath = path.replace(/\\/g, "/");
@@ -69,7 +63,6 @@ export const updateStudent = async (req, res) => {
       email: req.body.email,
       image: newPath,
     };
-    console.log(newObject);
     const student = await Student.findOneAndUpdate(
       { _id: req.params.id },
       newObject
@@ -79,8 +72,6 @@ export const updateStudent = async (req, res) => {
       { student_name: student.name }
     );
     if (!student) return res.status(404).json({ message: "Student not found" });
-    // await student.save();
-    const allStudents = await Student.find({});
     res.status(200).json(student);
   } catch (error) {
     res.status(409).json({ message: "Error updating student" });
