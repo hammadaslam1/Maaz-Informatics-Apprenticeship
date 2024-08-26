@@ -22,12 +22,15 @@ import { Input } from "@mui/joy";
 import AddHomeIcon from "@mui/icons-material/AddHome";
 import UpdateIcon from "@mui/icons-material/Update";
 import DeleteForeverIcon from "@mui/icons-material/Delete";
+import AddressUpdateDialog from "../dialogs/AddressUpdateDialog";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 
 const AddressTable = () => {
   const [addresses, setAddresses] = useState(null);
   const [open, setOpen] = useState(false);
   const [allStudents, setAllStudents] = useState(null);
   const [student, setStudent] = useState("");
+  const [index, setIndex] = useState(null);
   const [street, setStreet] = useState("");
   const [hometown, setHometown] = useState("");
   //   const
@@ -57,9 +60,9 @@ const AddressTable = () => {
           if (response.status === 200) {
             // alert("Address uploaded successfully!");
             getAddresses();
-            setStudent('');
-            setStreet('');
-            setHometown('');
+            setStudent("");
+            setStreet("");
+            setHometown("");
           } else {
             alert("Failed to upload address!");
           }
@@ -115,21 +118,47 @@ const AddressTable = () => {
       alert(JSON.stringify(error));
     }
   };
+  const handleStudentDelete = async (_id) => {
+    try {
+      await fetch(`http://localhost:3001/api/addresses/delete-address/${_id}`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      })
+        .then((response) => {
+          // alert(response.status);
+          if (response.status === 200) {
+            getAddresses();
+          } else {
+            alert("Failed to delete address!");
+          }
+        })
+        .catch((error) => {
+          alert(error.message);
+        });
+    } catch (error) {}
+  };
+  const handleOpen = (i) => {
+    setIndex((prev) => i);
+    setOpen((prev) => true);
+  };
   useEffect(() => {
     getAddresses();
     getStudents();
   }, []);
   return (
     <TableContainer component={Paper} sx={{ borderRadius: 3 }}>
-      {/* {open && (
-        <StudentUpdateDialog
+      {open && (
+        <AddressUpdateDialog
           open={open}
           setOpen={setOpen}
-          getStudents={getStudents}
+          addresses={addresses}
+          getAddresses={getAddresses}
+          setAddresses={setAddresses}
           index={index}
-          students={students}
         />
-      )} */}
+      )}
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
         <TableHead>
           <TableRow sx={{ backgroundColor: "#444", p: 3 }}>
@@ -145,7 +174,7 @@ const AddressTable = () => {
                 Student Name
               </Typography>
               <Select
-              value={student}
+                value={student}
                 onChange={(e) => {
                   setStudent(e.target.value);
                 }}
@@ -254,10 +283,19 @@ const AddressTable = () => {
                   <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
                     <Button
                       variant="contained"
+                      color="secondary"
+                      startIcon={<VisibilityIcon />}
+                      sx={{ textTransform: "capitalize" }}
+                      // onClick={() => handleOpen(i)}
+                    >
+                      View
+                    </Button>
+                    <Button
+                      variant="contained"
                       color="warning"
                       startIcon={<UpdateIcon />}
                       sx={{ textTransform: "capitalize" }}
-                      //   onClick={() => handleOpen(i)}
+                      onClick={() => handleOpen(i)}
                     >
                       Update
                     </Button>
@@ -266,7 +304,7 @@ const AddressTable = () => {
                       color="error"
                       startIcon={<DeleteForeverIcon />}
                       sx={{ textTransform: "capitalize" }}
-                      //   onClick={() => handleStudentDelete(row._id)}
+                      onClick={() => handleStudentDelete(row._id)}
                     >
                       Delete
                     </Button>
