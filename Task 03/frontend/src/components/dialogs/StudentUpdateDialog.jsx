@@ -66,33 +66,47 @@ const StudentUpdateDialog = ({
       alert("Please fill all required fields");
       return;
     }
-    const formData = new FormData();
-    const formDataWithoutImage = {
-      id: id,
-      name: name,
-      email: email,
-    };
-    // formDataWithoutImage.append("id", id);
-    // formDataWithoutImage.append("name", name);
-    // formDataWithoutImage.append("email", email);
-    formData.append("id", id);
-    formData.append("name", name);
-    formData.append("email", email);
-    formData.append("image", imageFile);
+    // const formData = new FormData();
+
+    // // formDataWithoutImage.append("id", id);
+    // // formDataWithoutImage.append("name", name);
+    // // formDataWithoutImage.append("email", email);
+    // formData.append("id", id);
+    // formData.append("name", name);
+    // formData.append("email", email);
+    // formData.append("image", imageFile);
     const routeWithImage = "update-student";
     const routeWithoutImage = "update-student-no-image";
-    console.log(formDataWithoutImage);
+    // console.log(formDataWithoutImage);
     try {
+      const formDataWithoutImage = {
+        id: id,
+        name: name,
+        email: email,
+      };
+      const formData = {
+        id: id,
+        name: name,
+        email: email,
+        image: imageFile,
+      };
+      console.log(formData);
       await fetch(
         `http://localhost:3001/api/students/${
           imageFile ? routeWithImage : routeWithoutImage
         }/${_id}`,
         {
           method: "PUT",
-          body: !imageFile ? JSON.stringify(formDataWithoutImage) : formData,
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: !imageFile
+            ? JSON.stringify(formDataWithoutImage)
+            : JSON.stringify(formData),
         }
       )
         .then(async (response) => {
+          console.log(response.data);
           if (response.status == 200) {
             setIsLoading(false);
             getStudents();

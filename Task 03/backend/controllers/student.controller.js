@@ -50,10 +50,10 @@ export const deleteStudent = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   try {
+    console.log(req.file, req.body);
     const { path, filename } = req.file;
     const { id, name, email } = req.body;
     const newPath = path.replace(/\\/g, "/");
-
     if (id == "" || name == "" || email == "" || !id || !name || !email) {
       return res
         .status(500)
@@ -75,7 +75,7 @@ export const updateStudent = async (req, res) => {
     const allStudents = await Student.find({});
     res.status(200).json(student);
   } catch (error) {
-    res.status(500).json({ message: "Error updating student" });
+    res.status(409).json({ message: "Error updating student" });
   }
 };
 export const updateStudentWithoutImage = async (req, res) => {

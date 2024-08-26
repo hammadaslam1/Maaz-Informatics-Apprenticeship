@@ -63,7 +63,10 @@ const AddressUpdateDialog = ({
       };
       await fetch(`http://localhost:3001/api/addresses/update-address/${_id}`, {
         method: "PUT",
-        body: obj,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(obj),
       })
         .then(async (response) => {
           console.log(response);
@@ -92,7 +95,7 @@ const AddressUpdateDialog = ({
         })
         .finally(() => {
           getAddresses();
-          //   setOpen(false);
+          setOpen(false);
         });
     } catch (error) {
       setIsLoading(false);
