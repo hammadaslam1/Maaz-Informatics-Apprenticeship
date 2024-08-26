@@ -10,6 +10,8 @@ export const styles = {
     "&:hover .icon-button": {
       backgroundColor: "#777d",
       transform: "translateY(0px)",
+      width: '100%',
+      height: '100%',
     },
     "&:hover .edit-icon": {
       position: "unset",
@@ -18,15 +20,15 @@ export const styles = {
     },
   },
   iconButton: {
-    width: "100%",
-    height: "100%",
+    width: "30%",
+    height: "30%",
     fontSize: 30,
     cursor: "pointer",
     color: "#fff",
     backgroundColor: "#777",
     transition: "all 0.5s ease-in-out",
     transform: "translateX(280px)",
-    transform: "translateY(100px)",
+    transform: "translateY(60px)",
     zIndex: 99,
     position: "relative",
     "&:hover": {},

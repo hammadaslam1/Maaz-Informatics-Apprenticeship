@@ -211,7 +211,8 @@ const StudentUpdateDialog = ({
                   <AddPhotoAlternateIcon
                     className="edit-icon"
                     sx={{
-                      transform: "translateY(-200%)",
+                      fontSize: 18,
+                      transform: "translateY(-40%)",
                       transition: "all 0.5s ease-in-out",
                     }}
                   />

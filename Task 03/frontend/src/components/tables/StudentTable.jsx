@@ -16,8 +16,10 @@ import { useEffect, useRef, useState } from "react";
 import PersonAddIcon from "@mui/icons-material/PersonAdd";
 import UpdateIcon from "@mui/icons-material/Update";
 import UploadIcon from "@mui/icons-material/Upload";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import StudentUpdateDialog from "../dialogs/StudentUpdateDialog";
+import ViewStudentDialog from "../dialogs/ViewStudentDialog";
 
 const StudentTable = () => {
   const imageRef = useRef();
@@ -30,6 +32,8 @@ const StudentTable = () => {
   const [open, setOpen] = useState(false);
   const [index, setIndex] = useState(null);
   const [flag, setFlag] = useState(0);
+  const [view, setView] = useState(false);
+  const [studentData, setStudentData] = useState(null);
   const handleImage = (e) => {
     setImageFile((prev) => e.target.files[0]);
     setImageName((prev) => e.target.files[0]?.name);
@@ -119,6 +123,10 @@ const StudentTable = () => {
     setIndex((prev) => i);
     setOpen((prev) => true);
   };
+  const handleView = (record) => {
+    setStudentData((prev) => record);
+    setView((prev) => true);
+  };
 
   useEffect(() => {
     getStudents();
@@ -141,6 +149,13 @@ const StudentTable = () => {
           students={students}
           setFlag={setFlag}
           setStudents={setStudents}
+        />
+      )}
+      {view && (
+        <ViewStudentDialog
+          view={view}
+          setView={setView}
+          studentData={studentData}
         />
       )}
       <Table sx={{ minWidth: 650 }} aria-label="simple table">
@@ -290,12 +305,21 @@ const StudentTable = () => {
                   <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
                     <Button
                       variant="contained"
+                      color="secondary"
+                      startIcon={<VisibilityIcon />}
+                      sx={{ textTransform: "capitalize" }}
+                      onClick={() => handleView(row)}
+                    >
+                      View
+                    </Button>
+                    <Button
+                      variant="contained"
                       color="warning"
                       startIcon={<UpdateIcon />}
                       sx={{ textTransform: "capitalize" }}
                       onClick={() => handleOpen(i)}
                     >
-                      Update Student
+                      Update
                     </Button>
                     <Button
                       variant="contained"
@@ -304,7 +328,7 @@ const StudentTable = () => {
                       sx={{ textTransform: "capitalize" }}
                       onClick={() => handleStudentDelete(row._id)}
                     >
-                      Delete Student
+                      Delete
                     </Button>
                   </Box>
                 </TableCell>

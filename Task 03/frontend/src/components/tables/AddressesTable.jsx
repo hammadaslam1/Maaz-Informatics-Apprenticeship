@@ -283,15 +283,6 @@ const AddressTable = () => {
                   <Box sx={{ display: "flex", justifyContent: "space-evenly" }}>
                     <Button
                       variant="contained"
-                      color="secondary"
-                      startIcon={<VisibilityIcon />}
-                      sx={{ textTransform: "capitalize" }}
-                      // onClick={() => handleOpen(i)}
-                    >
-                      View
-                    </Button>
-                    <Button
-                      variant="contained"
                       color="warning"
                       startIcon={<UpdateIcon />}
                       sx={{ textTransform: "capitalize" }}
