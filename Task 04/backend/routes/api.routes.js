@@ -10,7 +10,7 @@ const router = express.Router();
 
 router.get("/get", getApi);
 router.post("/post", postApi);
-router.put("/put", putApi);
-router.delete("/delete", deleteApi);
+router.put("/put/:id", putApi);
+router.delete("/delete/:id", deleteApi);
 
 export default router;

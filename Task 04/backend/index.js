@@ -1,6 +1,6 @@
 import express from "express";
 import bodyParser from "body-parser";
-import apiRouter from "./routes/apiRouter.js";
+import apiRouter from "./routes/api.routes.js";
 import mongoose from "mongoose";
 import { connString } from "./secret.js";
 import cors from 'cors'
