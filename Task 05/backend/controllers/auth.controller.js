@@ -29,3 +29,22 @@ export const createAuth = async (req, res) => {
     res.status(400).json({ message: error.message });
   }
 };
+
+export const loginAuth = async (req, res) => {
+    try {
+        const user = await User.find({ email: req.body.email });
+        if (!user) {
+            return res.status(404).json({ message: "User not found" });
+        }
+        
+        const isMatch = await bcryptjs.compare(req.body.password, user.password);
+        if (!isMatch) {
+            return res.status(400).json({ message: "Invalid credentials" });
+        }
+        
+        const token = createToken(user._id);
+        res.json({ user, token });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
