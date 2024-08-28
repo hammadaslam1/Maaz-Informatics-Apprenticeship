@@ -3,6 +3,7 @@ import mongoose from "mongoose";
 import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
+import authRoutes from "./routes/auth.routes.js";
 
 const app = express();
 
@@ -29,4 +30,4 @@ app.listen(3002, () => {
   console.log("backend is serving on port 3002");
 });
 
-
+app.use("/api/auth", authRoutes);
