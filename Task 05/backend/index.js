@@ -4,19 +4,24 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import authRoutes from "./routes/auth.routes.js";
+import dotenv from "dotenv";
+
+dotenv.config();
 
 const app = express();
 
 mongoose
-  .connect(
-    "mongodb+srv://hammadaslam10:hammadaslam10@task-01.aavgs.mongodb.net/task_05",
-    {
-      useNewUrlParser: true,
-      useUnifiedTopology: true,
-    }
-  )
+  .connect(process.env.CONN_LOCAL_STRING)
   .then(() => console.log("connected"))
-  .catch(() => console.log("error"))
+  .catch(() => {
+    console.log(
+      "===>> error connecting to cloud\n===>> now connecting to local"
+    );
+    mongoose
+      .connect(process.env.CONN_LOCAL_STRING)
+      .then(() => console.log("connected to local"))
+      .catch(() => console.log("error connecting local"));
+  })
   .finally(() => console.log("start"));
 
 app.use(express());
@@ -26,7 +31,7 @@ app.use(cors());
 
 app.use(cookieParser());
 
-app.listen(3002, () => {
+app.listen(process.env.PORT, () => {
   console.log("backend is serving on port 3002");
 });
 

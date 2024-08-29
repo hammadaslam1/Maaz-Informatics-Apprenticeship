@@ -5,7 +5,7 @@ import bcryptjs from "bcryptjs";
 const createToken = (_id) => {
   console.log(process.env.JWT_SECRET);
 
-  const token = jwt.sign({ _id }, "mynameishammadaslam10", { expiresIn: "1h" });
+  const token = jwt.sign({ _id }, process.env.JWT_SECRET, { expiresIn: "1h" });
   return token;
 };
 
@@ -31,20 +31,24 @@ export const createAuth = async (req, res) => {
 };
 
 export const loginAuth = async (req, res) => {
-    try {
-        const user = await User.find({ email: req.body.email });
-        if (!user) {
-            return res.status(404).json({ message: "User not found" });
-        }
-        
-        const isMatch = await bcryptjs.compare(req.body.password, user.password);
-        if (!isMatch) {
-            return res.status(400).json({ message: "Invalid credentials" });
-        }
-        
-        const token = createToken(user._id);
-        res.json({ user, token });
-    } catch (error) {
-        res.status(500).json({ message: error.message });
+  try {
+    const user = await Auth.findOne({ email: req.body.email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
     }
-}
+
+    const hashedPassword = await bcryptjs.hash(req.body.password, 10);
+    const isMatch = await bcryptjs.compare(req.body.password, user.password);
+
+    if (!isMatch) {
+      return res.status(400).json({ message: "Invalid credentials" });
+    }
+
+    const { password, ...rest } = user._doc;
+
+    const token = createToken(user._id);
+    res.status(200).json({ user: rest, token });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
