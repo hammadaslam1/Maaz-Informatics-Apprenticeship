@@ -11,8 +11,8 @@ dotenv.config();
 const app = express();
 
 mongoose
-  .connect(process.env.CONN_LOCAL_STRING)
-  .then(() => console.log("connected"))
+  .connect(process.env.CONN_STRING)
+  .then(() => console.log("connected to atlas cloud"))
   .catch(() => {
     console.log(
       "===>> error connecting to cloud\n===>> now connecting to local"

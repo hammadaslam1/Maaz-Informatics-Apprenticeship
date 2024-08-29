@@ -21,10 +21,15 @@ export const createAuth = async (req, res) => {
       password: hashedPassword,
     });
     await user.save();
-
     const token = createToken(user._id);
+    const { password, ...rest } = user._doc;
     console.log(token);
-    res.status(201).json({ user, token });
+    res
+      .status(201)
+      .cookie(token, {
+        httpOnly: true,
+      })
+      .json({ user: rest, token });
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -53,6 +58,20 @@ export const loginAuth = async (req, res) => {
         httpOnly: true,
       })
       .json({ user: rest, token });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+export const logoutAuth = async (req, res) => {
+  try {
+    const { _id } = jwt.verify(req.body.token, process.env.JWT_SECRET);
+    const user = await Auth.findOne({ _id }).select("username");
+    // console.log(document.cookie)
+    res
+      .clearCookie(req.body.token)
+      .status(200)
+      .json(`${user.username} has been signed out`);
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
