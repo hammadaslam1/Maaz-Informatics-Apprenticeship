@@ -20,14 +20,22 @@ import App from "App";
 
 // Material Dashboard 2 React Context Provider
 import { MaterialUIControllerProvider } from "context";
+import { PersistGate } from "redux-persist/integration/react";
+import { Provider } from "react-redux";
+import { store } from "./redux/store.js";
+import { persistor } from "./redux/store.js";
 
 const container = document.getElementById("app");
 const root = createRoot(container);
 
 root.render(
   <BrowserRouter>
-    <MaterialUIControllerProvider>
-      <App />
-    </MaterialUIControllerProvider>
+    <PersistGate persistor={persistor}>
+      <Provider store={store}>
+        <MaterialUIControllerProvider>
+          <App />
+        </MaterialUIControllerProvider>
+      </Provider>
+    </PersistGate>
   </BrowserRouter>
 );

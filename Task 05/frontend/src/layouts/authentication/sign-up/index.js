@@ -14,7 +14,7 @@ Coded by www.creative-tim.com
 */
 
 // react-router-dom components
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 // @mui material components
 import Card from "@mui/material/Card";
@@ -31,8 +31,57 @@ import CoverLayout from "layouts/authentication/components/CoverLayout";
 
 // Images
 import bgImage from "assets/images/bg-sign-up-cover.jpeg";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import { login } from "../../../redux/authReducer/AuthReducer";
 
 function Cover() {
+  const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+    terms: false,
+  });
+
+  const handleInput = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+  const handleSubmit = async () => {
+    alert(JSON.stringify(formData));
+    if (
+      formData.name === "" ||
+      formData.email === "" ||
+      formData.password === "" ||
+      formData.terms === false
+    ) {
+      alert("Please fill all required fields");
+      return;
+    }
+    try {
+      await fetch("http://localhost:3002/api/auth/create", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
+      })
+        .then((response) => {
+          if (!response.ok) {
+            throw new Error("HTTP error!");
+          }
+          return response.json();
+        })
+        .then(async (data) => {
+          console.log("====================================");
+          console.log(data);
+          console.log("====================================");
+          await dispatch(login({ user: data.user, token: data.token }));
+          navigate("/dashboard");
+        });
+    } catch (error) {
+      alert("Error registering user: " + error.message);
+    }
+  };
   return (
     <CoverLayout image={bgImage}>
       <Card>
@@ -57,16 +106,40 @@ function Cover() {
         <MDBox pt={4} pb={3} px={3}>
           <MDBox component="form" role="form">
             <MDBox mb={2}>
-              <MDInput type="text" label="Name" variant="standard" fullWidth />
+              <MDInput
+                type="text"
+                label="Name"
+                name="name"
+                onClick={handleInput}
+                // value={formData.name}
+                variant="standard"
+                fullWidth
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="email" label="Email" variant="standard" fullWidth />
+              <MDInput
+                type="email"
+                label="Email"
+                name="email"
+                onClick={handleInput}
+                // value={formData.email}
+                variant="standard"
+                fullWidth
+              />
             </MDBox>
             <MDBox mb={2}>
-              <MDInput type="password" label="Password" variant="standard" fullWidth />
+              <MDInput
+                type="password"
+                label="Password"
+                name="password"
+                // value={formData.password}
+                onClick={handleInput}
+                variant="standard"
+                fullWidth
+              />
             </MDBox>
             <MDBox display="flex" alignItems="center" ml={-1}>
-              <Checkbox />
+              <Checkbox onClick={() => setFormData({ ...formData, ["terms"]: true })} />
               <MDTypography
                 variant="button"
                 fontWeight="regular"
@@ -87,8 +160,8 @@ function Cover() {
               </MDTypography>
             </MDBox>
             <MDBox mt={4} mb={1}>
-              <MDButton variant="gradient" color="info" fullWidth>
-                sign in
+              <MDButton variant="gradient" color="info" onClick={handleSubmit} fullWidth>
+                sign up
               </MDButton>
             </MDBox>
             <MDBox mt={3} mb={1} textAlign="center">
