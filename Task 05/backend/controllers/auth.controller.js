@@ -47,7 +47,12 @@ export const loginAuth = async (req, res) => {
     const { password, ...rest } = user._doc;
 
     const token = createToken(user._id);
-    res.status(200).json({ user: rest, token });
+    res
+      .status(200)
+      .cookie(token, {
+        httpOnly: true,
+      })
+      .json({ user: rest, token });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
