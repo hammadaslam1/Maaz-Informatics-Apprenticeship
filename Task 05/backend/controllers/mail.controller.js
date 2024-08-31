@@ -5,14 +5,16 @@ import otpGenerator from "otp-generator";
 
 const transporter = nodemailer.createTransport({
   host: "smtp.gmail.com",
-  secure: false,
+  secure: true,
   port: 465,
   auth: {
     user: process.env.GMAIL_USER,
     pass: process.env.GMAIL_PASSWORD,
   },
+  logger: true,
+  debug: true,
 });
-export const createMail = expressAsyncHandler(async (req, res) => {
+export const createMail = async (req, res) => {
   const otp = otpGenerator.generate(6, {
     upperCaseAlphabets: false,
     specialChars: false,
@@ -21,11 +23,6 @@ export const createMail = expressAsyncHandler(async (req, res) => {
   console.log("Generated OTP: ", otp);
   try {
     console.log("entered create mail request");
-
-    // const server = http.createServer(async (req, res) => {
-    //   console.log("enter server");
-    //   console.log("transporter: ", transporter);
-
     const mailOptions = {
       from: process.env.GMAIL_USER,
       to: req.body.email,
@@ -34,7 +31,7 @@ export const createMail = expressAsyncHandler(async (req, res) => {
     };
     console.log("mail options: ", mailOptions);
 
-    transporter.sendMail(mailOptions, (err, info) => {
+    transporter.sendMail(mailOptions, function (err, info) {
       console.log("mail response: ", info);
       if (err) {
         console.log("error occurred: ", err);
@@ -44,10 +41,8 @@ export const createMail = expressAsyncHandler(async (req, res) => {
       console.log("mail sent: ");
       console.log("Message sent: %s", info.messageId);
     });
-    // });
-    // server.listen(8080);
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error sending email." });
   }
-});
+};
