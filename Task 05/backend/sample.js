@@ -18,7 +18,7 @@ const server = http.createServer(async (req, res) => {
     from: process.env.GMAIL_USER,
     to: req.body.email,
     subject: "Maaz Informatics Mail Testing",
-    text: `Name: ${req.body.name}\nEmail: ${req.body.email}\nMessage: ${req.body.message}`,
+    text: req.body.message,
   };
   console.log("mail options: ", mailOptions);
 

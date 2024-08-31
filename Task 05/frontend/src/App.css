@@ -24,6 +24,11 @@
   color: white;
 }
 
+.inputDiv {
+  color: black !important;
+  text-align: left !important;
+}
+
 .App-link {
   color: #61dafb;
 }
@@ -32,6 +37,7 @@
   from {
     transform: rotate(0deg);
   }
+
   to {
     transform: rotate(360deg);
   }
