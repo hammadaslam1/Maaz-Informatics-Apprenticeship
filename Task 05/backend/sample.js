@@ -1,36 +1,33 @@
 import nodemailer from "nodemailer";
-import http from "http";
+import dotenv from "dotenv";
 
-const server = http.createServer(async (req, res) => {
-  console.log("enter server");
-  const transporter = nodemailer.createTransport({
-    service: "gmail",
-    secure: true,
-    port: 465,
-    auth: {
-      user: process.env.GMAIL_USER,
-      pass: process.env.GMAIL_PASSWORD,
-    },
-  });
-  console.log("transporter: ", transporter);
+dotenv.config();
 
-  const mailOptions = {
-    from: process.env.GMAIL_USER,
-    to: req.body.email,
-    subject: "Maaz Informatics Mail Testing",
-    text: req.body.message,
-  };
-  console.log("mail options: ", mailOptions);
-
-  await transporter.sendMail(mailOptions, (err, res) => {
-    console.log("mail response: ", res);
-    if (err) {
-      console.log("error occurred: ", err);
-      console.error(err);
-      return res.status(500).json({ message: "Error sending email." });
-    }
-    console.log("mail sent: ");
-    console.log("Message sent: %s", info.messageId);
-  });
+let transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_PASSWORD,
+  },
 });
-server.listen(8080);
+
+let mailOptions = {
+  from: process.env.GMAIL_USER,
+  to: "hammadaslam308@gmail.com", // Replace with a valid email
+  subject: "Test Email",
+  html: `<div>
+  <h1>Hammad Aslam</h1>
+  <p>
+    my name is Muhammad Hammad Aslam, a recent IT Graduate from the University
+    of Education, Lahore
+  </p>
+</div>
+`,
+};
+
+transporter.sendMail(mailOptions, (error, info) => {
+  if (error) {
+    return console.log("Error:", error);
+  }
+  console.log("Email sent:", info.response);
+});
