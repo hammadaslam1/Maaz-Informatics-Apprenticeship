@@ -25,21 +25,11 @@ export const createMail = (req, res) => {
       },
     });
     let mailOptions = {
-      from: process.env.GMAIL_USER,
+      from: process.env.GMAIL_ENC_USER,
       to: req.body.email, // Replace with a valid email
-      subject: "Smart FYP Management System",
-      html: `<div>
-      <h1>Email Registeration</h1>
-      <h6>
-        hey ${req.body.name}, your OTP for registeration in FYP management system for the University of Education, Lahore is ${otp}.
-        <br />
-        please do not share this information with others.
-      </h6>
-      <captions>
-        this email is intended to be sent to ${req.body.email}, if this is not your email address then please ignore this email.
-      </captions>
-    </div>
-    `,
+      subject: req.body.subject, // Replace with a valid subject
+      html: req.body.html,
+      text: req.body.message,
     };
     console.log("mail options: ", mailOptions);
 
