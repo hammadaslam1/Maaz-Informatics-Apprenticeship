@@ -2,12 +2,13 @@ import firebase from "firebase/compat/app";
 import "firebase/compat/auth";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyCOKFTmyjmUsImrjaudaL188JEYP0NWRzE",
-  authDomain: "maaz-informatics-tasks.firebaseapp.com",
-  projectId: "maaz-informatics-tasks",
-  storageBucket: "maaz-informatics-tasks.appspot.com",
-  messagingSenderId: "634476795633",
-  appId: "1:634476795633:web:3fed9336bcd6bd73d77b50",
+    apiKey: "AIzaSyBtpUQZCTDz4eBmmMYRqICYhtpqHgqJkZ8",
+    authDomain: "hammad-otp-generator.firebaseapp.com",
+    projectId: "hammad-otp-generator",
+    storageBucket: "hammad-otp-generator.appspot.com",
+    messagingSenderId: "126768776650",
+    appId: "1:126768776650:web:fe08c1cd9ff8c36c38bb33",
+    measurementId: "G-0NWT3B1WYT"
 };
 
 firebase.initializeApp(firebaseConfig);

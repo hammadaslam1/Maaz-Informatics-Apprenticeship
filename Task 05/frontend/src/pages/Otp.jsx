@@ -9,71 +9,52 @@ const Otp = () => {
   const [toast, setToast] = useState(null);
   const [verificationId, setVerificationId] = useState(null);
   const recaptchaRef = useRef(null);
-  // const handlePhoneSignin = () => {
-  //   if (!window.recaptchaVerifier) {
-  //     window.recaptchaVerifier = new RecaptchaVerifier(
-  //       "recaptcha-container", // ID of the reCAPTCHA container
-  //       {
-  //         size: "invisible", // Makes the reCAPTCHA invisible
-  //         callback: (response) => {
-  //           onSignup(); // Automatically triggers the onSignup function after verification
-  //         },
-  //         "expired-callback": () => {
-  //           console.warn("Recaptcha expired, please try again.");
-  //         },
-  //       },
-  //       auth // This is your initialized auth object
-  //     );
 
-  //     // Render the reCAPTCHA to ensure it’s set up
-  //     window.recaptchaVerifier.render().then((widgetId) => {
-  //       window.recaptchaWidgetId = widgetId;
-  //     });
-  //   }
-  // };
-
-  // const onSignup = () => {
-  //   handlePhoneSignin();
-  //   const appVerifier = window.recaptchaVerifier;
-  //   const formatedPhone = `+${phone}`;
-  //   signInWithPhoneNumber(auth, formatedPhone, appVerifier)
-  //     .then((confirmationResult) => {
-  //       window.confirmationResult = confirmationResult;
-  //       setToast("OTP sent successfully");
-  //     })
-  //     .catch((error) => {
-  //       console.error("error: ", error);
-  //       setToast(error?.message);
-  //     });
-  // };
-
-  const handleSendOtp = () => {
-    if (recaptchaRef.current) {
-    }
-    const verifier = new firebase.auth.RecaptchaVerifier(
-      "recaptcha-container",
-      {
-        size: "normal",
-        // callback: (response) => {
-        //   handleSubmit(response);
-        // },
-        // "expired-callback": () => {
-        //   console.warn("Recaptcha expired, please try again.");
-        // },
-      }
-    );
+  const handleSendOtp = async () => {
+    const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {});
+    // handlePhoneSignin();
+    // const appVerifier = window.recaptchaVerifier;
     const formatedPhone = `+${phone}`;
-    firebase
-      .auth()
-      .signInWithPhoneNumber(formatedPhone, verifier)
+    await signInWithPhoneNumber(auth, formatedPhone, verifier)
       .then((confirmationResult) => {
-        setVerificationId(confirmationResult.verificationId);
-        alert(confirmationResult.verificationId);
+        const id = confirmationResult.verificationId;
+        setToast("OTP sent successfully");
       })
       .catch((error) => {
-        console.log(error);
+        console.error("error: ", error);
+        setToast(error?.message);
       });
   };
+
+  // const handleSendOtp = () => {
+  //   if (recaptchaRef.current) {
+  //   }
+  //   const verifier = new firebase.auth.RecaptchaVerifier(
+  //     "recaptcha-container",
+  //     {
+  //       size: "normal",
+  //       // callback: (response) => {
+  //       //   handleSubmit(response);
+  //       // },
+  //       // "expired-callback": () => {
+  //       //   console.warn("Recaptcha expired, please try again.");
+  //       // },
+  //     }
+  //   );
+  //   const formatedPhone = `+${phone}`;
+
+  //   firebase
+  //     .auth()
+  //     .signInWithPhoneNumber("+923074304204", verifier)
+  //     .then((confirmationResult) => {
+  //       setVerificationId(confirmationResult.verificationId);
+  //       alert(confirmationResult.verificationId);
+  //     })
+  //     .catch((error) => {
+  //       console.log(verifier);
+  //       console.log(error);
+  //     });
+  // };
 
   return (
     <>
