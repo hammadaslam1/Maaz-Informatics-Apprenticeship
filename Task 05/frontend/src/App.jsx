@@ -8,8 +8,8 @@ import Mail from "./pages/Mail";
 function App() {
   return (
     <div className="App App-header">
-      {/* <Otp /> */}
-      <Mail />
+      <Otp />
+      {/* <Mail /> */}
     </div>
   );
 }
