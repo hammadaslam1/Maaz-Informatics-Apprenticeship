@@ -30,3 +30,6 @@ app.listen(port, () => {
 });
 
 app.use("/api/users", userRoutes);
+app.all("*", (req, res) => {
+  res.status(404).send("API does not exist");
+});
