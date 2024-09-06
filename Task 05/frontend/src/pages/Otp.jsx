@@ -5,22 +5,26 @@ import PhoneInput from "react-phone-input-2";
 import firebase from "../firebase.config.js";
 
 const Otp = () => {
-  const [phone, setPhone] = useState(null);
+  const [phone, setPhone] = useState("923074304204");
   const [toast, setToast] = useState(null);
-  const [verificationId, setVerificationId] = useState(null);
+  // const [verificationId, setVerificationId] = useState(null);
   const recaptchaRef = useRef(null);
 
   const handleSendOtp = async () => {
     const verifier = new RecaptchaVerifier(auth, "recaptcha-container", {});
-    // handlePhoneSignin();
-    // const appVerifier = window.recaptchaVerifier;
     const formatedPhone = `+${phone}`;
     await signInWithPhoneNumber(auth, formatedPhone, verifier)
       .then((confirmationResult) => {
+        console.log(verifier);
         const id = confirmationResult.verificationId;
-        setToast("OTP sent successfully");
+        console.log(confirmationResult.verificationId);
+        setToast(
+          `OTP sent successfully:\nv\n${confirmationResult.verificationId}\n^\n= = = = = = = =`
+        );
       })
       .catch((error) => {
+        console.log(verifier);
+        
         console.error("error: ", error);
         setToast(error?.message);
       });
@@ -62,7 +66,7 @@ const Otp = () => {
         <div id="recaptcha-container" ref={recaptchaRef}></div>
         <PhoneInput country={"pk"} value={phone} onChange={setPhone} />
       </div>
-      {toast && <h1>OTP sent successfully</h1>}
+      {toast && toast}
       {phone && <p>Your phone number is: +{phone}</p>}
       <button onClick={handleSendOtp}>Send OTP</button>
     </>
