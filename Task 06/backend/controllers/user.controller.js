@@ -82,3 +82,46 @@ export const getUser = async (req, res) => {
     res.status(500).json({ error: error });
   }
 };
+
+export const getUsersByID = async (req, res) => {
+  const id = req.params.id;
+  try {
+    const user = await Student.findOne({ _id: id }).select({
+      role: 1,
+      subject: 1,
+    });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+    if (user.role === "teacher") {
+      const students = await Student.find({
+        role: "student",
+        subject: user.subject[0],
+      });
+      console.log(students);
+
+      if (students.length == 0) {
+        return res.status(404).json({ message: "students not found" });
+      }
+      res.status(200).json(students);
+    } else if (user.role === "student") {
+      const teachers = await Student.find({
+        role: "teacher",
+        subject: { $in: user.subject },
+      });
+      console.log(teachers);
+
+      if (teachers.length == 0) {
+        return res.status(404).json({ message: "teachers not found" });
+      }
+      console.log("teachers found");
+      res.status(200).json(teachers);
+    } else {
+      console.log("else");
+
+      return res.status(400).json({ message: "Invalid role" });
+    }
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
