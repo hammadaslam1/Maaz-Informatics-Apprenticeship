@@ -1,5 +1,5 @@
 import express from "express";
-import { loginUser, signupUser } from "../controllers/user.controller.js";
+import { getUser, createUser } from "../controllers/user.controller.js";
 import {
   loginValidator,
   signupValidator,
@@ -8,7 +8,7 @@ import {
 
 const router = express.Router();
 
-router.post("/create", signupValidator, validate, signupUser);
-router.post("/getUser", loginValidator, validate, loginUser);
+router.post("/create", signupValidator, validate, createUser);
+router.post("/getUser", loginValidator, validate, getUser);
 
 export default router;
