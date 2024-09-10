@@ -11,8 +11,8 @@ const createToken = (_id) => {
 };
 
 export const createUser = async (req, res) => {
-  const { first_name, last_name, email, my_class, password, role, subject } =
-    req.body;
+  const { first_name, last_name, email, password, role, subject } = req.body;
+  const my_class = req.body.class;
   console.log("controller: ", req.body);
 
   try {

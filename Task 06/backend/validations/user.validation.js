@@ -99,11 +99,15 @@ export const signupValidator = [
       min: 6,
     }),
   body(
-    "my_class",
+    "class",
     "The class should not be empty and contain only string characters"
   )
     .not()
     .isEmpty()
     .isString(),
-    body("role")
+  body("role", "The role should be student or teacher.")
+    .not()
+    .isEmpty()
+    .isString(),
+  body("subject", "The subjects should be an array.").not().isEmpty().isArray(),
 ];
