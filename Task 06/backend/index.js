@@ -5,11 +5,12 @@ import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js";
+import multer from "multer";
 
 dotenv.config();
 
 // Connect to MongoDB
-
+const upload = multer();
 mongoose
   .connect(process.env.CONN_STRING, {
     useNewUrlParser: true,
@@ -19,10 +20,11 @@ mongoose
   .catch((err) => console.log(err));
 
 const app = express();
-
-app.use(cors());
+app.use(upload.none());
+// app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
+app.use(express.urlencoded({ extended: false }));
 
 const port = process.env.PORT || 3002;
 app.listen(port, () => {

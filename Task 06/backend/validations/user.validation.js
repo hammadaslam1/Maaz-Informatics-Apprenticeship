@@ -109,5 +109,5 @@ export const signupValidator = [
     .not()
     .isEmpty()
     .isString(),
-  body("subject", "The subjects should be an array.").not().isEmpty().isArray(),
+  body("subject", "The subjects should be in an array.").not().isEmpty().isArray(),
 ];
