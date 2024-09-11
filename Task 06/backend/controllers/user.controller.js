@@ -104,22 +104,8 @@ export const getUsersByID = async (req, res) => {
         return res.status(404).json({ message: "students not found" });
       }
       res.status(200).json(students);
-    } else if (user.role === "student") {
-      const teachers = await Student.find({
-        role: "teacher",
-        subject: { $in: user.subject },
-      });
-      console.log(teachers);
-
-      if (teachers.length == 0) {
-        return res.status(404).json({ message: "teachers not found" });
-      }
-      console.log("teachers found");
-      res.status(200).json(teachers);
     } else {
-      console.log("else");
-
-      return res.status(400).json({ message: "Invalid role" });
+      return res.status(400).json({ message: "Invalid ID" });
     }
   } catch (error) {
     res.status(500).json({ error });

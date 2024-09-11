@@ -12,10 +12,7 @@ dotenv.config();
 // Connect to MongoDB
 const upload = multer();
 mongoose
-  .connect(process.env.CONN_STRING, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
-  })
+  .connect(process.env.CONN_STRING)
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
 
