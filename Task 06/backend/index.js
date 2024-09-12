@@ -4,7 +4,8 @@ import cors from "cors";
 import bodyParser from "body-parser";
 import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
-import userRoutes from "./routes/user.routes.js";
+import studentRoutes from "./routes/students.routes.js";
+import teacherRoutes from "./routes/teachers.routes.js";
 import multer from "multer";
 
 dotenv.config();
@@ -28,7 +29,8 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-app.use("/api/users", userRoutes);
+app.use("/api/student", studentRoutes);
+app.use("/api/teacher", teacherRoutes);
 app.all("*", (req, res) => {
   res.status(404).send("API does not exist");
 });

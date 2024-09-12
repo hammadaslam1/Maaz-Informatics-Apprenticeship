@@ -1,7 +1,7 @@
-import Student from "../models/student.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Teacher from "../models/teacher.model.js";
+import Student from "../models/student.model.js";
 
 const createToken = (_id) => {
   const token = jwt.sign({ _id }, process.env.JWT_SECRET, {
@@ -13,22 +13,15 @@ const createToken = (_id) => {
 export const createUser = async (req, res) => {
   const { first_name, last_name, email, password, role, subject } = req.body;
   const my_class = req.body.class;
-  console.log("controller: ", req.body);
 
   try {
-    // const Model =
-    //   role === "student" ? Student : role === "teacher" ? Teacher : null;
-    // if (!Model) {
-    //   return res.status(400).json({ message: "Invalid role" });
-    // }
-    const user = await Student.findOne({ email: email });
-    // const teacher = await Teacher.findOne({ email: email });
+    const user = await Teacher.findOne({ email: email });
     if (user) {
-      return res.status(409).json({ message: "User already exists" });
+      return res.status(409).json({ message: "student already exists" });
     }
     const hashedPassword = await bcryptjs.hash(password, 10);
 
-    const newUser = new Student({
+    const newUser = new Teacher({
       first_name,
       last_name,
       email,
@@ -43,7 +36,7 @@ export const createUser = async (req, res) => {
       .cookie("access_token", {
         httpOnly: true,
       })
-      .json({ message: "user is created successfully", role: newUser.role });
+      .json({ message: "teacher is created successfully", role: newUser.role });
   } catch (error) {
     res.status(500).json({ error: error });
   }
@@ -52,14 +45,8 @@ export const createUser = async (req, res) => {
 export const getUser = async (req, res) => {
   const email = req.body.email;
   const pword = req.body.password;
-  const role = req.body.role;
   try {
-    // const Model =
-    //   role === "student" ? Student : role === "teacher" ? Teacher : null;
-    // if (!Model) {
-    //   return res.status(400).json({ message: "Invalid role" });
-    // }
-    const user = await Student.findOne({ email: email }).select({
+    const user = await Teacher.findOne({ email: email }).select({
       email: 0,
       __v: 0,
     });
@@ -86,27 +73,16 @@ export const getUser = async (req, res) => {
 export const getUsersByID = async (req, res) => {
   const id = req.params.id;
   try {
-    const user = await Student.findOne({ _id: id }).select({
-      role: 1,
+    const student = await Student.findOne({ _id: id }).select({
       subject: 1,
     });
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
+    const teachers = await Teacher.find({
+      subject: { $in: teacher.subject },
+    });
+    if (teachers.length == 0) {
+      return res.status(404).json({ message: "students not found" });
     }
-    if (user.role === "teacher") {
-      const students = await Student.find({
-        role: "student",
-        subject: user.subject[0],
-      });
-      console.log(students);
-
-      if (students.length == 0) {
-        return res.status(404).json({ message: "students not found" });
-      }
-      res.status(200).json(students);
-    } else {
-      return res.status(400).json({ message: "Invalid ID" });
-    }
+    res.status(200).json(teachers);
   } catch (error) {
     res.status(500).json({ error });
   }
