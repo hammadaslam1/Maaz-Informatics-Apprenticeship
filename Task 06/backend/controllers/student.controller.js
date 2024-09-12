@@ -2,6 +2,7 @@ import Student from "../models/student.model.js";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Teacher from "../models/teacher.model.js";
+import File from "../models/files.model.js";
 
 const createToken = (_id) => {
   const token = jwt.sign({ _id }, process.env.JWT_SECRET, {
@@ -84,6 +85,21 @@ export const getUsersByID = async (req, res) => {
       return res.status(404).json({ message: "students not found" });
     }
     res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+export const getFilesBySubject = async (req, res) => {
+  const { subject } = req.params;
+  const classes = req.params.class;
+  try {
+    const files = await File.find({ subject: subject, class: classes });
+    console.log("ok");
+    if (files.length == 0) {
+      return res.status(404).json({ message: "files not found" });
+    }
+    res.status(200).json(files);
   } catch (error) {
     res.status(500).json({ error });
   }
