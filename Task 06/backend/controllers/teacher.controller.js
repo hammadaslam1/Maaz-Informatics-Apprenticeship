@@ -2,6 +2,7 @@ import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 import Teacher from "../models/teacher.model.js";
 import Student from "../models/student.model.js";
+import File from "../models/files.model.js";
 
 const createToken = (_id) => {
   const token = jwt.sign({ _id }, process.env.JWT_SECRET, {
@@ -83,6 +84,29 @@ export const getUsersByID = async (req, res) => {
       return res.status(404).json({ message: "students not found" });
     }
     res.status(200).json(teachers);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};
+
+export const fileUpload = async (req, res) => {
+  try {
+    if (!req.file) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    const { path, filename } = req.file;
+
+    const newPath = path.replace(/\\/g, "/");
+    const newFile = File({
+      file: newPath,
+      ...req.body,
+    });
+    console.log("ok");
+    if (!newFile) {
+      return res.status(400).json({ message: "No file uploaded" });
+    }
+    await newFile.save();
+    res.status(200).json({ message: "File uploaded successfully", filename });
   } catch (error) {
     res.status(500).json({ error });
   }

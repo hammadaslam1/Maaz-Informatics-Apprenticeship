@@ -6,19 +6,19 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import studentRoutes from "./routes/students.routes.js";
 import teacherRoutes from "./routes/teachers.routes.js";
-import multer from "multer";
+
 
 dotenv.config();
 
 // Connect to MongoDB
-const upload = multer();
+
 mongoose
   .connect(process.env.CONN_STRING)
   .then(() => console.log("MongoDB Connected..."))
   .catch((err) => console.log(err));
 
 const app = express();
-app.use(upload.none());
+// app.use(upload.none());
 // app.use(cors());
 app.use(bodyParser.json());
 app.use(cookieParser());
