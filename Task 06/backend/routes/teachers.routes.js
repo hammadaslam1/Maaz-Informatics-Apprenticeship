@@ -46,13 +46,13 @@ const storage = multer.diskStorage({
     );
   },
 });
-const mltr = multer();
-router.use(mltr.none());
-router.post("/create", signupValidator, validate, createUser);
-router.post("/getUser", loginValidator, validate, getUser);
+// const mltr = multer();
+// router.use(mltr.none());
+const upload = multer({ storage: storage });
+router.post("/create", upload.none(), signupValidator, validate, createUser);
+router.post("/getUser", upload.none(), loginValidator, validate, getUser);
 router.use(teacherAuth);
 // router.get("/getUsersById/:id", getUsersByID);
-const upload = multer({ storage: storage });
 router.post("/sendFiles", upload.single("file"), fileUpload);
 
 export default router;
