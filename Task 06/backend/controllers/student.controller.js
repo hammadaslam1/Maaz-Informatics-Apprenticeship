@@ -78,20 +78,25 @@ export const getUser = async (req, res) => {
 export const getUsersByID = async (req, res) => {
   const id = req.params.id;
   try {
-    console.log('running');
-    
+    console.log("running");
+
     const teacher = await Teacher.findOne({ _id: id }).select({
       subject: 1,
       class: 1,
     });
     console.log(teacher);
-    
+
     if (!teacher) {
       return res.status(400).json({ message: "teacher not found" });
     }
     const students = await Student.find({
       class: teacher.class.toLowerCase(),
       subject: { $in: teacher.subject },
+    }).select({
+      first_name: 1,
+      last_name: 1,
+      email: 1,
+      _id: 1,
     });
     if (students.length == 0) {
       return res.status(200).json({ message: "students not found" });
