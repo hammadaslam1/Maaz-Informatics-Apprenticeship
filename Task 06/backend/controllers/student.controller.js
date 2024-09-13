@@ -14,7 +14,6 @@ const createToken = (_id) => {
 export const createUser = async (req, res) => {
   const { first_name, last_name, email, password, role, subject } = req.body;
   const my_class = req.body.class;
-  console.log("controller: ", req.body);
 
   try {
     const user = await Student.findOne({ email: email });
@@ -24,13 +23,17 @@ export const createUser = async (req, res) => {
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const newUser = new Student({
-      first_name,
-      last_name,
-      email,
-      class: my_class,
+      first_name: first_name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+        letter.toUpperCase()
+      ),
+      last_name: last_name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+        letter.toUpperCase()
+      ),
+      email: email.toLowerCase(),
+      class: my_class.toUpperCase(),
       password: hashedPassword,
-      role,
-      subject,
+      role: role.toUpperCase(),
+      subject: subject.map((s) => s.toUpperCase()),
     });
     await newUser.save();
     res
@@ -48,7 +51,7 @@ export const getUser = async (req, res) => {
   const email = req.body.email;
   const pword = req.body.password;
   try {
-    const user = await Student.findOne({ email: email }).select({
+    const user = await Student.findOne({ email: email.toLowerCase() }).select({
       email: 0,
       __v: 0,
     });
@@ -94,8 +97,10 @@ export const getFilesBySubject = async (req, res) => {
   const { subject } = req.params;
   const classes = req.params.class;
   try {
-    const files = await File.find({ subject: subject, class: classes });
-    console.log("ok");
+    const files = await File.find({
+      subject: subject.toUpperCase(),
+      class: classes.toUpperCase(),
+    });
     if (files.length == 0) {
       return res.status(404).json({ message: "files not found" });
     }

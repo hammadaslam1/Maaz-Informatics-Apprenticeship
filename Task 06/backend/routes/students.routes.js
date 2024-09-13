@@ -12,6 +12,7 @@ import {
 } from "../validations/user.validation.js";
 import multer from "multer";
 import { studentAuth, teacherAuth } from "../middlewares/auth.middleware.js";
+
 const router = express.Router();
 const mltr = multer();
 

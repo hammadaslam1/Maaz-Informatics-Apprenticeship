@@ -23,13 +23,17 @@ export const createUser = async (req, res) => {
     const hashedPassword = await bcryptjs.hash(password, 10);
 
     const newUser = new Teacher({
-      first_name,
-      last_name,
-      email,
-      class: my_class,
+      first_name: first_name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+        letter.toUpperCase()
+      ),
+      last_name: last_name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
+        letter.toUpperCase()
+      ),
+      email: email.toLowerCase(),
+      class: my_class.toUpperCase(),
       password: hashedPassword,
-      role,
-      subject,
+      role: role.toUpperCase(),
+      subject: subject.map((s) => s.toUpperCase()),
     });
     await newUser.save();
     res
@@ -47,7 +51,7 @@ export const getUser = async (req, res) => {
   const email = req.body.email;
   const pword = req.body.password;
   try {
-    const user = await Teacher.findOne({ email: email }).select({
+    const user = await Teacher.findOne({ email: email.toLowerCase() }).select({
       email: 0,
       __v: 0,
     });
@@ -99,9 +103,9 @@ export const fileUpload = async (req, res) => {
     const newPath = path.replace(/\\/g, "/");
     const newFile = File({
       file: newPath,
-      ...req.body,
+      subject: req.body.subject.toUpperCase(),
+      class: req.body.class.toUpperCase(),
     });
-    console.log("ok");
     if (!newFile) {
       return res.status(400).json({ message: "No file uploaded" });
     }

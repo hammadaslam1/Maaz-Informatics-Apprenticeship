@@ -13,6 +13,9 @@ export const studentAuth = async (req, res, next) => {
   try {
     const { _id } = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await Student.findOne({ _id }).select("_id");
+    if (!req.user) {
+      return res.status(404).json({ message: "Invalid Token" });
+    }
     console.log("authorized");
     next();
   } catch (error) {
@@ -31,6 +34,9 @@ export const teacherAuth = async (req, res, next) => {
   try {
     const { _id } = jwt.verify(token, process.env.JWT_SECRET);
     req.user = await Teacher.findOne({ _id }).select("_id");
+    if (!req.user) {
+      return res.status(404).json({ message: "Invalid Token" });
+    }
     console.log("authorized");
     next();
   } catch (error) {
