@@ -3,6 +3,7 @@ import jwt from "jsonwebtoken";
 import Teacher from "../models/teacher.model.js";
 import Student from "../models/student.model.js";
 import File from "../models/files.model.js";
+import { request } from "express";
 
 const createToken = (_id) => {
   const token = jwt.sign({ _id }, process.env.JWT_SECRET, {
@@ -91,6 +92,33 @@ export const getUsersByID = async (req, res) => {
   } catch (error) {
     res.status(500).json({ error });
   }
+};
+
+export const getUsersByTeacherAndSubject = async (req, res) => {
+  const { id, subject } = req.params;
+  const classes = req.params.class;
+  try {
+    const teacher = await Teacher.findOne({ _id: id }).select({
+      subject: 1,
+      class: 1,
+    });
+    if (!teacher) {
+      return res.status(400).json({ message: "Teacher not found" });
+    }
+    const students = await Student.find({
+      subject: subject.toUpperCase(),
+      class: classes.toUpperCase(),
+    }).select({
+      _id: 1,
+      first_name: 1,
+      last_name: 1,
+      email: 1,
+    });
+    if (students.length == 0) {
+      return res.status(200).json({ message: "students not found" });
+    }
+    res.status(200).json(students);
+  } catch (error) {}
 };
 
 export const fileUpload = async (req, res) => {
