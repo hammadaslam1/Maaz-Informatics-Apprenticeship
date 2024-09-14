@@ -13,8 +13,7 @@ const createToken = (_id) => {
 };
 
 export const createUser = async (req, res) => {
-  const { first_name, last_name, email, password, role, subject } = req.body;
-  const my_class = req.body.class;
+  let { first_name, last_name, email, password, role, classes } = req.body;
 
   try {
     const user = await Teacher.findOne({ email: email });
@@ -31,10 +30,15 @@ export const createUser = async (req, res) => {
         letter.toUpperCase()
       ),
       email: email.toLowerCase(),
-      class: my_class.toUpperCase(),
+      classes: classes.map((singleClass) => {
+        singleClass.class = singleClass.class.toUpperCase();
+        singleClass.subject = singleClass.subject.map((subject) =>
+          subject.toUpperCase()
+        );
+        return singleClass;
+      }),
       password: hashedPassword,
       role: role.toUpperCase(),
-      subject: subject.map((s) => s.toUpperCase()),
     });
     await newUser.save();
     res
@@ -44,7 +48,7 @@ export const createUser = async (req, res) => {
       })
       .json({ message: "teacher is created successfully", role: newUser.role });
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json(error);
   }
 };
 

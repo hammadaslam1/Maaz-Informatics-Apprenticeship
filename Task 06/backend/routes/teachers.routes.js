@@ -4,10 +4,12 @@ import {
   createUser,
   getUsersByID,
   fileUpload,
+  getUsersByTeacherAndSubject,
 } from "../controllers/teacher.controller.js";
 import {
   loginValidator,
   signupValidator,
+  teacherSignupValidator,
   validate,
 } from "../validations/user.validation.js";
 import { teacherAuth } from "../middlewares/auth.middleware.js";
@@ -20,9 +22,10 @@ const router = express.Router();
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     const classes = req.body.class;
-    const { subject } = req.body;
+    const { subject, id } = req.body;
     const dir = path.join(
       "files",
+      id,
       classes.toUpperCase(),
       subject.toUpperCase()
     );
@@ -35,24 +38,23 @@ const storage = multer.diskStorage({
   },
 
   filename: function (req, file, cb) {
-    cb(
-      null,
-      req.body.class.toUpperCase() +
-        "_" +
-        req.body.subject.toUpperCase() +
-        "_" +
-        req.body.name.toUpperCase() +
-        path.extname(file.originalname)
-    );
+    cb(null, file.originalname);
   },
 });
-// const mltr = multer();
-// router.use(mltr.none());
+
 const upload = multer({ storage: storage });
-router.post("/create", upload.none(), signupValidator, validate, createUser);
+
+// router.post("/create", upload.none(), createUser);
+router.post(
+  "/create",
+  upload.none(),
+  teacherSignupValidator,
+  validate,
+  createUser
+);
 router.post("/getUser", upload.none(), loginValidator, validate, getUser);
 router.use(teacherAuth);
-// router.get("/getUsersById/:id", getUsersByID);
 router.post("/sendFiles", upload.single("file"), fileUpload);
+router.get("/get-students/:id/:class/:subject", getUsersByTeacherAndSubject);
 
 export default router;
