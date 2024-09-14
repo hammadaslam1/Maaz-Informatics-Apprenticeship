@@ -12,15 +12,16 @@ const createToken = (_id) => {
 };
 
 export const createUser = async (req, res) => {
-  const { first_name, last_name, email, password, role, subject } = req.body;
-  const my_class = req.body.class;
-
+  const { first_name, last_name, email, password, role, classes } = req.body;
+// console.log(req.body)
   try {
     const user = await Student.findOne({ email: email });
     if (user) {
       return res.status(409).json({ message: "student already exists" });
     }
+
     const hashedPassword = await bcryptjs.hash(password, 10);
+    console.log("ok");
 
     const newUser = new Student({
       first_name: first_name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
@@ -30,10 +31,12 @@ export const createUser = async (req, res) => {
         letter.toUpperCase()
       ),
       email: email.toLowerCase(),
-      class: my_class.toUpperCase(),
+      classes: {
+        name: classes.name.toUpperCase(),
+        subject: classes.subject.map((subject) => subject.toUpperCase()),
+      },
       password: hashedPassword,
       role: role.toUpperCase(),
-      subject: subject.map((s) => s.toUpperCase()),
     });
     await newUser.save();
     res
@@ -43,7 +46,7 @@ export const createUser = async (req, res) => {
       })
       .json({ message: "user is created successfully", role: newUser.role });
   } catch (error) {
-    res.status(500).json({ error: error });
+    res.status(500).json(error);
   }
 };
 

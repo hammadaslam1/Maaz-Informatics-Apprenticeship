@@ -8,7 +8,6 @@ import {
 } from "../controllers/teacher.controller.js";
 import {
   loginValidator,
-  signupValidator,
   teacherSignupValidator,
   validate,
 } from "../validations/user.validation.js";
@@ -53,8 +52,8 @@ router.post(
   createUser
 );
 router.post("/getUser", upload.none(), loginValidator, validate, getUser);
-router.use(teacherAuth);
+// router.use(teacherAuth);
 router.post("/sendFiles", upload.single("file"), fileUpload);
-router.get("/get-students/:id/:class/:subject", getUsersByTeacherAndSubject);
+router.get("/get-students/:id/:classes/:subject", getUsersByTeacherAndSubject);
 
 export default router;

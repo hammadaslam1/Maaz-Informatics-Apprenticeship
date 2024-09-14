@@ -14,12 +14,8 @@ const studentSchema = new mongoose.Schema({
     required: true,
     unique: true,
   },
-  class: {
-    type: String,
-    required: true,
-  },
-  subject: {
-    type: [String],
+  classes: {
+    type: Object,
     required: true,
   },
   role: {

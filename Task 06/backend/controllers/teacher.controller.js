@@ -99,19 +99,29 @@ export const getUsersByID = async (req, res) => {
 };
 
 export const getUsersByTeacherAndSubject = async (req, res) => {
-  const { id, subject } = req.params;
-  const classes = req.params.class;
+  const { id, subject, classes } = req.params;
   try {
     const teacher = await Teacher.findOne({ _id: id }).select({
-      subject: 1,
-      class: 1,
+      classes: 1,
     });
     if (!teacher) {
       return res.status(400).json({ message: "Teacher not found" });
     }
+    const teachesClass = teacher.classes.find(
+      (c) => c.class.toUpperCase() === classes.toUpperCase()
+    );
+    console.log(teachesClass);
+    if (
+      !teachesClass ||
+      !teachesClass.subject.includes(subject.toUpperCase())
+    ) {
+      return res
+        .status(403)
+        .json({ message: "teacher does not teach the subject" });
+    }
     const students = await Student.find({
-      subject: subject.toUpperCase(),
-      class: classes.toUpperCase(),
+      "classes.name": classes.toUpperCase(),
+      "classes.subject": subject.toUpperCase(),
     }).select({
       _id: 1,
       first_name: 1,

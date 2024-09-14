@@ -7,7 +7,7 @@ import {
 } from "../controllers/student.controller.js";
 import {
   loginValidator,
-  signupValidator,
+  studentSignupValidator,
   validate,
 } from "../validations/user.validation.js";
 import multer from "multer";
@@ -17,7 +17,7 @@ const router = express.Router();
 const mltr = multer();
 
 router.use(mltr.none());
-router.post("/create", signupValidator, validate, createUser);
+router.post("/create", studentSignupValidator, validate, createUser);
 router.post("/getUser", loginValidator, validate, getUser);
 router.get("/getUsersById/:id", teacherAuth, getUsersByID);
 router.use(studentAuth);

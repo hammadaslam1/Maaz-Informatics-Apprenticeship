@@ -24,7 +24,7 @@ export const loginValidator = [
     .withMessage("The minimum password length is 6 characters"),
 ];
 
-export const signupValidator = [
+export const studentSignupValidator = [
   body("first_name")
     .notEmpty()
     .withMessage("The first name is should not be empty.")
@@ -45,21 +45,21 @@ export const signupValidator = [
     .withMessage("The password should not be empty.")
     .isLength({ min: 6 })
     .withMessage("The minimum password length is 6 characters"),
-  body("class")
+  body("classes.name")
     .notEmpty()
     .withMessage("The class should not be empty.")
     .isString()
     .withMessage("The class should contain only string characters"),
+  body("classes.subject")
+    .notEmpty()
+    .withMessage("The subject should not be empty.")
+    .isArray()
+    .withMessage("The subject should be in an array."),
   body("role")
     .notEmpty()
     .withMessage("The class should not be empty.")
     .isString()
     .withMessage("The role should contain only string character."),
-  body("subject")
-    .notEmpty()
-    .withMessage("The subject should not be empty.")
-    .isArray()
-    .withMessage("The subject should be in an array."),
 ];
 
 export const teacherSignupValidator = [
