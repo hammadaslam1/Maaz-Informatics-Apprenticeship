@@ -52,7 +52,7 @@ router.post(
   createUser
 );
 router.post("/getUser", upload.none(), loginValidator, validate, getUser);
-// router.use(teacherAuth);
+router.use(teacherAuth);
 router.post("/sendFiles", upload.single("file"), fileUpload);
 router.get("/get-students/:id/:classes/:subject", getUsersByTeacherAndSubject);
 
