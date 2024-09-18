@@ -126,3 +126,18 @@ export const getFilesBySubject = async (req, res) => {
     res.status(500).json({ error });
   }
 };
+
+export const getFilesByClass = async (req, res) => {
+  const classes = req.params.class;
+  try {
+    const files = await File.find({
+      class: classes.toUpperCase(),
+    });
+    if (files.length == 0) {
+      return res.status(404).json({ message: "files not found" });
+    }
+    res.status(200).json(files);
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+};

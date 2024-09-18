@@ -135,7 +135,7 @@ export const getUsersByTeacherAndSubject = async (req, res) => {
   } catch (error) {}
 };
 
-export const fileUpload = async (req, res) => {
+export const assignmentUpload = async (req, res) => {
   try {
     if (!req.file) {
       return res.status(400).json({ message: "No file uploaded" });

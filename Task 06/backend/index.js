@@ -31,7 +31,7 @@ app.use(
     credentials: true,
     exposedHeaders: ["Set-Cookie", "Date", "ETag"],
   })
-);
+); 
 
 app.use("/files", express.static(path.join(__dirname, "files")));
 const port = process.env.PORT || 3002;

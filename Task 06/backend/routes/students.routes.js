@@ -4,6 +4,7 @@ import {
   createUser,
   getUsersByID,
   getFilesBySubject,
+  getFilesByClass,
 } from "../controllers/student.controller.js";
 import {
   loginValidator,
@@ -21,6 +22,7 @@ router.post("/create", studentSignupValidator, validate, createUser);
 router.post("/getUser", loginValidator, validate, getUser);
 router.get("/getUsersById/:id", teacherAuth, getUsersByID);
 router.use(studentAuth);
-router.get("/getFiles/:subject/:class", getFilesBySubject);
+router.get("/getFilesBySubject/:class/:subject", getFilesBySubject);
+router.get("/getFilesByClass/:class", getFilesByClass);
 
 export default router;

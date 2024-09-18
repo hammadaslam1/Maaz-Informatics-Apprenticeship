@@ -3,7 +3,7 @@ import {
   getUser,
   createUser,
   getUsersByID,
-  fileUpload,
+  assignmentUpload,
   getUsersByTeacherAndSubject,
 } from "../controllers/teacher.controller.js";
 import {
@@ -53,7 +53,7 @@ router.post(
 );
 router.post("/getUser", upload.none(), loginValidator, validate, getUser);
 router.use(teacherAuth);
-router.post("/sendFiles", upload.single("file"), fileUpload);
+router.post("/sendFiles", upload.single("file"), assignmentUpload);
 router.get("/get-students/:id/:classes/:subject", getUsersByTeacherAndSubject);
 
 export default router;
