@@ -6,10 +6,16 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import multer from "multer";
 import userRoutes from "./routes/user.routes.js";
+import { initializeApp, applicationDefault } from "firebase-admin/app";
 
 // Connect to MongoDB
 
 dotenv.config();
+process.env.GOOGLE_APPLICATION_CREDENTIALS;
+initializeApp({
+  credential: applicationDefault(),
+  projectId: "maaz-informatics-tasks",
+});
 
 mongoose
   .connect(process.env.CONN_STRING)
@@ -29,6 +35,7 @@ app.listen(port, () => {
 });
 
 app.use("/api/user", userRoutes);
+app.use("/api/notification", notificationRoutes);
 app.all("*", (req, res) => {
   res.status(404).send("API does not exist");
 });
