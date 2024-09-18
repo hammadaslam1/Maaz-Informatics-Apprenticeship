@@ -38,5 +38,5 @@ app.listen(port, () => {
 app.use("/api/user", userRoutes);
 app.use("/api/notification", notificationRoutes);
 app.all("*", (req, res) => {
-  res.status(404).send("API does not exist");
+  res.status(404).send("route does not exist");
 });

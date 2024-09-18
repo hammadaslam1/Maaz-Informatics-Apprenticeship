@@ -5,8 +5,6 @@ export const validate = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(400).json(errors.array().map((data) => data.msg));
   } else {
-    console.log("all ok");
-
     next();
   }
 };

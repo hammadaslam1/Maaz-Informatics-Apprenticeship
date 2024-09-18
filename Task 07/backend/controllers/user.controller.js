@@ -18,7 +18,6 @@ export const createUser = async (req, res) => {
     }
 
     const hashedPassword = await bcryptjs.hash(pword, 10);
-    console.log("ok");
 
     const newUser = new User({
       name: name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
@@ -30,6 +29,8 @@ export const createUser = async (req, res) => {
     await newUser.save();
     const token = createToken(newUser._id);
     const { password, ...rest } = newUser._doc;
+    console.log("signed up");
+
     res
       .status(200)
       .cookie("access_token", {
@@ -61,6 +62,7 @@ export const getUser = async (req, res) => {
     }
     const token = createToken(user._id);
     const { password, ...rest } = user._doc;
+    console.log("logged in");
     res
       .status(200)
       .cookie("access_token", {
