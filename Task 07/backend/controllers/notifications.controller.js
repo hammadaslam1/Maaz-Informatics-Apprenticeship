@@ -1,7 +1,8 @@
 import { getMessaging } from "firebase-admin/messaging";
 
 export const sendNotification = (req, res) => {
-  const fcmToken = req.body.fcmToken;
+  console.log(req.body);
+  const { fcmToken } = req.body;
   const message = {
     notification: {
       title: "Maaz Informatics",
@@ -12,9 +13,11 @@ export const sendNotification = (req, res) => {
   getMessaging()
     .send(message)
     .then((response) => {
-      console.log("Successfully sent message:", response);
+      console.log("message sent: ", message);
+
+      res.status(200).json(response);
     })
     .catch((error) => {
-      console.log("Error sending message:", error);
+      res.status(200).json(error);
     });
 };
