@@ -20,6 +20,6 @@ const fileSchema = new mongoose.Schema({
   },
 });
 
-const File = mongoose.model("file", fileSchema);
+const TeacherFiles = mongoose.model("teacherFile", fileSchema);
 
-export default File;
+export default TeacherFiles;

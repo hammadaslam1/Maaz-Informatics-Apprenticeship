@@ -1,10 +1,14 @@
 import { validationResult, body } from "express-validator";
 
 export const validate = (req, res, next) => {
+  console.log(req.body);
+
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(400).json(errors.array().map((data) => data.msg));
   } else {
+    console.log("authorized");
+
     next();
   }
 };
