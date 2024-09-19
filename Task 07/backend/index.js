@@ -40,32 +40,34 @@ app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 
 const port = process.env.PORT || 3002;
-app.listen(port, () => {
-  console.log(`app is running on port ${port}`);
-});
+// app.listen(port, () => {
+//   console.log(`app is running on port ${port}`);
+// });
 io.on("connection", (socket) => {
-  console.log("A user connected:", socket.id);
-
-  // Send previous messages to the new user
+  // socket.on("connect", () => {
+  console.log("socket connected: ", socket.id);
+  // });
   Message.find().then((messages) => {
     socket.emit("previousMessages", messages);
   });
 
-  // Listen for new messages
   socket.on("sendMessage", (data) => {
+    console.log(typeof data);
+
     const newMessage = new Message(data);
     newMessage.save().then(() => {
-      io.emit("receiveMessage", data); // Broadcast to all clients
+      io.emit("receiveMessage", newMessage);
     });
   });
 
   socket.on("disconnect", () => {
-    console.log("User disconnected:", socket.id);
+    console.log("socket disconnected");
   });
 });
-server.listen(4000, () => {
-  console.log(`Server is running on port 4000`);
+server.listen(port, () => {
+  console.log(`Server is running on port ${port}`);
 });
+
 app.use("/api/user", userRoutes);
 app.use("/api/notification", notificationRoutes);
 app.all("*", (req, res) => {

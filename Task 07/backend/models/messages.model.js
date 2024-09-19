@@ -5,20 +5,16 @@ const messageSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  roomName: {
-    type: String,
-    required: true,
-  },
   message: {
     type: String,
     required: true,
   },
-  createdAt: {
-    type: Date,
-    default: Date.now,
+  time: {
+    type: String,
+    default: new Date(),
   },
 });
 
-const Message = mongoose.model("Message", messageSchema);
+const ChatRoom = mongoose.model("ChatRoom", messageSchema);
 
-export default Message;
+export default ChatRoom;

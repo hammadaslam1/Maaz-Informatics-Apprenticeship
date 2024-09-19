@@ -4,21 +4,21 @@ import "./App.css";
 import ChatRoom from "./components/chat/ChatRoom";
 import MessageInput from "./components/chat/MessageInput";
 
-const socket = io("http://localhost:4000");
+// const socket = io("http://192.168.2.106:8000");
+const socket = io("http://localhost:3001");
 
 function App() {
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
-    // Fetch previous messages from the server
     socket.on("previousMessages", (messages) => {
       setMessages(messages);
     });
-
-    // Listen for incoming messages
     socket.on("receiveMessage", (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
+    const el = document.getElementById("chatroom-container");
+    el.scrollTop = el.scrollHeight;
 
     return () => {
       socket.off("previousMessages");
@@ -29,16 +29,44 @@ function App() {
   const handleSendMessage = (message) => {
     const newMessage = {
       username: "hammadaslam10",
-      roomName: "Hammad`s room",
+      // roomname: "Hammad`s room",
       message: message,
-    }; // You can add dynamic username
-    socket.emit("sendMessage", newMessage); // Send message to the server
+      time: new Date(),
+    };
+    // const newMessage = {
+    //   email: "hammadaslam308@gmail.com",
+    //   time: new Date().getTime(),
+    //   message: message,
+    // };
+    socket.emit("sendMessage", newMessage);
   };
 
   return (
     <div className="app-container">
-      <ChatRoom messages={messages} />
-      <MessageInput onSendMessage={handleSendMessage} />
+      <div className="chatroom-container" id="chatroom-container">
+        {messages.length > 0 ? (
+          messages.map((msg, index) => (
+            <div className={msg.username == "hammadaslam10" ? "right" : "left"}>
+              <div
+                className={
+                  msg.username == "hammadaslam10"
+                    ? "message-right"
+                    : "message-left"
+                }
+              >
+                <strong>{msg?.username}:</strong>{" "}
+                <span className="message-text">{msg?.message}</span>
+                <div>
+                  <span className="time">{msg?.time}</span>
+                </div>
+              </div>
+            </div>
+          ))
+        ) : (
+          <div className="no-messages">No messages yet!</div>
+        )}
+        <MessageInput onSendMessage={handleSendMessage} />
+      </div>
     </div>
   );
 }
