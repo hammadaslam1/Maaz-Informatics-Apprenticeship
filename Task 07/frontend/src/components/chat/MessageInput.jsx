@@ -10,7 +10,7 @@ const MessageInput = ({ onSendMessage }) => {
   const handleSend = () => {
     if (inputValue.trim()) {
       onSendMessage(inputValue);
-      setInputValue("");
+    //   setInputValue("");
     }
   };
 
