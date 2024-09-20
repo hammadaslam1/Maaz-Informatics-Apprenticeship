@@ -6,7 +6,7 @@ export const userAuth = async (req, res, next) => {
   if (!authorization || authorization.split(" ")[0] !== "Bearer") {
     return res
       .status(401)
-      .json({ error: "You must be logged in to access this route." });
+      .json({ message: "You must be logged in to access this route." });
   }
   const token = authorization.split(" ")[1];
   try {
@@ -18,6 +18,6 @@ export const userAuth = async (req, res, next) => {
     console.log("authorized");
     next();
   } catch (error) {
-    return res.status(401).json({ error: "Invalid token." });
+    return res.status(401).json({ message: "Invalid token." });
   }
 };

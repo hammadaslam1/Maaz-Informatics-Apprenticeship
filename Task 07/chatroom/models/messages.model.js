@@ -10,11 +10,12 @@ const messageSchema = new mongoose.Schema({
     required: true,
   },
   time: {
-    type: String,
-    default: new Date(),
+    type: Date,
+    default: Date.now,
   },
 });
 
 const ChatRoom = mongoose.model("ChatRoom", messageSchema);
 
 export default ChatRoom;
+ 

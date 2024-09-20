@@ -51,6 +51,7 @@ const Chatbox = () => {
           {messages.length > 0 ? (
             messages.map((msg, index) => (
               <div
+                key={index}
                 className={msg.username == "hammadaslam10" ? "right" : "left"}
               >
                 <div
@@ -63,7 +64,7 @@ const Chatbox = () => {
                   <strong>{msg?.username}:</strong>{" "}
                   <span className="message-text">{msg?.message}</span>
                   <div>
-                    <span className="time">{msg?.time}</span>
+                    {/* <span className="time">{msg?.time}</span> */}
                   </div>
                 </div>
               </div>

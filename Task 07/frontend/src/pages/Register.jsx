@@ -1,8 +1,11 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { signinSuccess } from "../redux/userReducer/UserReducer";
 
 const Register = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [form, setForm] = useState({});
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -15,9 +18,12 @@ const Register = () => {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(form),
-    }).then((response) => {
-      console.log(response);
-    });
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        dispatch(signinSuccess(data));
+        navigate("/");
+      });
   };
   return (
     <div className="min-h-screen bg-slate-200 flex justify-center items-center">

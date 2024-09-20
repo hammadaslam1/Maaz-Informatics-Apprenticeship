@@ -1,7 +1,10 @@
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { signinSuccess } from "../redux/userReducer/UserReducer";
+import {
+  signinSuccess,
+  signoutSuccess,
+} from "../redux/userReducer/UserReducer";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -21,12 +24,14 @@ const Login = () => {
       body: JSON.stringify(form),
     })
       .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        console.log(data);
-
-        dispatch(signinSuccess(data));
+        if (response.ok) {
+          const data = response.json();
+          dispatch(signinSuccess(data));
+          navigate("/");
+        } else {
+          alert(JSON.stringify(response.json()));
+          dispatch(signoutSuccess());
+        }
       })
       .catch((err) => console.log(err));
   };
