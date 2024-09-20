@@ -5,6 +5,8 @@ import { Server } from "socket.io";
 import Message from "./models/messages.model.js";
 import dotenv from "dotenv";
 import userRoutes from "./routes/user.routes.js";
+import cors from "cors";
+import bodyParser from "body-parser";
 
 dotenv.config();
 
@@ -43,7 +45,13 @@ io.on("connection", (socket) => {
 server.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
-
+app.use(bodyParser.json());
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 app.get("/getMessages", async (req, res) => {
   Message.find().then((messages) => {
     res.json(messages);

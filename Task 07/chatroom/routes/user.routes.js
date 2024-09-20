@@ -14,5 +14,5 @@ const mltr = multer();
 router.use(mltr.none());
 router.post("/signup", studentSignupValidator, validate, createUser);
 router.post("/login", loginValidator, validate, getUser);
-
+ 
 export default router;

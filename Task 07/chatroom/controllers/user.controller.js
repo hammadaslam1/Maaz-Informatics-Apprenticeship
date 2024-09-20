@@ -9,6 +9,8 @@ const createToken = (_id) => {
   return token;
 };
 export const createUser = async (req, res) => {
+  console.log(req.body);
+
   const { name, email } = req.body;
   const pword = req.body.password;
   try {
@@ -23,6 +25,7 @@ export const createUser = async (req, res) => {
       name: name.replace(/(^\w{1})|(\s+\w{1})/g, (letter) =>
         letter.toUpperCase()
       ),
+      username: email.split("@")[0],
       email: email.toLowerCase(),
       password: hashedPassword,
     });
@@ -54,7 +57,7 @@ export const getUser = async (req, res) => {
       __v: 0,
     });
     if (!user) {
-      return res.status(404).json({ message: "User not found" });
+      return res.status(400).json({ message: "User not found" });
     }
     const isMatch = await bcryptjs.compare(pword, user.password);
     if (!isMatch) {

@@ -8,8 +8,16 @@ const Register = () => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
-  const handleRegister = () => {
-    alert(JSON.stringify(form));
+  const handleRegister = async () => {
+    await fetch("http://localhost:3001/api/user/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    }).then((response) => {
+      console.log(response);
+    });
   };
   return (
     <div className="min-h-screen bg-slate-200 flex justify-center items-center">

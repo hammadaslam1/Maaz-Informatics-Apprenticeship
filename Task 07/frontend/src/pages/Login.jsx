@@ -1,15 +1,34 @@
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { signinSuccess } from "../redux/userReducer/UserReducer";
 
 const Login = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({});
+  const [errors, setErrors] = useState(null);
+  const dispatch = useDispatch();
   const handleInputChange = (e) => {
     const { name, value } = e.target;
     setForm({ ...form, [name]: value });
   };
-  const handleLogin = () => {
-    alert(JSON.stringify(form));
+  const handleLogin = async () => {
+    await fetch("http://localhost:3001/api/user/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(form),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        console.log(data);
+
+        dispatch(signinSuccess(data));
+      })
+      .catch((err) => console.log(err));
   };
   return (
     <div className="min-h-screen bg-slate-200 flex justify-center items-center">
@@ -31,6 +50,13 @@ const Login = () => {
           name="password"
           onChange={handleInputChange}
         />
+        {/* {errors &&
+          errors.length > 0 &&
+          errors.map((data, i) => (
+            <p key={i} className="text-red-500 text-xs">
+              * {data}
+            </p>
+          ))} */}
         <button
           className="p-3 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 transition-all text-white text-xl font-bold rounded-md"
           onClick={handleLogin}

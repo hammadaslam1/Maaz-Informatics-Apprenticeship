@@ -2,11 +2,15 @@
 import React, { useEffect, useState } from "react";
 import io from "socket.io-client";
 import MessageInput from "../components/chat/MessageInput";
+import { useSelector } from "react-redux";
 
 // const socket = io("http://192.168.2.106:8000");
 const socket = io("http://localhost:3001");
 
 const Chatbox = () => {
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser);
+
   const [messages, setMessages] = useState([]);
 
   useEffect(() => {
