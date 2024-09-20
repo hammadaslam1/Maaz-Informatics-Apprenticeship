@@ -4,6 +4,7 @@ import http from "http";
 import { Server } from "socket.io";
 import Message from "./models/messages.model.js";
 import dotenv from "dotenv";
+import userRoutes from "./routes/user.routes.js";
 
 dotenv.config();
 
@@ -20,7 +21,7 @@ const io = new Server(server, {
     methods: ["GET", "POST"],
   },
 });
- 
+
 const port = process.env.PORT || 3002;
 io.on("connection", (socket) => {
   console.log("socket connected: ", socket.id);
@@ -48,6 +49,7 @@ app.get("/getMessages", async (req, res) => {
     res.json(messages);
   });
 });
+app.use("/api/user", userRoutes);
 app.all("*", (req, res) => {
   res.status(404).send("route does not exist");
 });
