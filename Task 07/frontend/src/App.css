@@ -11,6 +11,9 @@
 .chatroom-container {
   width: 800px;
   height: 90vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
   background-color: white;
   border-radius: 10px;
   box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
