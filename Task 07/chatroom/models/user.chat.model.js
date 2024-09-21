@@ -4,26 +4,34 @@ const messageSchema = new mongoose.Schema({
   chatID: {
     type: String,
     required: true,
+    unique: true,
   },
   users: {
     type: [String],
     required: true,
   },
   messages: {
-    sender: {
-      type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    timestamp: {
-      type: String,
-      default: new Date().toISOString(),
-    },
+    type: [
+      {
+        sender: {
+          type: String,
+          required: true,
+        },
+        message: {
+          type: String,
+          required: true,
+        },
+        time: {
+          type: String,
+          default: new Date().toISOString(),
+        },
+      },
+    ],
   },
-  status: "user",
+  status: {
+    type: String,
+    default: "group",
+  },
 });
 
 const UserChat = mongoose.model("user_chats", messageSchema);

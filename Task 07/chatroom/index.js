@@ -19,7 +19,7 @@ const app = express();
 const server = http.createServer(app);
 const io = new Server(server, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST"],
   },
 });
@@ -28,6 +28,7 @@ const port = process.env.PORT || 3002;
 io.on("connection", (socket) => {
   console.log("socket connected: ", socket.id);
   Message.find().then((messages) => {
+    console.log(messages);
     socket.emit("previousMessages", messages);
   });
 

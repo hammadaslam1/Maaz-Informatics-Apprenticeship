@@ -11,20 +11,27 @@ const messageSchema = new mongoose.Schema({
     required: true,
   },
   messages: {
-    sender: {
-      type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
-    timestamp: {
-      type: String,
-      default: new Date().toISOString(),
-    },
+    type: [
+      {
+        sender: {
+          type: String,
+          required: true,
+        },
+        message: {
+          type: String,
+          required: true,
+        },
+        time: {
+          type: String,
+          default: new Date().toISOString(),
+        },
+      },
+    ],
   },
-  status: "group",
+  status: {
+    type: String,
+    default: "group",
+  },
 });
 
 const GroupChat = mongoose.model("group_chats", messageSchema);
