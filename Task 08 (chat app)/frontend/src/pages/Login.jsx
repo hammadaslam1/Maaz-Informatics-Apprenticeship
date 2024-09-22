@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -57,7 +58,7 @@ const Login = () => {
         />
         <button
           className="p-3 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 transition-all text-white text-xl font-bold rounded-md"
-        //   onClick={handleLogin}
+          onClick={handleLogin}
         >
           Login
         </button>

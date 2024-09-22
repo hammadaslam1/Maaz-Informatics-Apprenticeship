@@ -54,7 +54,7 @@ const Register = () => {
         />
         <button
           className="p-3 bg-gray-500 hover:bg-gray-600 active:bg-gray-700 transition-all text-white text-xl font-bold rounded-md"
-          // onClick={handleRegister}
+          onClick={handleRegister}
         >
           Register
         </button>
