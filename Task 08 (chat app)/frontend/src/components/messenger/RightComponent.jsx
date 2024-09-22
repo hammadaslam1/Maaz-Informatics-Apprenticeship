@@ -1,8 +1,10 @@
+import ChatBox from "./ChatBox";
 import EmptyChat from "./EmptyChat";
 
 const RightComponent = () => {
   return (
-    <EmptyChat />
+    // <EmptyChat />
+    <ChatBox />
   );
 };
 
