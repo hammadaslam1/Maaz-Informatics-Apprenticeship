@@ -6,6 +6,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import path from "path";
 import { fileURLToPath } from "url";
+import userRoutes from "./mongodb/routes/user.routes.js";
 import multer from "multer";
 
 dotenv.config();
@@ -15,7 +16,7 @@ const __dirname = path.dirname(__filename);
 mongoose
   .connect(process.env.CONN_STRING)
   .then(() => console.log("MongoDB Connected..."))
-  .catch((err) => console.log(err)); 
+  .catch((err) => console.log(err));
 
 const app = express();
 // app.use(upload.none());
@@ -37,7 +38,7 @@ app.listen(port, () => {
   console.log(`Server is running on port ${port}`);
 });
 
-// app.use("/api/student", studentRoutes);
+app.use("/api/user", userRoutes);
 app.all("*", (req, res) => {
   res.status(404).send("API does not exist");
 });

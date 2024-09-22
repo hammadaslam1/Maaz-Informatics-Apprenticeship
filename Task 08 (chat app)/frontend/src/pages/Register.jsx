@@ -12,7 +12,7 @@ const Register = () => {
     setForm({ ...form, [name]: value });
   };
   const handleRegister = async () => {
-    await fetch("http://localhost:3001/api/user/signup", {
+    await fetch("http://localhost:3001/api/user/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
