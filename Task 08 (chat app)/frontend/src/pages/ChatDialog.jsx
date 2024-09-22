@@ -1,5 +1,6 @@
 import { Box, Dialog } from "@mui/material";
 import LeftComponent from "../components/messenger/LeftComponent";
+import RightComponent from "../components/messenger/RightComponent";
 
 const dialogStyle = {
   height: "95%",
@@ -37,8 +38,7 @@ const ChatDialog = () => {
             // backgroundColor: "#0f0",
           }}
         >
-          chat box
-          {/* {Object.keys(person).length ? <ChatBox /> : <EmptyChat />} */}
+          <RightComponent />
         </Box>
       </Box>
     </Dialog>
