@@ -1,7 +1,9 @@
 import { Box } from "@mui/material";
 import Footer from "../navbars/Footer";
+import SelfMessage from "./SelfMessage";
+import SenderMessage from "./SenderMessage";
 
-const AllMessages = ({messages}) => {
+const AllMessages = ({ messages }) => {
   return (
     <Box
       sx={{
@@ -12,20 +14,22 @@ const AllMessages = ({messages}) => {
       <Box sx={{ height: "77vh", overflowY: "scroll" }}>
         {messages &&
           messages.map((message) => (
-            <Box sx={{ padding: "1px 80px" }} 
-            // ref={scrollRef}
+            <Box
+              sx={{ padding: "1px 80px" }}
+              // ref={scrollRef}
             >
-              {/* <Message message={message} /> */}
+              <SelfMessage message={message} />
+              <SenderMessage message={message} />
             </Box>
           ))}
       </Box>
       <Footer
-        // sendText={sendText}
-        // value={value}
-        // setValue={setValue}
-        // setFile={setFile}
-        // file={file}
-        // setImage={setImage}
+      // sendText={sendText}
+      // value={value}
+      // setValue={setValue}
+      // setFile={setFile}
+      // file={file}
+      // setImage={setImage}
       />
     </Box>
   );
