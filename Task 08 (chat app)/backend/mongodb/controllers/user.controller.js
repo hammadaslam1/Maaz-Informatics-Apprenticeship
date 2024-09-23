@@ -41,8 +41,7 @@ export const login = async (req, res) => {
   const email = req.body.email;
   const pword = req.body.password;
   try {
-    const user = await Student.findOne({ email: email.toLowerCase() }).select({
-      email: 0,
+    const user = await User.findOne({ email: email.toLowerCase() }).select({
       __v: 0,
     });
     if (!user) {
@@ -54,6 +53,8 @@ export const login = async (req, res) => {
     }
     const token = createToken(user._id);
     const { password, ...rest } = user._doc;
+    console.log(token);
+
     res
       .status(200)
       .cookie("access_token", {

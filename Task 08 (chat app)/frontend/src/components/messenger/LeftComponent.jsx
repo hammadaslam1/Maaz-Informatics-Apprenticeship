@@ -8,14 +8,13 @@ const LeftComponent = () => {
     fetch("http://localhost:3001/api/user/getallusers")
       .then((response) => {
         if (response.status === 200) {
-          return response.json(); // Return the promise here
+          return response.json();
         } else {
           throw new Error("Failed to fetch users");
         }
       })
       .then((data) => {
-        console.log(data);
-        setUsers(data); // Now `data` is the parsed JSON
+        setUsers(data);
       })
       .catch((error) => {
         console.error("Error fetching users:", error);

@@ -3,8 +3,11 @@ import ChatIcon from "@mui/icons-material/Chat";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchConversation from "../inputs/SearchConversation";
 import { AppBar, Toolbar } from "@mui/material";
+import { useDispatch } from "react-redux";
+import { signoutSuccess } from "../../redux/userReducer/UserReducer";
 
 const AllChatsHeader = () => {
+  const dispatch = useDispatch()
   return (
     <>
       <AppBar
@@ -21,9 +24,9 @@ const AllChatsHeader = () => {
               name={"Hammad Aslam"}
               variant={"avatar"}
               onClick={() => {
-                // alert("hammad aslam");
+                dispatch(signoutSuccess())
               }}
-              disableRipple
+            // disableRipple
             />
           </div>
           <div>

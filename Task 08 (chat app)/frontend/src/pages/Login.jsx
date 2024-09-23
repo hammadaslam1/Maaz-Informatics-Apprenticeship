@@ -25,14 +25,12 @@ const Login = () => {
       body: JSON.stringify(form),
     })
       .then((response) => {
-        if (response.ok) {
-          const data = response.json();
-          dispatch(signinSuccess(data));
-          navigate("/");
-        } else {
-          alert(JSON.stringify(response.json()));
-          dispatch(signoutSuccess());
-        }
+        return response.json()
+      })
+      .then((data) => {
+        // console.log(data)
+        dispatch(signinSuccess(data));
+        navigate("/");
       })
       .catch((err) => console.log(err));
   };
