@@ -3,10 +3,12 @@ import { applyMiddleware, combineReducers } from "redux";
 import storage from "redux-persist/lib/storage";
 import { configureStore } from "@reduxjs/toolkit";
 import userReducer from "./userReducer/UserReducer";
+import conversationReducer from './userReducer/ConversationReducer'
 import { persistReducer, persistStore } from "redux-persist";
 
 const reducers = combineReducers({
   user: userReducer,
+  conversation: conversationReducer,
 });
 
 const persistConfig = {

@@ -1,13 +1,41 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, InputBase } from "@mui/material";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import MicIcon from "@mui/icons-material/Mic";
 import ToggleButton from "../buttons/ToggleButton";
 import SendIcon from "@mui/icons-material/Send";
-import { useRef, useState } from "react";
-const Footer = () => {
+import { useEffect, useRef, useState } from "react";
+const Footer = ({ sendText, value, setValue, setFile, file, setImage }) => {
   const fileRef = useRef(null);
   const [message, setMessage] = useState("");
+  const getImage = async () => {
+    if (file) {
+      const data = new FormData();
+      data.append("name", file.name);
+      data.append("file", file);
+
+      fetch('http://localhost:3001/api/file/upload', {
+        method: 'POST',
+        body: data,
+      }).then((response) => {
+        if (response.ok) {
+          return response.json();
+        } else {
+          throw new Error("Failed to upload image");
+        }
+      }).then((data) => setImage(data))
+      // setImage(response.data);
+    }
+  }
+  const onFileChange = (e) => {
+    setValue(e.target.files[0].name);
+    setFile(e.target.files[0]);
+  }
+
+  useEffect(() => {
+    getImage();
+  }, [file])
   return (
     <Box
       sx={{
@@ -35,7 +63,7 @@ const Footer = () => {
         type="file"
         id="fileInput"
         ref={fileRef}
-        // onChange={(e) => onFileChange(e)}
+        onChange={(e) => onFileChange(e)}
         hidden
       />
 
@@ -56,12 +84,12 @@ const Footer = () => {
           }}
           placeholder="Type a message"
           inputProps={{ "aria-label": "search" }}
-          onChange={(e) => setMessage(e.target.value)}
-          //   onKeyPress={(e) => sendText(e)}
-          value={message}
+          onChange={(e) => setValue(e.target.value)}
+          onKeyDown={(e) => sendText(e)}
+          value={value}
         />
       </Box>
-      {message?.length > 0 ? (
+      {value?.length > 0 ? (
         <ToggleButton icon={<SendIcon />} variant={"icon"} />
       ) : (
         <ToggleButton icon={<MicIcon />} variant={"icon"} />

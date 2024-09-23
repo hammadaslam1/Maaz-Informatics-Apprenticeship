@@ -2,26 +2,21 @@ import { Box, Divider } from "@mui/material";
 import AllChatsHeader from "../navbars/AllChatsHeader";
 import { useEffect, useState } from "react";
 import ConversationButton from "../buttons/ConversationButton";
+import { useSelector } from "react-redux";
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3001');
 const LeftComponent = () => {
   const [users, setUsers] = useState(null);
-  const fetchAllUsers = async () => {
-    fetch("http://localhost:3001/api/user/getallusers")
-      .then((response) => {
-        if (response.status === 200) {
-          return response.json();
-        } else {
-          throw new Error("Failed to fetch users");
-        }
-      })
-      .then((data) => {
-        setUsers(data);
-      })
-      .catch((error) => {
-        console.error("Error fetching users:", error);
-      });
-  };
+  const { currentUser } = useSelector(state => state.user)
+
   useEffect(() => {
-    fetchAllUsers();
+    socket.on('getAllUsers', (data) => {
+      setUsers(data);
+    })
+    return () => {
+      socket.off('getAllUsers')
+    }
   }, []);
   return (
     <Box>
@@ -31,9 +26,9 @@ const LeftComponent = () => {
           {users &&
             users.map(
               (user, i) =>
-                user._id !== "my own _id" && (
+                user._id !== currentUser?.user._id && (
                   <>
-                    <ConversationButton user={user} />
+                    <ConversationButton user={user} me={currentUser.user} />
                     {users.length !== i + 1 && (
                       <Divider
                         sx={{

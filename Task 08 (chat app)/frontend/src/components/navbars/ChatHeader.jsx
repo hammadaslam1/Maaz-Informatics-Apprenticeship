@@ -1,11 +1,29 @@
 /* eslint-disable no-unused-vars */
 import { Avatar, Box, Typography } from "@mui/material";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ToggleButton from "../buttons/ToggleButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
+import { useSelector } from "react-redux";
+import io from 'socket.io-client';
+
+const socket = io('http://localhost:3001');
 const ChatHeader = ({ person }) => {
   const [activeUsers, setActiveUsers] = useState([]);
+  const { selectedUser } = useSelector(state => state.conversation)
+  const userId = person?._id
+
+  useEffect(() => {
+    socket.emit('userOnline', userId);
+
+    socket.on('updateUserStatus', ({ onlineUsers }) => {
+      setActiveUsers(onlineUsers);
+    });
+
+    return () => {
+      socket.disconnect();
+    };
+  }, [userId]);
   return (
     <Box
       sx={{
@@ -25,7 +43,7 @@ const ChatHeader = ({ person }) => {
         }}
       />
       <Box>
-        <Typography sx={{ marginLeft: "12px" }}>Hammad Aslam</Typography>
+        <Typography sx={{ marginLeft: "12px" }}>{selectedUser?.name}</Typography>
         <Typography
           sx={{
             fontSize: "12px",
@@ -33,7 +51,7 @@ const ChatHeader = ({ person }) => {
             marginLeft: "12px",
           }}
         >
-          {activeUsers?.find((user) => user.sub === person.sub)
+          {activeUsers?.some(item => Object.keys(item).includes(selectedUser._id))
             ? "Online"
             : "Offline"}
         </Typography>

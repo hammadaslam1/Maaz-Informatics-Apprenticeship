@@ -23,6 +23,7 @@ const ChatDialog = () => {
         },
       }}
       PaperProps={{ sx: dialogStyle }}
+      hideBackdrop={true}
     >
       <Box sx={{ display: "flex", height: "100vh" }}>
         <Box sx={{ minWidth: "250px", flex: 1 }}>

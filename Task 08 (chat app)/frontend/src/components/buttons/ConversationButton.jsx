@@ -1,31 +1,54 @@
 /* eslint-disable no-unused-vars */
-import { Avatar, Box, Typography } from "@mui/material";
-import { useState } from "react";
+import { Avatar, Box, Button, Typography } from "@mui/material";
+import { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { setConversationSelected } from "../../redux/userReducer/ConversationReducer";
+import { formatDate } from "../../utils/CommonUtils";
+import io from 'socket.io-client';
 
-const ConversationButton = ({ user }) => {
+const socket = io('http://localhost:3001');
+const ConversationButton = ({ user, me }) => {
   const [name, setName] = useState("Hammad Aslam");
   const [message, setMessage] = useState({});
+  const dispatch = useDispatch()
 
-  const formatDate = (date) => {
-    const hours = new Date(date).getHours();
-    const minutes = new Date(date).getMinutes();
-    return `${hours < 10 ? "0" + hours : hours}:${
-      minutes < 10 ? "0" + minutes : minutes
-    }`;
-  };
+  const getUser = async () => {
+    dispatch(setConversationSelected(user))
+    fetch('http://localhost:3001/api/conversation/create', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ senderId: me._id, receiverId: user._id }),
+    })
+  }
+  useEffect(() => {
+    socket.emit("getConversation", { senderId: me._id, receiverId: user._id })
+    socket.on("receiveConversation", (data) => {
+      setMessage({ text: data?.message, timestamp: data?.updatedAt })
+    })
+    return () => {
+      socket.off("receiveConversation")
+      socket.off("getConversation")
+    }
+  }, [])
   return (
-    <Box
+    <Button
       sx={{
-        height: "45px",
+        width: '100%',
+        height: "65px",
         display: "flex",
-        padding: "13px 0",
+        padding: "13px 0 13px 13px",
         cursor: "pointer",
+        textTransform: 'capitalize',
+        color: '#000'
       }}
+      onClick={() => getUser()}
     >
       <Box>
         <Avatar src="" children={`${name.split(" ")[0][0]}`} />
       </Box>
-      <Box style={{ width: "100%" }}>
+      <Box style={{ width: "100%", paddingLeft: '13px' }}>
         <Box sx={{ display: "flex" }}>
           <Typography>{user?.name}</Typography>
           {message?.text && (
@@ -53,7 +76,7 @@ const ConversationButton = ({ user }) => {
           </Typography>
         </Box>
       </Box>
-    </Box>
+    </Button>
   );
 };
 
