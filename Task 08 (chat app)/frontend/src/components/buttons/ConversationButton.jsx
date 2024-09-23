@@ -14,21 +14,17 @@ const ConversationButton = ({ user, me }) => {
 
   const getUser = async () => {
     dispatch(setConversationSelected(user))
-    fetch('http://localhost:3001/api/conversation/create', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ senderId: me._id, receiverId: user._id }),
-    })
+    socket.emit("newConversation", { senderId: me._id, receiverId: user._id })
   }
   useEffect(() => {
     socket.emit("getConversation", { senderId: me._id, receiverId: user._id })
-    socket.on("receiveConversation", (data) => {
-      setMessage({ text: data?.message, timestamp: data?.updatedAt })
-    })
+    // socket.on("receiveConversation", (data) => {
+    //   console.log(data);
+      
+    //   setMessage({ text: data?.text, timestamp: data?.updatedAt })
+    // })
     return () => {
-      socket.off("receiveConversation")
+      // socket.off("receiveConversation")
       socket.off("getConversation")
     }
   }, [])
@@ -46,7 +42,7 @@ const ConversationButton = ({ user, me }) => {
       onClick={() => getUser()}
     >
       <Box>
-        <Avatar src="" children={`${name.split(" ")[0][0]}`} />
+        <Avatar src="" children={`${user.name.split(" ")[0][0]}`} />
       </Box>
       <Box style={{ width: "100%", paddingLeft: '13px' }}>
         <Box sx={{ display: "flex" }}>

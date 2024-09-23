@@ -1,4 +1,5 @@
 import Conversation from "./mongodb/models/conversation.model.js";
+import Message from "./mongodb/models/message.model.js";
 import User from "./mongodb/models/user.model.js";
 
 let users = [];
@@ -28,6 +29,24 @@ export const socketHandler = (io) => {
       Conversation.findOne({
         members: { $all: [data.senderId, data.receiverId] },
       }).then((conversation) => {
+        console.log(conversation);
+        io.emit("receiveConversation", conversation);
+      });
+    });
+    socket.on("newConversation", async (data) => {
+      const exist = await Conversation.findOne({
+        members: { $all: [data.receiverId, data.senderId] },
+      });
+
+      if (exist) {
+        return;
+      }
+      const newConversation = new Conversation({
+        members: [data.senderId, data.receiverId],
+      });
+      newConversation.save().then((conversation) => {
+        console.log(conversation);
+
         io.emit("receiveConversation", conversation);
       });
     });
@@ -36,11 +55,24 @@ export const socketHandler = (io) => {
       io.emit("getUsers", users);
     });
 
-    socket.on("sendMessage", (data) => {
-      const user = getUser(data.receiverId);
-      if (user) {
-        io.to(user.socketId).emit("getMessage", data);
-      }
+    socket.on("sendMessage", async (data) => {
+      // const user = getUser(data.receiverId);
+      // if (user) {
+      //   io.to(user.socketId).emit("getMessage", data);
+      // }
+      console.log(data);
+
+      const newMessage = new Message(data);
+      await newMessage.save();
+      Conversation.findByIdAndUpdate(data.conversationId, {
+        message: data.text,
+      }).then((conversation) => {
+        Message.find({ conversationId: data.conversationId }).then(
+          (messages) => {
+            io.emit("getMessage", messages);
+          }
+        );
+      });
     });
 
     socket.on("userOnline", (userId) => {

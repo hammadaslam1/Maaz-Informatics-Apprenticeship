@@ -22,12 +22,12 @@ const LeftComponent = () => {
     <Box>
       <Box sx={{ height: "110px" }}>
         <AllChatsHeader />
-        <Box sx={{ overflow: "overlay", height: "81vh" }}>
+        <Box sx={{}}>
           {users &&
             users.map(
               (user, i) =>
                 user._id !== currentUser?.user._id && (
-                  <>
+                  <div key={i}>
                     <ConversationButton user={user} me={currentUser.user} />
                     {users.length !== i + 1 && (
                       <Divider
@@ -38,7 +38,7 @@ const LeftComponent = () => {
                         }}
                       />
                     )}
-                  </>
+                  </div>
                 )
             )}
         </Box>

@@ -7,6 +7,7 @@ import SelfMessage from "./SelfMessage";
 import SenderMessage from "./SenderMessage";
 import { useState, useRef, useEffect } from 'react'
 import { io } from 'socket.io-client';
+import { useSelector } from "react-redux";
 
 
 const socket = io('http://localhost:3001');
@@ -17,8 +18,11 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
   const [value, setValue] = useState();
   const [file, setFile] = useState();
   const [image, setImage] = useState();
+  const { currentUser } = useSelector(state => state.user)
+  const { selectedUser } = useSelector(state => state.conversation)
 
   const scrollRef = useRef();
+  // alert(JSON.stringify(conversation))
 
   const sendText = async (e) => {
     let code = e.keyCode || e.which;
@@ -30,7 +34,7 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
         message = {
           senderId: person._id,
           receiverId: receiver._id,
-          conversationId: conversationId,
+          conversationId: conversation._id,
           type: 'text',
           text: value
         };
@@ -38,31 +42,17 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
         message = {
           senderId: person._id,
           receiverId: receiver._id,
-          conversationId: conversationId,
+          conversationId: conversation._id,
           type: 'media',
           text: image
         };
       }
-
+      alert(JSON.stringify(message));
       socket.emit('sendMessage', message);
-
-      fetch('http://localhost:3001/api/message/send', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(message),
-      }).then((response) => {
-        if (!response.ok) throw new Error("Failed to send message");
-        return response.json();
-      }).then((data) => alert(data)).catch((err) => {
-        alert(err);
-      })
 
       setValue('');
       setFile();
       setImage('');
-      // setNewMessageFlag(prev => !prev);
     }
   }
   useEffect(() => {
@@ -74,7 +64,7 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
     })
   }, []);
   const getMessageDetails = async () => {
-    fetch(`http://localhost:3001/api/message/get/${conversation._id}`, {
+    fetch(`http://localhost:3001/api/message/get/${conversation?._id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -87,7 +77,7 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
   }
   useEffect(() => {
     getMessageDetails();
-  }, [conversation?._id, person._id]);
+  }, [conversation, person]);
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ transition: "smooth" })
   }, [messages]);
@@ -100,18 +90,22 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
     <Box
       sx={{
         backgroundImage: `url(${"https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"})`,
-        backgroundSize: "50%",
+        backgroundSize: "70%",
       }}
     >
-      <Box sx={{ height: "77vh", overflowY: "scroll" }}>
+      <Box sx={{ height: "79vh", overflowY: "scroll" }}>
         {messages &&
-          messages.map((message) => (
+          messages.map((message, i) => (
             <Box
               sx={{ padding: "1px 80px" }}
+              key={i}
               ref={scrollRef}
-            >
-              <SelfMessage message={message} />
-              <SenderMessage message={message} />
+            > {message.senderId}
+              {selectedUser?.user?._id == message.senderId &&
+                <SenderMessage message={message} />}
+              {currentUser?.user?._id == message.senderId &&
+                <SelfMessage message={message} />
+              }
             </Box>
           ))}
       </Box>

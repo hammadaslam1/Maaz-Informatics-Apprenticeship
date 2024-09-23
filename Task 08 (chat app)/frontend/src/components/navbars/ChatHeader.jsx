@@ -17,12 +17,14 @@ const ChatHeader = ({ person }) => {
     socket.emit('userOnline', userId);
 
     socket.on('updateUserStatus', ({ onlineUsers }) => {
+      console.log(onlineUsers?.some(item => Object.keys(item).includes(selectedUser._id)));
+
       setActiveUsers(onlineUsers);
     });
 
-    return () => {
-      socket.disconnect();
-    };
+    // return () => {
+    //   socket.off('updateUserStatus');
+    // };
   }, [userId]);
   return (
     <Box

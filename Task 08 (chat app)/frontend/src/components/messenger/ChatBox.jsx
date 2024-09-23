@@ -3,7 +3,9 @@ import ChatHeader from "../navbars/ChatHeader";
 import AllMessages from "../messages/AllMessages";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
+import io from 'socket.io-client';
 
+const socket = io('http://localhost:3001');
 const ChatBox = () => {
   const { currentUser } = useSelector(state => state.user)
   const { selectedUser } = useSelector(state => state.conversation)
@@ -25,10 +27,14 @@ const ChatBox = () => {
   }
   useEffect(() => {
 
-    getConversation();
+    socket.emit("getConversation", { senderId: currentUser.user._id, receiverId: selectedUser._id })
+    socket.on("receiveConversation", (data) => {
+      // setMessage({ text: data?.message, timestamp: data?.updatedAt })
+      setConversation(data);
+    })
   }, [selectedUser._id]);
   return (
-    <Box sx={{ height: "75%" }}>
+    <Box sx={{}}>
       <ChatHeader person={currentUser.user} />
       <AllMessages person={currentUser.user} receiver={selectedUser} conversationId={conversationId} conversation={conversation} />
     </Box>
