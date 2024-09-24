@@ -63,8 +63,8 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
       })
     })
   }, []);
-  const getMessageDetails = async () => {
-    fetch(`http://localhost:3001/api/message/get/${conversation?._id}`, {
+  const getMessageDetails = async (id) => {
+    fetch(`http://localhost:3001/api/message/get/${id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
@@ -76,8 +76,18 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
     )
   }
   useEffect(() => {
-    getMessageDetails();
-  }, [conversation, person]);
+    socket.on("receiveConversation", (data) => {
+      socket.emit('getMessages', data._id)
+
+    })
+    socket.on("getMessage", (data) => {
+      console.log(data);
+      setMessages((prev) => data);
+      setValue('');
+      setFile();
+      setImage('');
+    })
+  }, [conversation, receiver]);
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ transition: "smooth" })
   }, [messages]);

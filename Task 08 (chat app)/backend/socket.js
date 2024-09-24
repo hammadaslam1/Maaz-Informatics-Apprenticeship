@@ -50,18 +50,8 @@ export const socketHandler = (io) => {
         io.emit("receiveConversation", conversation);
       });
     });
-    socket.on("addUser", (userData) => {
-      addUser(userData, socket.id);
-      io.emit("getUsers", users);
-    });
 
     socket.on("sendMessage", async (data) => {
-      // const user = getUser(data.receiverId);
-      // if (user) {
-      //   io.to(user.socketId).emit("getMessage", data);
-      // }
-      console.log(data);
-
       const newMessage = new Message(data);
       await newMessage.save();
       Conversation.findByIdAndUpdate(data.conversationId, {
@@ -75,13 +65,19 @@ export const socketHandler = (io) => {
       });
     });
 
+    socket.on("getMessages", (id) => {
+      Message.find({ conversationId: id }).then((messages) => {
+        io.emit("getMessage", messages);
+      });
+    });
+
     socket.on("userOnline", (userId) => {
       if (!onlineUsers[userId]) {
         onlineUsers[userId] = socket.id;
       }
       console.log("Online users: ", onlineUsers);
 
-      io.emit("updateUserStatus", { onlineUsers: [onlineUsers] });
+      io.emit("updateUserStatus", { onlineUsers });
     });
 
     socket.on("disconnect", () => {

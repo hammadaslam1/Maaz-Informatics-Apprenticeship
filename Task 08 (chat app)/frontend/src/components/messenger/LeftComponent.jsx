@@ -14,9 +14,9 @@ const LeftComponent = () => {
     socket.on('getAllUsers', (data) => {
       setUsers(data);
     })
-    return () => {
-      socket.off('getAllUsers')
-    }
+    // return () => {
+    //   socket.off('getAllUsers')
+    // }
   }, []);
   return (
     <Box>

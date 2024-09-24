@@ -10,6 +10,7 @@ import io from 'socket.io-client';
 const socket = io('http://localhost:3001');
 const ChatHeader = ({ person }) => {
   const [activeUsers, setActiveUsers] = useState([]);
+  const [isOnline, setOnline] = useState(false)
   const { selectedUser } = useSelector(state => state.conversation)
   const userId = person?._id
 
@@ -17,15 +18,17 @@ const ChatHeader = ({ person }) => {
     socket.emit('userOnline', userId);
 
     socket.on('updateUserStatus', ({ onlineUsers }) => {
-      console.log(onlineUsers?.some(item => Object.keys(item).includes(selectedUser._id)));
-
+      const keys = Object.keys(onlineUsers)
+      // alert(JSON.stringify(keys))
+      const onlineStatus = Object.keys(onlineUsers).includes(selectedUser._id);
+      setOnline(onlineStatus);
       setActiveUsers(onlineUsers);
     });
 
     // return () => {
     //   socket.off('updateUserStatus');
     // };
-  }, [userId]);
+  }, [person]);
   return (
     <Box
       sx={{
@@ -53,9 +56,7 @@ const ChatHeader = ({ person }) => {
             marginLeft: "12px",
           }}
         >
-          {activeUsers?.some(item => Object.keys(item).includes(selectedUser._id))
-            ? "Online"
-            : "Offline"}
+          {Object.keys(activeUsers).includes(selectedUser._id) ? "Online" : "Offline"}
         </Typography>
       </Box>
       <Box sx={{ marginLeft: "auto" }}>
