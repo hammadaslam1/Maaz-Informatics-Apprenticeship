@@ -69,8 +69,10 @@ export const socketHandler = (io) => {
     });
 
     socket.on("getMessages", (id) => {
+      console.log(id);
+
       Message.find({ conversationId: id }).then((messages) => {
-        io.emit("getMessage", messages);
+        io.to(id).emit("getMessage", messages);
       });
     });
 

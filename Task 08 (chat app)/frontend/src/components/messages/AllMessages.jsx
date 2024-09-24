@@ -18,6 +18,7 @@ const AllMessages = ({ person, receiver, conversation }) => {
   const [value, setValue] = useState();
   const [file, setFile] = useState();
   const [image, setImage] = useState();
+  const [activeUsers, setActiveUsers] = useState(null);
   const { currentUser } = useSelector(state => state.user)
   const { selectedUser } = useSelector(state => state.conversation)
   const scrollRef = useRef();
@@ -41,7 +42,7 @@ const AllMessages = ({ person, receiver, conversation }) => {
         text: image
       };
     }
-    alert(JSON.stringify(message))
+    // alert(JSON.stringify(message))
     socket.emit('sendMessage', message);
     setValue('');
     setFile();
@@ -73,7 +74,7 @@ const AllMessages = ({ person, receiver, conversation }) => {
   useEffect(() => {
     socket.on("receiveConversation", (data) => {
       // if (data[0]?.conversationId === conversation?._id) {
-        socket.emit('getMessages', data?._id)
+      socket.emit('getMessages', data?._id)
       // }
     })
     socket.on("getMessage", (data) => {
@@ -105,6 +106,24 @@ const AllMessages = ({ person, receiver, conversation }) => {
     incomingMessage && conversation?.members?.includes(incomingMessage.senderId) &&
       setMessages((prev) => [...prev, incomingMessage]);
   }, [incomingMessage, conversation]);
+  useEffect(() => {
+    socket.emit('userOnline', person._id);
+
+    socket.on('updateUserStatus', ({ onlineUsers }) => {
+      setActiveUsers(onlineUsers);
+      if (Object.keys(onlineUsers).includes(selectedUser._id)) {
+        fetch('http://localhost:3001/api/message/update-delivered', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ receiverId: person._id, senderId: receiver._id }),
+        })
+      }
+    });
+
+    // return () => {
+    //   socket.off('updateUserStatus');
+    // };
+  }, [selectedUser]);
   return (
     <Box
       sx={{

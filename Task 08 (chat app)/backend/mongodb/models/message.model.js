@@ -2,9 +2,7 @@ import mongoose from "mongoose";
 
 const MessageSchema = new mongoose.Schema(
   {
-    conversationId: {
-      type: String,
-    },
+    conversationId: { type: mongoose.Schema.Types.ObjectId, ref: "Conversation" },
     senderId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     receiverId: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
     text: {
@@ -12,11 +10,12 @@ const MessageSchema = new mongoose.Schema(
     },
     type: {
       type: String,
+      default: "text",
     },
     status: {
       type: String,
-      default: "notSent",
-      enum: ["sent", "delivered", "seen", "notSent"],
+      default: "sent",
+      enum: ["sent", "delivered", "seen"],
     }
   },
   {
