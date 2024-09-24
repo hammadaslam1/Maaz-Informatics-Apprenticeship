@@ -19,28 +19,29 @@ const ConversationButton = ({ user, me }) => {
 
   const getUser = async () => {
     dispatch(setConversationSelected(user))
+
     socket.emit("newConversation", { senderId: me?._id, receiverId: user?._id })
   }
   useEffect(() => {
-    fetch('http://localhost:3001/api/conversation/get', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ senderId: me?._id, receiverId: user?._id }),
-    }).then(async (response) => {
-      if (response.ok) {
-        const data = await response.json();
-        setConversation(data);
-        setMessage(data.message)
-        setTime(formatDate(data.updatedAt))
-      }
-    })
-    // socket.emit("getConversation", { senderId: me?._id, receiverId: user?._id })
-    // socket.on("receiveConversation", (data) => {
-
-    //   setConversation(data)
+    // fetch('http://localhost:3001/api/conversation/get', {
+    //   method: 'POST',
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //   },
+    //   body: JSON.stringify({ senderId: me?._id, receiverId: user?._id }),
+    // }).then(async (response) => {
+    //   if (response.ok) {
+    //     const data = await response.json();
+    //     setConversation(data);
+    //     setMessage(data.message)
+    //     setTime(formatDate(data.updatedAt))
+    //   }
     // })
+    socket.emit("getConversation", { senderId: me?._id, receiverId: user?._id })
+    socket.on("receiveConversation", (data) => {
+      socket.emit('joinConversation', data?._id)
+      setConversation(data)
+    })
     return () => {
       // socket.off("receiveConversation")
       // socket.off("getConversation")

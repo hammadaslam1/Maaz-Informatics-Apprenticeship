@@ -5,23 +5,17 @@ import User from "./mongodb/models/user.model.js";
 let users = [];
 let onlineUsers = {};
 
-const addUser = (userData, socketId) => {
-  !users.some((user) => user._id === userData._id) &&
-    users.push({ ...userData, socketId });
-};
-
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
-};
-
-const getUser = (userId) => {
-  return users.find((user) => user._id === userId);
 };
 
 export const socketHandler = (io) => {
   io.on("connection", async (socket) => {
     console.log("User connected:", socket.id);
-
+    socket.on("joinConversation", (room) => {
+      socket.join(room);
+      console.log("User joined room:", room);
+    });
     const users = await User.find().select({
       password: 0,
       __v: 0,
@@ -37,6 +31,8 @@ export const socketHandler = (io) => {
       });
     });
     socket.on("newConversation", async (data) => {
+      console.log(data);
+
       const exist = await Conversation.findOne({
         members: { $all: [data.receiverId, data.senderId] },
       });
@@ -55,16 +51,20 @@ export const socketHandler = (io) => {
     });
 
     socket.on("sendMessage", async (data) => {
+      console.log(data);
+
       const newMessage = new Message(data);
       await newMessage.save();
+
       Conversation.findByIdAndUpdate(data.conversationId, {
         message: data.text,
       }).then((conversation) => {
-        Message.find({ conversationId: data.conversationId }).then(
-          (messages) => {
-            io.emit("getMessage", messages);
-          }
-        );
+        io.to(data.conversationId).emit("newMessage", {
+          ...newMessage,
+        });
+        Message.find({ conversationId: data.conversationId }).then((messages) => {
+          io.to(data.conversationId).emit("getMessage", messages);
+        });
       });
     });
 

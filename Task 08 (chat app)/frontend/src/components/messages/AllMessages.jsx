@@ -12,14 +12,14 @@ import { useSelector } from "react-redux";
 
 const socket = io('http://localhost:3001');
 
-const AllMessages = ({ person, receiver }) => {
+const AllMessages = ({ person, receiver, conversation }) => {
   const [messages, setMessages] = useState([]);
   const [incomingMessage, setIncomingMessage] = useState(null);
   const [value, setValue] = useState();
   const [file, setFile] = useState();
   const [image, setImage] = useState();
   const { currentUser } = useSelector(state => state.user)
-  const { selectedUser, conversation } = useSelector(state => state.conversation)
+  const { selectedUser } = useSelector(state => state.conversation)
   const scrollRef = useRef();
 
   const sendMessage = () => {
@@ -41,6 +41,7 @@ const AllMessages = ({ person, receiver }) => {
         text: image
       };
     }
+    alert(JSON.stringify(message))
     socket.emit('sendMessage', message);
     setValue('');
     setFile();
@@ -54,52 +55,55 @@ const AllMessages = ({ person, receiver }) => {
     }
   }
   useEffect(() => {
-    socket.on('getMessage', data => {
+    socket.on('newMessage', data => {
       setIncomingMessage({
-        ...data,
+        ...data.message,
         createdAt: Date.now()
       })
     })
     return () => {
-      // socket.off('getMessage');
+      socket.off('newMessage');
     }
   }, [conversation]);
-  const getMessageDetails = async (id) => {
-    fetch(`http://localhost:3001/api/message/get/${id}`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-    }).then((response) => {
-      if (!response.ok) throw new Error("Failed to fetch messages");
-      return response.json();
-    }).then((data) => setMessages(data)).catch((err) => console.error(err)
-    )
-  }
+  useEffect(() => {
+    if (conversation?._id) {
+      socket.emit("joinConversation", conversation?._id);  // Join the conversation room
+    }
+  }, [conversation]);
   useEffect(() => {
     socket.on("receiveConversation", (data) => {
-      socket.emit('getMessages', data._id)
-
+      // if (data[0]?.conversationId === conversation?._id) {
+        socket.emit('getMessages', data?._id)
+      // }
     })
     socket.on("getMessage", (data) => {
-      console.log(data);
-      setMessages((prev) => data);
-      setValue('');
-      setFile();
-      setImage('');
+      if (data[0]?.conversationId === conversation?._id) {
+
+        console.log(data);
+        setMessages((prev) => data);
+        setValue('');
+        setFile();
+        setImage('');
+      } else {
+        console.log('not in the conversation');
+        setMessages([]);
+        setValue('');
+        setFile();
+        setImage('');
+        setIncomingMessage(null);
+      }
     })
     return () => {
       socket.off("receiveConversation");
       socket.off("getMessage");
     }
-  }, [conversation, receiver]);
+  }, [conversation]);
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ transition: "smooth" })
   }, [messages]);
   useEffect(() => {
     incomingMessage && conversation?.members?.includes(incomingMessage.senderId) &&
       setMessages((prev) => [...prev, incomingMessage]);
-
   }, [incomingMessage, conversation]);
   return (
     <Box

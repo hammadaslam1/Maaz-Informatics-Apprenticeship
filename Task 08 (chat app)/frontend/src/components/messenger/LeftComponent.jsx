@@ -27,7 +27,7 @@ const LeftComponent = () => {
     <Box>
       <Box sx={{ height: 'calc(100vh - 30px)' }}>
         <AllChatsHeader />
-        <Box sx={{ overflowY: 'auto' }}>
+        <Box sx={{ overflowY: 'auto', height: '77vh' }}>
           {users && users.length > 0 &&
             users.map(
               (user, i) =>
