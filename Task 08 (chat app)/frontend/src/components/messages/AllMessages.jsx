@@ -12,7 +12,7 @@ import { useSelector } from "react-redux";
 
 const socket = io('http://localhost:3001');
 
-const AllMessages = ({ person, conversationId, receiver, conversation }) => {
+const AllMessages = ({ person, receiver, conversation }) => {
   const [messages, setMessages] = useState([]);
   const [incomingMessage, setIncomingMessage] = useState(null);
   const [value, setValue] = useState();
@@ -47,7 +47,6 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
           text: image
         };
       }
-      alert(JSON.stringify(message));
       socket.emit('sendMessage', message);
 
       setValue('');
@@ -110,10 +109,9 @@ const AllMessages = ({ person, conversationId, receiver, conversation }) => {
               sx={{ padding: "1px 80px" }}
               key={i}
               ref={scrollRef}
-            > {message.senderId}
-              {selectedUser?.user?._id == message.senderId &&
-                <SenderMessage message={message} />}
-              {currentUser?.user?._id == message.senderId &&
+            >
+              {selectedUser?._id == message.senderId ?
+                <SenderMessage message={message} /> :
                 <SelfMessage message={message} />
               }
             </Box>

@@ -22,7 +22,10 @@ export const socketHandler = (io) => {
   io.on("connection", (socket) => {
     console.log("User connected:", socket.id);
 
-    User.find().then((user) => {
+    User.find().select({
+      password: 0,
+      __v: 0
+    }).then((user) => {
       socket.emit("getAllUsers", user);
     });
     socket.on("getConversation", (data) => {

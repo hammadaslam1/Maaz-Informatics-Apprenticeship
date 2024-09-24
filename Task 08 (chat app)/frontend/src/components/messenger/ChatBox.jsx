@@ -36,7 +36,7 @@ const ChatBox = () => {
   return (
     <Box sx={{}}>
       <ChatHeader person={currentUser.user} />
-      <AllMessages person={currentUser.user} receiver={selectedUser} conversationId={conversationId} conversation={conversation} />
+      <AllMessages person={currentUser.user} receiver={selectedUser} conversation={conversation} />
     </Box>
   );
 };
