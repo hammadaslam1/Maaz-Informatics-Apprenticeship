@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box } from "@mui/material";
 import ChatHeader from "../navbars/ChatHeader";
 import AllMessages from "../messages/AllMessages";
@@ -10,29 +11,17 @@ const ChatBox = () => {
   const { currentUser } = useSelector(state => state.user)
   const { selectedUser } = useSelector(state => state.conversation)
   const [conversation, setConversation] = useState({});
-  const conversationId = [currentUser._id, selectedUser._id].toSorted().join('')
-  const getConversation = async () => {
-    fetch('http://localhost:3001/api/conversation/get', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ senderId: currentUser.user._id, receiverId: selectedUser._id }),
-    }).then((response) => {
-      if (response.ok) {
-        const data = response.json();
-        setConversation(data);
-      }
-    })
-  }
+
   useEffect(() => {
 
     socket.emit("getConversation", { senderId: currentUser.user._id, receiverId: selectedUser._id })
     socket.on("receiveConversation", (data) => {
-      // setMessage({ text: data?.message, timestamp: data?.updatedAt })
       setConversation(data);
     })
-  }, [selectedUser._id]);
+    return () => {
+      socket.off("receiveConversation")
+    }
+  }, [selectedUser]);
   return (
     <Box sx={{}}>
       <ChatHeader person={currentUser.user} />

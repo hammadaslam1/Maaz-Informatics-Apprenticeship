@@ -5,7 +5,7 @@ const SearchConversation = () => {
     <Box
       sx={{
         backgroundColor: "#fff",
-        height: "50px",
+        height: "9%",
         display: "flex",
         alignItems: "center",
         borderBottom: "1px solid #f2f2f2",

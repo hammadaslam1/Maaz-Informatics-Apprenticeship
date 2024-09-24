@@ -1,31 +1,49 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
+
 import { Avatar, Box, Button, Typography } from "@mui/material";
 import { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
-import { setConversationSelected } from "../../redux/userReducer/ConversationReducer";
+import { useDispatch, useSelector } from "react-redux";
+import { setConversation, setConversationSelected } from "../../redux/userReducer/ConversationReducer";
 import { formatDate } from "../../utils/CommonUtils";
 import io from 'socket.io-client';
 
 const socket = io('http://localhost:3001');
 const ConversationButton = ({ user, me }) => {
   const [name, setName] = useState("Hammad Aslam");
-  const [message, setMessage] = useState({});
+  const [message, setMessage] = useState('');
+  const [time, setTime] = useState('');
+  const [conversation, setConversation] = useState(null)
+  const { selectedUser } = useSelector(state => state.conversation)
   const dispatch = useDispatch()
 
   const getUser = async () => {
     dispatch(setConversationSelected(user))
-    socket.emit("newConversation", { senderId: me._id, receiverId: user._id })
+    socket.emit("newConversation", { senderId: me?._id, receiverId: user?._id })
   }
   useEffect(() => {
-    socket.emit("getConversation", { senderId: me._id, receiverId: user._id })
+    fetch('http://localhost:3001/api/conversation/get', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ senderId: me?._id, receiverId: user?._id }),
+    }).then(async (response) => {
+      if (response.ok) {
+        const data = await response.json();
+        setConversation(data);
+        setMessage(data.message)
+        setTime(formatDate(data.updatedAt))
+      }
+    })
+    // socket.emit("getConversation", { senderId: me?._id, receiverId: user?._id })
     // socket.on("receiveConversation", (data) => {
-    //   console.log(data);
-      
-    //   setMessage({ text: data?.text, timestamp: data?.updatedAt })
+
+    //   setConversation(data)
     // })
     return () => {
       // socket.off("receiveConversation")
-      socket.off("getConversation")
+      // socket.off("getConversation")
     }
   }, [])
   return (
@@ -47,7 +65,7 @@ const ConversationButton = ({ user, me }) => {
       <Box style={{ width: "100%", paddingLeft: '13px' }}>
         <Box sx={{ display: "flex" }}>
           <Typography>{user?.name}</Typography>
-          {message?.text && (
+          {time && (
             <Typography
               sx={{
                 fontSize: "12px",
@@ -56,7 +74,7 @@ const ConversationButton = ({ user, me }) => {
                 marginRight: "20px",
               }}
             >
-              {formatDate(message?.timestamp)}
+              {time}
             </Typography>
           )}
         </Box>
@@ -68,7 +86,7 @@ const ConversationButton = ({ user, me }) => {
               fontSize: "14px",
             }}
           >
-            {message?.text?.includes("localhost") ? "media" : message.text}
+            {message}
           </Typography>
         </Box>
       </Box>

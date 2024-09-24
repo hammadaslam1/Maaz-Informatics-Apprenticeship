@@ -6,7 +6,7 @@ import MicIcon from "@mui/icons-material/Mic";
 import ToggleButton from "../buttons/ToggleButton";
 import SendIcon from "@mui/icons-material/Send";
 import { useEffect, useRef, useState } from "react";
-const Footer = ({ sendText, value, setValue, setFile, file, setImage }) => {
+const Footer = ({ sendText, value, setValue, setFile, file, setImage, sendMessage }) => {
   const fileRef = useRef(null);
   const [message, setMessage] = useState("");
   const getImage = async () => {
@@ -90,7 +90,7 @@ const Footer = ({ sendText, value, setValue, setFile, file, setImage }) => {
         />
       </Box>
       {value?.length > 0 ? (
-        <ToggleButton icon={<SendIcon />} variant={"icon"} />
+        <ToggleButton icon={<SendIcon />} onClick={() => sendMessage()} variant={"icon"} />
       ) : (
         <ToggleButton icon={<MicIcon />} variant={"icon"} />
       )}

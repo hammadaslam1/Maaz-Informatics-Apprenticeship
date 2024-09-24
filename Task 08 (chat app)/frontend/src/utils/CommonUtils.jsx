@@ -1,3 +1,5 @@
+import { formatISO9075 } from 'date-fns'
+
 export const downloadMedia = async (e, originalImage) => {
   e.preventDefault();
   try {
@@ -26,9 +28,6 @@ export const downloadMedia = async (e, originalImage) => {
   }
 };
 export const formatDate = (date) => {
-  const hours = new Date(date).getHours();
-  const minutes = new Date(date).getMinutes();
-  return `${hours < 10 ? "0" + hours : hours}:${
-    minutes < 10 ? "0" + minutes : minutes
-  }`;
+  const result = formatISO9075(new Date(date), { representation: 'time' })
+  return result
 };

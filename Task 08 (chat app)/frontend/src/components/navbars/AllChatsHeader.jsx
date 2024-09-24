@@ -12,7 +12,7 @@ const AllChatsHeader = () => {
     <>
       <AppBar
         sx={{
-          height: "60px",
+          height: "10%",
           boxShadow: "unset",
           position: "unset",
           backgroundColor: "#ededed",

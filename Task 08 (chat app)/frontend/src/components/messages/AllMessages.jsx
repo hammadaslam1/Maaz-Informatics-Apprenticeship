@@ -12,46 +12,45 @@ import { useSelector } from "react-redux";
 
 const socket = io('http://localhost:3001');
 
-const AllMessages = ({ person, receiver, conversation }) => {
+const AllMessages = ({ person, receiver }) => {
   const [messages, setMessages] = useState([]);
   const [incomingMessage, setIncomingMessage] = useState(null);
   const [value, setValue] = useState();
   const [file, setFile] = useState();
   const [image, setImage] = useState();
   const { currentUser } = useSelector(state => state.user)
-  const { selectedUser } = useSelector(state => state.conversation)
-
+  const { selectedUser, conversation } = useSelector(state => state.conversation)
   const scrollRef = useRef();
-  // alert(JSON.stringify(conversation))
 
+  const sendMessage = () => {
+    let message = {};
+    if (!file) {
+      message = {
+        senderId: person?._id,
+        receiverId: receiver?._id,
+        conversationId: conversation?._id,
+        type: 'text',
+        text: value
+      };
+    } else {
+      message = {
+        senderId: person?._id,
+        receiverId: receiver?._id,
+        conversationId: conversation?._id,
+        type: 'media',
+        text: image
+      };
+    }
+    socket.emit('sendMessage', message);
+    setValue('');
+    setFile();
+    setImage('');
+  }
   const sendText = async (e) => {
     let code = e.keyCode || e.which;
     if (!value) return;
-
     if (code === 13) {
-      let message = {};
-      if (!file) {
-        message = {
-          senderId: person._id,
-          receiverId: receiver._id,
-          conversationId: conversation._id,
-          type: 'text',
-          text: value
-        };
-      } else {
-        message = {
-          senderId: person._id,
-          receiverId: receiver._id,
-          conversationId: conversation._id,
-          type: 'media',
-          text: image
-        };
-      }
-      socket.emit('sendMessage', message);
-
-      setValue('');
-      setFile();
-      setImage('');
+      sendMessage()
     }
   }
   useEffect(() => {
@@ -61,7 +60,10 @@ const AllMessages = ({ person, receiver, conversation }) => {
         createdAt: Date.now()
       })
     })
-  }, []);
+    return () => {
+      // socket.off('getMessage');
+    }
+  }, [conversation]);
   const getMessageDetails = async (id) => {
     fetch(`http://localhost:3001/api/message/get/${id}`, {
       method: 'GET',
@@ -86,6 +88,10 @@ const AllMessages = ({ person, receiver, conversation }) => {
       setFile();
       setImage('');
     })
+    return () => {
+      socket.off("receiveConversation");
+      socket.off("getMessage");
+    }
   }, [conversation, receiver]);
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ transition: "smooth" })
@@ -124,6 +130,7 @@ const AllMessages = ({ person, receiver, conversation }) => {
         setFile={setFile}
         file={file}
         setImage={setImage}
+        sendMessage={sendMessage}
       />
     </Box>
   );

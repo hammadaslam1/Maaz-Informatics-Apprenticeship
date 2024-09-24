@@ -19,15 +19,15 @@ const getUser = (userId) => {
 };
 
 export const socketHandler = (io) => {
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     console.log("User connected:", socket.id);
 
-    User.find().select({
+    const users = await User.find().select({
       password: 0,
-      __v: 0
-    }).then((user) => {
-      socket.emit("getAllUsers", user);
+      __v: 0,
     });
+    socket.emit("getAllUsers", users);
+
     socket.on("getConversation", (data) => {
       Conversation.findOne({
         members: { $all: [data.senderId, data.receiverId] },
@@ -92,7 +92,6 @@ export const socketHandler = (io) => {
       }
 
       removeUser(socket.id);
-      io.emit("getUsers", users);
       io.emit("updateUserStatus", { onlineUsers });
     });
   });
