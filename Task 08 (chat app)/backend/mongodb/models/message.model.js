@@ -13,6 +13,11 @@ const MessageSchema = new mongoose.Schema(
     type: {
       type: String,
     },
+    status: {
+      type: String,
+      default: "notSent",
+      enum: ["sent", "delivered", "seen", "notSent"],
+    }
   },
   {
     timestamps: true,

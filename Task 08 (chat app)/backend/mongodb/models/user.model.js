@@ -19,6 +19,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  newChats: {
+    type: Array,
+    default: [],
+  }
 });
 
 const User = mongoose.model("User", userSchema);
