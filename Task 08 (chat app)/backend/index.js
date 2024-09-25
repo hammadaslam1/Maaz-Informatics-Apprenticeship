@@ -9,15 +9,14 @@ import { fileURLToPath } from "url";
 import userRoutes from "./mongodb/routes/user.routes.js";
 import messageRoutes from "./mongodb/routes/message.routes.js";
 import conversationRoutes from "./mongodb/routes/conversation.routes.js";
-import multer from "multer";
 import http from "http";
 import { Server } from "socket.io";
 import { socketHandler } from "./socket.js";
 
 dotenv.config();
 // const upload = multer()
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 mongoose
   .connect(process.env.CONN_STRING)
   .then(() => console.log("MongoDB Connected..."))
@@ -34,7 +33,7 @@ const io = new Server(server, {
 
 socketHandler(io);
 // app.use(upload.none());
-
+app.use("/files", express.static(path.join(__dirname, "files")));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));

@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty-pattern */
-import { Box } from "@mui/material";
+import { Alert, Box } from "@mui/material";
 import Footer from "../navbars/Footer";
 import SelfMessage from "./SelfMessage";
 import SenderMessage from "./SenderMessage";
@@ -38,7 +38,7 @@ const AllMessages = ({ person, conversation }) => {
         receiverId: person?._id,
         conversationId: conversation?._id,
         type: 'media',
-        text: image
+        text: value
       };
     }
     // alert(JSON.stringify(message))
@@ -64,7 +64,11 @@ const AllMessages = ({ person, conversation }) => {
       .then((response) => response.json())
       .then((data) => {
         console.log(data);
-        setMessages(data);
+        if (data.length > 0) {
+          setMessages(data);
+        } else {
+          setMessages([]);
+        }
       });
   }
   useEffect(() => {
@@ -144,6 +148,7 @@ const AllMessages = ({ person, conversation }) => {
       <Box sx={{ height: "79vh", overflowY: "scroll" }}>
         {messages && messages.length > 0 &&
           messages.map((message, i) => (
+            // message.senderId === person?._id && message.status === 'seen' && 
             <Box
               sx={{ padding: "1px 80px" }}
               key={i}
@@ -155,6 +160,20 @@ const AllMessages = ({ person, conversation }) => {
               }
             </Box>
           ))}
+        {/* {messages[messages.length - 1].status !== 'seen' && <Alert>new messages</Alert>}
+        {messages && messages.length > 0 &&
+          messages.map((message, i) => (
+            (message.status !== 'seen' || message.senderId === person?._id) && <Box
+              sx={{ padding: "1px 80px" }}
+              key={i}
+              ref={scrollRef}
+            >
+              {person?._id == message.senderId ?
+                <SenderMessage message={message} /> :
+                <SelfMessage message={message} />
+              }
+            </Box>
+          ))} */}
       </Box>
       <Footer
         sendText={sendText}

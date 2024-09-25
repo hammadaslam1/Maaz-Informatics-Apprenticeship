@@ -14,6 +14,12 @@ export const newMessage = async (req, res) => {
   }
 };
 
+export const uploadFile = async (req, res) => {
+  const { path, filename } = req.file
+  const newPath = path.replace(/\\/g, "/");
+  res.status(200).json({ path: newPath })
+}
+
 export const getMessage = async (req, res) => {
   try {
     const messages = await Message.find({ conversationId: req.params.id });

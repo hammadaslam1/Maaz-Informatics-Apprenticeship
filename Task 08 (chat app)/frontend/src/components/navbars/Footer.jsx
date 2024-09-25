@@ -12,10 +12,10 @@ const Footer = ({ sendText, value, setValue, setFile, file, setImage, sendMessag
   const getImage = async () => {
     if (file) {
       const data = new FormData();
-      data.append("name", file.name);
-      data.append("file", file);
+      // data.append("type", 'type');
+      data.append("text", file);
 
-      fetch('http://localhost:3001/api/file/upload', {
+      fetch('http://localhost:3001/api/message/upload', {
         method: 'POST',
         body: data,
       }).then((response) => {
@@ -24,7 +24,7 @@ const Footer = ({ sendText, value, setValue, setFile, file, setImage, sendMessag
         } else {
           throw new Error("Failed to upload image");
         }
-      }).then((data) => setImage(data))
+      }).then((data) => setValue(`http://192.168.2.189:3001/${data.path}`))
       // setImage(response.data);
     }
   }
