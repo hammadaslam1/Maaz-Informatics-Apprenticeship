@@ -12,8 +12,8 @@ const socket = io('http://localhost:3001');
 const ChatHeader = ({ person }) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [isOnline, setOnline] = useState(false)
-  const { selectedUser } = useSelector(state => state.conversation)
-  const userId = person?._id
+  const { currentUser } = useSelector(state => state.user)
+  const userId = currentUser?.user?._id
 
   useEffect(() => {
     socket.emit('userOnline', userId);
@@ -25,7 +25,7 @@ const ChatHeader = ({ person }) => {
     // return () => {
     //   socket.off('updateUserStatus');
     // };
-  }, [selectedUser]);
+  }, [person]);
   return (
     <Box
       sx={{
@@ -45,7 +45,7 @@ const ChatHeader = ({ person }) => {
         }}
       />
       <Box>
-        <Typography sx={{ marginLeft: "12px" }}>{selectedUser?.name}</Typography>
+        <Typography sx={{ marginLeft: "12px" }}>{person?.name}</Typography>
         <Typography
           sx={{
             fontSize: "12px",
@@ -53,7 +53,7 @@ const ChatHeader = ({ person }) => {
             marginLeft: "12px",
           }}
         >
-          {Object.keys(activeUsers).includes(selectedUser._id) ? "Online" : "Offline"}
+          {Object.keys(activeUsers).includes(person?._id) ? "Online" : "Offline"}
         </Typography>
       </Box>
       <Box sx={{ marginLeft: "auto" }}>

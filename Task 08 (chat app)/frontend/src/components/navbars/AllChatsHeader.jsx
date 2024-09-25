@@ -5,6 +5,7 @@ import SearchConversation from "../inputs/SearchConversation";
 import { AppBar, Toolbar } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { signoutSuccess } from "../../redux/userReducer/UserReducer";
+import { setConversationClosed } from "../../redux/userReducer/ConversationReducer";
 
 const AllChatsHeader = () => {
   const dispatch = useDispatch()
@@ -24,6 +25,7 @@ const AllChatsHeader = () => {
               name={"Hammad Aslam"}
               variant={"avatar"}
               onClick={() => {
+                dispatch(setConversationClosed())
                 dispatch(signoutSuccess())
               }}
             // disableRipple

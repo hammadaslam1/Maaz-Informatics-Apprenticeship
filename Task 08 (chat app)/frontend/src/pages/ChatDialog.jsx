@@ -1,7 +1,10 @@
 import { Box, Dialog } from "@mui/material";
 import LeftComponent from "../components/messenger/LeftComponent";
 import RightComponent from "../components/messenger/RightComponent";
+import { useEffect, useState } from "react";
+import io from 'socket.io-client';
 
+const socket = io('http://localhost:3001');
 const dialogStyle = {
   height: "95%",
   width: "100%",
@@ -14,6 +17,21 @@ const dialogStyle = {
 };
 
 const ChatDialog = () => {
+  const [users, setUsers] = useState(null);
+  useEffect(() => {
+    fetch('http://localhost:3001/api/user/getallusers', {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      }
+    }).then((response) => {
+      if (response.ok) {
+        return response.json();
+      } else {
+        throw new Error("Failed to fetch users");
+      }
+    }).then((data) => setUsers(data))
+  }, []);
   return (
     <Dialog
       open={true}
@@ -27,7 +45,7 @@ const ChatDialog = () => {
     >
       <Box sx={{ display: "flex", height: "100vh" }}>
         <Box sx={{ minWidth: "250px", flex: 1 }}>
-          <LeftComponent />
+          <LeftComponent users={users} />
         </Box>
         <Box
           sx={{

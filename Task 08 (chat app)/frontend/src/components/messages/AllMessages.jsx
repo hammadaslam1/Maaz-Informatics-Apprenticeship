@@ -12,31 +12,30 @@ import { useSelector } from "react-redux";
 
 const socket = io('http://localhost:3001');
 
-const AllMessages = ({ person, receiver, conversation }) => {
+const AllMessages = ({ person, conversation }) => {
   const [messages, setMessages] = useState([]);
   const [incomingMessage, setIncomingMessage] = useState(null);
   const [value, setValue] = useState();
   const [file, setFile] = useState();
   const [image, setImage] = useState();
   const [activeUsers, setActiveUsers] = useState(null);
-  const { currentUser } = useSelector(state => state.user)
-  const { selectedUser } = useSelector(state => state.conversation)
+  const currentUser = useSelector(state => state.user.currentUser?.user)
   const scrollRef = useRef();
 
   const sendMessage = () => {
     let message = {};
     if (!file) {
       message = {
-        senderId: person?._id,
-        receiverId: receiver?._id,
+        senderId: currentUser?._id,
+        receiverId: person?._id,
         conversationId: conversation?._id,
         type: 'text',
         text: value
       };
     } else {
       message = {
-        senderId: person?._id,
-        receiverId: receiver?._id,
+        senderId: currentUser?._id,
+        receiverId: person?._id,
         conversationId: conversation?._id,
         type: 'media',
         text: image
@@ -55,6 +54,19 @@ const AllMessages = ({ person, receiver, conversation }) => {
       sendMessage()
     }
   }
+  const getMessages = async () => {
+    await fetch(`http://localhost:3001/api/message/get/${conversation?._id}`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log(data);
+        setMessages(data);
+      });
+  }
   useEffect(() => {
     socket.on('newMessage', data => {
       setIncomingMessage({
@@ -72,10 +84,11 @@ const AllMessages = ({ person, receiver, conversation }) => {
     }
   }, [conversation]);
   useEffect(() => {
+    getMessages()
+  }, [conversation?._id, person?._id])
+  useEffect(() => {
     socket.on("receiveConversation", (data) => {
-      // if (data[0]?.conversationId === conversation?._id) {
       socket.emit('getMessages', data?._id)
-      // }
     })
     socket.on("getMessage", (data) => {
       if (data[0]?.conversationId === conversation?._id) {
@@ -107,23 +120,20 @@ const AllMessages = ({ person, receiver, conversation }) => {
       setMessages((prev) => [...prev, incomingMessage]);
   }, [incomingMessage, conversation]);
   useEffect(() => {
-    socket.emit('userOnline', person._id);
+    socket.emit('userOnline', currentUser._id);
 
     socket.on('updateUserStatus', ({ onlineUsers }) => {
       setActiveUsers(onlineUsers);
-      if (Object.keys(onlineUsers).includes(selectedUser._id)) {
+      if (Object.keys(onlineUsers).includes(person?._id)) {
         fetch('http://localhost:3001/api/message/update-delivered', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ receiverId: person._id, senderId: receiver._id }),
+          body: JSON.stringify({ receiverId: currentUser?._id, senderId: person?._id }),
         })
       }
     });
 
-    // return () => {
-    //   socket.off('updateUserStatus');
-    // };
-  }, [selectedUser]);
+  }, [person]);
   return (
     <Box
       sx={{
@@ -132,14 +142,14 @@ const AllMessages = ({ person, receiver, conversation }) => {
       }}
     >
       <Box sx={{ height: "79vh", overflowY: "scroll" }}>
-        {messages &&
+        {messages && messages.length > 0 &&
           messages.map((message, i) => (
             <Box
               sx={{ padding: "1px 80px" }}
               key={i}
               ref={scrollRef}
             >
-              {selectedUser?._id == message.senderId ?
+              {person?._id == message.senderId ?
                 <SenderMessage message={message} /> :
                 <SelfMessage message={message} />
               }
