@@ -51,7 +51,7 @@ export const socketHandler = (io) => {
     });
 
     socket.on("sendMessage", async (data) => {
-      console.log(data);
+      console.log(data)
       const status = Object.keys(onlineUsers).includes(data?.receiverId)
       const newMessage = new Message({
         ...data,
@@ -62,6 +62,7 @@ export const socketHandler = (io) => {
       Conversation.findByIdAndUpdate(data.conversationId, {
         message: data.text,
       }).then((conversation) => {
+        console.log(newMessage);
         io.to(data.conversationId).emit("newMessage", {
           ...newMessage,
         });

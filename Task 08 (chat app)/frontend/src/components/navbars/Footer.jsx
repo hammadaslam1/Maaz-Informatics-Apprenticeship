@@ -9,33 +9,33 @@ import { useEffect, useRef, useState } from "react";
 const Footer = ({ sendText, value, setValue, setFile, file, setImage, sendMessage }) => {
   const fileRef = useRef(null);
   const [message, setMessage] = useState("");
-  const getImage = async () => {
-    if (file) {
-      const data = new FormData();
-      // data.append("type", 'type');
-      data.append("text", file);
+  // const getImage = async () => {
+  //   if (file) {
+  //     const data = new FormData();
+  //     // data.append("type", 'type');
+  //     data.append("text", file);
 
-      fetch('http://localhost:3001/api/message/upload', {
-        method: 'POST',
-        body: data,
-      }).then((response) => {
-        if (response.ok) {
-          return response.json();
-        } else {
-          throw new Error("Failed to upload image");
-        }
-      }).then((data) => setValue(`http://192.168.2.189:3001/${data.path}`))
-      // setImage(response.data);
-    }
-  }
+  //     fetch('http://localhost:3001/api/message/upload', {
+  //       method: 'POST',
+  //       body: data,
+  //     }).then((response) => {
+  //       if (response.ok) {
+  //         return response.json();
+  //       } else {
+  //         throw new Error("Failed to upload image");
+  //       }
+  //     }).then((data) => setValue(`http://192.168.2.189:3001/${data.path}`))
+  //     // setImage(response.data);
+  //   }
+  // }
   const onFileChange = (e) => {
     setValue(e.target.files[0].name);
     setFile(e.target.files[0]);
   }
 
-  useEffect(() => {
-    getImage();
-  }, [file])
+  // useEffect(() => {
+  //   getImage();
+  // }, [file])
   return (
     <Box
       sx={{

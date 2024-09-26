@@ -8,6 +8,7 @@ const MediaMessage = ({ message }) => {
         style={{ width: 300, height: "100%", objectFit: "cover" }}
         src={message?.text}
         alt={message?.text}
+        onClick={()=>alert(message.type)}
       />
       <Typography
         sx={{

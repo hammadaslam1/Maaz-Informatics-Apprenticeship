@@ -3,6 +3,7 @@ import LeftComponent from "../components/messenger/LeftComponent";
 import RightComponent from "../components/messenger/RightComponent";
 import { useEffect, useState } from "react";
 import io from 'socket.io-client';
+import { useSelector } from "react-redux";
 
 const socket = io('http://localhost:3001');
 const dialogStyle = {
@@ -17,6 +18,7 @@ const dialogStyle = {
 };
 
 const ChatDialog = () => {
+  const { currentUser } = useSelector(state => state.user)
   const [users, setUsers] = useState(null);
   useEffect(() => {
     fetch('http://localhost:3001/api/user/getallusers', {
@@ -31,6 +33,21 @@ const ChatDialog = () => {
         throw new Error("Failed to fetch users");
       }
     }).then((data) => setUsers(data))
+  }, []);
+  useEffect(() => {
+    socket.emit('userOnline', currentUser._id);
+
+    // socket.on('updateUserStatus', ({ onlineUsers }) => {
+    //   // setActiveUsers(onlineUsers);
+    //   // if (Object.keys(onlineUsers).includes(person?._id)) {
+    //   //   fetch('http://localhost:3001/api/message/update-delivered', {
+    //   //     method: 'POST',
+    //   //     headers: { 'Content-Type': 'application/json' },
+    //   //     body: JSON.stringify({ receiverId: currentUser?._id, senderId: person?._id }),
+    //   //   })
+    //   // }
+    // });
+
   }, []);
   return (
     <Dialog

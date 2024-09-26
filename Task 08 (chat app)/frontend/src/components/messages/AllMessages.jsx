@@ -22,7 +22,7 @@ const AllMessages = ({ person, conversation }) => {
   const currentUser = useSelector(state => state.user.currentUser?.user)
   const scrollRef = useRef();
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     let message = {};
     if (!file) {
       message = {
@@ -33,12 +33,23 @@ const AllMessages = ({ person, conversation }) => {
         text: value
       };
     } else {
+      const base64File = await convertFileToBase64(file);
+      alert(base64File)
+      const type = base64File.split(':')[1].split('/')[0]
+      let fileType = type
+      if (type === 'application') {
+        fileType = 'document'
+      } else if (type === 'image') {
+        fileType = 'image'
+      } else if (type === 'video') {
+        fileType = 'video'
+      }
       message = {
         senderId: currentUser?._id,
         receiverId: person?._id,
         conversationId: conversation?._id,
-        type: 'media',
-        text: value
+        type: fileType,
+        text: base64File
       };
     }
     // alert(JSON.stringify(message))
@@ -71,6 +82,14 @@ const AllMessages = ({ person, conversation }) => {
         }
       });
   }
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
   useEffect(() => {
     socket.on('newMessage', data => {
       setIncomingMessage({
@@ -84,7 +103,7 @@ const AllMessages = ({ person, conversation }) => {
   }, [conversation]);
   useEffect(() => {
     if (conversation?._id) {
-      socket.emit("joinConversation", conversation?._id);  // Join the conversation room
+      socket.emit("joinConversation", conversation?._id);
     }
   }, [conversation]);
   useEffect(() => {

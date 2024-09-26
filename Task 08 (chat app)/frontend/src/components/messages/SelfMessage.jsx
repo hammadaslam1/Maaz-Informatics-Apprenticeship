@@ -17,7 +17,9 @@ const SelfMessage = ({ message }) => {
         wordBreak: "break-word",
       }}
     >
-      {message?.type === "media" ? (
+      {message?.type === "image" ? (
+        <MediaMessage message={message} />
+      ) : message?.type === "video" ? (
         <MediaMessage message={message} />
       ) : message?.type === "document" ? (
         <DocumentMessage message={message} />
