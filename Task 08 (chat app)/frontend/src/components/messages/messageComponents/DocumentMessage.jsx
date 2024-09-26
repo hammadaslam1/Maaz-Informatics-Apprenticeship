@@ -8,9 +8,9 @@ const DocumentMessage = ({ message }) => {
     <div style={{ position: "relative" }}>
       <div style={{ display: "flex" }}>
         {/* <img src={iconPDF} alt="pdf-icon" style={{ width: 80 }} /> */}
-        <FilePresentIcon style={{ width: 80, height: 80, marginLeft: 10 }} />
+        <FilePresentIcon style={{ width: 80, height: 80, marginBottom: 20, color: '#d22' }} />
         <Typography style={{ fontSize: 14 }}>
-          {message?.text.split("/").pop()}
+          {/* {message?.text.split("/").pop()} */}
         </Typography>
       </div>
       <Typography

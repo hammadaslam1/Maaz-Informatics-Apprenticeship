@@ -66,6 +66,7 @@ const AllMessages = ({ person, conversation }) => {
     }
   }
   const getMessages = async () => {
+    setMessages([])
     await fetch(`http://localhost:3001/api/message/get/${conversation?._id}`, {
       method: 'GET',
       headers: {
@@ -74,6 +75,8 @@ const AllMessages = ({ person, conversation }) => {
     })
       .then((response) => response.json())
       .then((data) => {
+        console.log(person?.name);
+
         console.log(data);
         if (data.length > 0) {
           setMessages(data);
@@ -108,7 +111,7 @@ const AllMessages = ({ person, conversation }) => {
   }, [conversation]);
   useEffect(() => {
     getMessages()
-  }, [conversation?._id, person?._id])
+  }, [conversation])
   useEffect(() => {
     socket.on("receiveConversation", (data) => {
       socket.emit('getMessages', data?._id)
