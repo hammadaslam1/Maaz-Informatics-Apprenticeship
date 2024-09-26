@@ -34,7 +34,7 @@ const AllMessages = ({ person, conversation }) => {
       };
     } else {
       const base64File = await convertFileToBase64(file);
-      alert(base64File)
+      console.log(base64File)
       const type = base64File.split(':')[1].split('/')[0]
       let fileType = type
       if (type === 'application') {
@@ -43,6 +43,8 @@ const AllMessages = ({ person, conversation }) => {
         fileType = 'image'
       } else if (type === 'video') {
         fileType = 'video'
+      } else if (type === 'audio') {
+        fileType = 'voice'
       }
       message = {
         senderId: currentUser?._id,

@@ -2,6 +2,8 @@ import { Box } from "@mui/material";
 import MediaMessage from "./messageComponents/MediaMessage";
 import TextMessage from "./messageComponents/TextMessage";
 import DocumentMessage from "./messageComponents/DocumentMessage";
+import VideoMessage from "./messageComponents/VideoMessage";
+import VoiceMessage from "./messageComponents/VoiceMessage";
 
 const SenderMessage = ({ message }) => {
   return (
@@ -19,9 +21,11 @@ const SenderMessage = ({ message }) => {
       {message?.type === "image" ? (
         <MediaMessage message={message} />
       ) : message?.type === "video" ? (
-        <MediaMessage message={message} />
+        <VideoMessage message={message} />
       ) : message?.type === "document" ? (
         <DocumentMessage message={message} />
+      ) : message?.type === "voice" ? (
+        <VoiceMessage message={message} />
       ) : message?.type === "text" ? (
         <TextMessage message={message} />
       ) : (
