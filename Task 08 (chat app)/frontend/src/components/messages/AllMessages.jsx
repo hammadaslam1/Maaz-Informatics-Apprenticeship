@@ -17,6 +17,7 @@ const AllMessages = ({ person, conversation }) => {
   const [incomingMessage, setIncomingMessage] = useState(null);
   const [value, setValue] = useState();
   const [file, setFile] = useState();
+  const [audio, setAudio] = useState();
   const [image, setImage] = useState();
   const [activeUsers, setActiveUsers] = useState(null);
   const currentUser = useSelector(state => state.user.currentUser?.user)
@@ -59,6 +60,16 @@ const AllMessages = ({ person, conversation }) => {
     setValue('');
     setFile();
     setImage('');
+  }
+  const sendVoiceMessage = async (voice, fileType) => {
+    const message = {
+      senderId: currentUser?._id,
+      receiverId: person?._id,
+      conversationId: conversation?._id,
+      type: fileType,
+      text: voice
+    };
+    socket.emit('sendMessage', message);
   }
   const sendText = async (e) => {
     let code = e.keyCode || e.which;
@@ -204,9 +215,11 @@ const AllMessages = ({ person, conversation }) => {
         value={value}
         setValue={setValue}
         setFile={setFile}
+        setAudio={setAudio}
         file={file}
         setImage={setImage}
         sendMessage={sendMessage}
+        sendVoiceMessage={sendVoiceMessage}
       />
     </Box>
   );

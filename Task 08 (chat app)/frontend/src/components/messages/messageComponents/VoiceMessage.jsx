@@ -7,8 +7,8 @@ const VoiceMessage = ({ message }) => {
     return (
         <div style={{ position: "relative" }}>
             <audio controls>
-                <source src={message?.text} type="audio/mpeg" />
                 <source src={message?.text} type="audio/wav" />
+                <source src={message?.text} type="audio/mpeg" />
                 <source src={message?.text} type="audio/mp3" />
                 <source src={message?.text} type="audio/aac" />
                 {/* <source src={message?.text} type="audio/aac" /> */}

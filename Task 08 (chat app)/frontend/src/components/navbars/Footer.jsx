@@ -5,37 +5,32 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import MicIcon from "@mui/icons-material/Mic";
 import ToggleButton from "../buttons/ToggleButton";
 import SendIcon from "@mui/icons-material/Send";
-import { useEffect, useRef, useState } from "react";
-const Footer = ({ sendText, value, setValue, setFile, file, setImage, sendMessage }) => {
+import { useRef } from "react";
+import { AudioRecorder } from 'react-audio-voice-recorder';
+const Footer = ({ sendText, value, setValue, setFile, setAudio, sendMessage, sendVoiceMessage }) => {
   const fileRef = useRef(null);
-  const [message, setMessage] = useState("");
-  // const getImage = async () => {
-  //   if (file) {
-  //     const data = new FormData();
-  //     // data.append("type", 'type');
-  //     data.append("text", file);
 
-  //     fetch('http://localhost:3001/api/message/upload', {
-  //       method: 'POST',
-  //       body: data,
-  //     }).then((response) => {
-  //       if (response.ok) {
-  //         return response.json();
-  //       } else {
-  //         throw new Error("Failed to upload image");
-  //       }
-  //     }).then((data) => setValue(`http://192.168.2.189:3001/${data.path}`))
-  //     // setImage(response.data);
-  //   }
-  // }
   const onFileChange = (e) => {
     setValue(e.target.files[0].name);
     setFile(e.target.files[0]);
   }
+  const convertFileToBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
+    });
+  };
+  const addAudioElement = (blob) => {
+    // const audioBlob = new Blob([blob], { type: 'audio/wav;codecs=opus' });
+    convertFileToBase64(blob).then((url) => {
+      // console.log(url);
 
-  // useEffect(() => {
-  //   getImage();
-  // }, [file])
+      sendVoiceMessage(url, 'voice')
+    })
+
+  };
   return (
     <Box
       sx={{
@@ -92,7 +87,15 @@ const Footer = ({ sendText, value, setValue, setFile, file, setImage, sendMessag
       {value?.length > 0 ? (
         <ToggleButton icon={<SendIcon />} onClick={() => sendMessage()} variant={"icon"} />
       ) : (
-        <ToggleButton icon={<MicIcon />} variant={"icon"} />
+        <AudioRecorder
+          onRecordingComplete={addAudioElement}
+          audioTrackConstraints={{
+            noiseSuppression: true,
+            echoCancellation: true,
+          }}
+          downloadOnSavePress={false}
+          downloadFileExtension="wav"
+        />
       )}
     </Box>
   );
