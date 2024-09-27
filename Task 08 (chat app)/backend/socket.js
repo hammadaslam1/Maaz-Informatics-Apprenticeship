@@ -11,10 +11,8 @@ const removeUser = (socketId) => {
 
 export const socketHandler = (io) => {
   io.on("connection", async (socket) => {
-    console.log("User connected:", socket.id);
     socket.on("joinConversation", (room) => {
       socket.join(room);
-      console.log("User joined room:", room);
     });
     const users = await User.find().select({
       password: 0,
@@ -26,13 +24,10 @@ export const socketHandler = (io) => {
       Conversation.findOne({
         members: { $all: [data.senderId, data.receiverId] },
       }).then((conversation) => {
-        console.log(conversation);
         io.emit("receiveConversation", conversation);
       });
     });
     socket.on("newConversation", async (data) => {
-      console.log(data);
-
       const exist = await Conversation.findOne({
         members: { $all: [data.receiverId, data.senderId] },
       });
@@ -51,7 +46,6 @@ export const socketHandler = (io) => {
     });
 
     socket.on("sendMessage", async (data) => {
-      console.log(data)
       const status = Object.keys(onlineUsers).includes(data?.receiverId)
       const newMessage = new Message({
         ...data,
@@ -62,7 +56,6 @@ export const socketHandler = (io) => {
       Conversation.findByIdAndUpdate(data.conversationId, {
         message: data.text,
       }).then((conversation) => {
-        console.log(newMessage);
         io.to(data.conversationId).emit("newMessage", {
           ...newMessage,
         });
@@ -73,11 +66,7 @@ export const socketHandler = (io) => {
     });
 
     socket.on("getMessages", (id) => {
-      // console.log(id);
-
       Message.find({ conversationId: id }).then((messages) => {
-        console.log('Got messages');
-
         io.to(id).emit("getMessage", messages);
       });
     });
@@ -86,19 +75,14 @@ export const socketHandler = (io) => {
       if (!onlineUsers[userId]) {
         onlineUsers[userId] = socket.id;
       }
-      console.log("Online users: ", onlineUsers);
-
       io.emit("updateUserStatus", { onlineUsers });
     });
 
     socket.on("disconnect", () => {
-      console.log("User disconnected:", socket.id);
-
       const disconnectedUserId = getUserIdBySocketId(socket.id);
       if (disconnectedUserId) {
         delete onlineUsers[disconnectedUserId];
       }
-
       removeUser(socket.id);
       io.emit("updateUserStatus", { onlineUsers });
     });
