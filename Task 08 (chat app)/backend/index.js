@@ -50,7 +50,11 @@ app.use(
     exposedHeaders: ["Set-Cookie", "Date", "ETag"],
   })
 );
-
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "https://hammad-chatapp.vercel.app");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
 // app.use("/files", express.static(path.join(__dirname, "files")));
 const port = process.env.port || 3002;
 const hostingPort = process.env.PORT || port;
