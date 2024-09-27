@@ -2,7 +2,6 @@
 import { Box, InputBase } from "@mui/material";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
-import MicIcon from "@mui/icons-material/Mic";
 import ToggleButton from "../buttons/ToggleButton";
 import SendIcon from "@mui/icons-material/Send";
 import { useRef } from "react";
@@ -23,10 +22,7 @@ const Footer = ({ sendText, value, setValue, setFile, setAudio, sendMessage, sen
     });
   };
   const addAudioElement = (blob) => {
-    // const audioBlob = new Blob([blob], { type: 'audio/wav;codecs=opus' });
     convertFileToBase64(blob).then((url) => {
-      // console.log(url);
-
       sendVoiceMessage(url, 'voice')
     })
 

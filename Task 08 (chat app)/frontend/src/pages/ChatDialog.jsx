@@ -1,11 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 import { Box, Dialog } from "@mui/material";
 import LeftComponent from "../components/messenger/LeftComponent";
 import RightComponent from "../components/messenger/RightComponent";
 import { useEffect, useState } from "react";
 import io from 'socket.io-client';
 import { useSelector } from "react-redux";
-
-const socket = io('http://localhost:3001');
+const server_url = process.env.REACT_APP_SERVER_URL
+const socket = io(server_url);
 const dialogStyle = {
   height: "95%",
   width: "100%",
@@ -21,7 +22,7 @@ const ChatDialog = () => {
   const { currentUser } = useSelector(state => state.user)
   const [users, setUsers] = useState(null);
   useEffect(() => {
-    fetch('http://localhost:3001/api/user/getallusers', {
+    fetch(`${server_url}/api/user/getallusers`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',

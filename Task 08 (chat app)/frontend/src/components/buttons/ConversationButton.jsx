@@ -7,8 +7,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { setConversation, setConversationSelected } from "../../redux/userReducer/ConversationReducer";
 import { formatDate } from "../../utils/CommonUtils";
 import io from 'socket.io-client';
-
-const socket = io('http://localhost:3001');
+const server_url = process.env.REACT_APP_SERVER_URL
+const socket = io(server_url);
 const ConversationButton = ({ user, me }) => {
   const [name, setName] = useState("Hammad Aslam");
   const [message, setMessage] = useState('');
@@ -23,28 +23,12 @@ const ConversationButton = ({ user, me }) => {
     socket.emit("newConversation", { senderId: me?._id, receiverId: user?._id })
   }
   useEffect(() => {
-    // fetch('http://localhost:3001/api/conversation/get', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify({ senderId: me?._id, receiverId: user?._id }),
-    // }).then(async (response) => {
-    //   if (response.ok) {
-    //     const data = await response.json();
-    //     setConversation(data);
-    //     setMessage(data.message)
-    //     setTime(formatDate(data.updatedAt))
-    //   }
-    // })
     socket.emit("getConversation", { senderId: me?._id, receiverId: user?._id })
     socket.on("receiveConversation", (data) => {
       socket.emit('joinConversation', data?._id)
       setConversation(data)
     })
     return () => {
-      // socket.off("receiveConversation")
-      // socket.off("getConversation")
     }
   }, [])
   return (

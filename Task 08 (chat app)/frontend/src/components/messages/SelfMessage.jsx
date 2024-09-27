@@ -23,9 +23,9 @@ const SelfMessage = ({ message }) => {
         <MediaMessage message={message} />
       ) : message?.type === "video" ? (
         <VideoMessage message={message} />
-      ) : message?.type === "document" ? (
+      ) : message?.type === "application" ? (
         <DocumentMessage message={message} />
-      ) : message?.type === "voice" ? (
+      ) : message?.type === "audio" ? (
         <VoiceMessage message={message} />
       ) : message?.type === "text" ? (
         <TextMessage message={message} />

@@ -3,6 +3,7 @@ import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { signinSuccess } from "../redux/userReducer/UserReducer";
 
+const server_url = process.env.REACT_APP_SERVER_URL
 const Register = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
@@ -12,7 +13,7 @@ const Register = () => {
     setForm({ ...form, [name]: value });
   };
   const handleRegister = async () => {
-    await fetch("http://localhost:3001/api/user/register", {
+    await fetch(`${server_url}/api/user/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -7,6 +7,7 @@ import {
   signoutSuccess,
 } from "../redux/userReducer/UserReducer";
 
+const server_url = process.env.REACT_APP_SERVER_URL
 const Login = () => {
   const navigate = useNavigate();
   const [form, setForm] = useState({});
@@ -17,7 +18,7 @@ const Login = () => {
     setForm({ ...form, [name]: value });
   };
   const handleLogin = async () => {
-    await fetch("http://localhost:3001/api/user/login", {
+    await fetch(`${server_url}/api/user/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

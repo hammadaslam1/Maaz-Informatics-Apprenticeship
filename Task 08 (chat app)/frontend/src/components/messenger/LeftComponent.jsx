@@ -5,8 +5,8 @@ import ConversationButton from "../buttons/ConversationButton";
 
 import { useSelector, useDispatch } from "react-redux";
 import io from 'socket.io-client';
-
-const socket = io('http://localhost:3001');
+const server_url = process.env.REACT_APP_SERVER_URL
+const socket = io(server_url);
 const LeftComponent = ({ users }) => {
   // const [users, setUsers] = useState(null);
   const { currentUser } = useSelector(state => state.user)

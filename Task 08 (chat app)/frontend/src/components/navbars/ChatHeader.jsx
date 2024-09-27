@@ -7,8 +7,8 @@ import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import { useSelector } from "react-redux";
 import io from 'socket.io-client';
-
-const socket = io('http://localhost:3001');
+const server_url = process.env.REACT_APP_SERVER_URL
+const socket = io(server_url);
 const ChatHeader = ({ person }) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [isOnline, setOnline] = useState(false)
@@ -17,14 +17,9 @@ const ChatHeader = ({ person }) => {
 
   useEffect(() => {
     socket.emit('userOnline', userId);
-
     socket.on('updateUserStatus', ({ onlineUsers }) => {
       setActiveUsers(onlineUsers);
     });
-
-    // return () => {
-    //   socket.off('updateUserStatus');
-    // };
   }, [person]);
   return (
     <Box

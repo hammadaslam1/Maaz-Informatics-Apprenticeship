@@ -9,8 +9,8 @@ import { useState, useRef, useEffect } from 'react'
 import { io } from 'socket.io-client';
 import { useSelector } from "react-redux";
 
-
-const socket = io('http://localhost:3001');
+const server_url = process.env.REACT_APP_SERVER_URL
+const socket = io(server_url);
 
 const AllMessages = ({ person, conversation }) => {
   const [messages, setMessages] = useState([]);
@@ -38,15 +38,6 @@ const AllMessages = ({ person, conversation }) => {
       console.log(base64File)
       const type = base64File.split(':')[1].split('/')[0]
       let fileType = type
-      if (type === 'application') {
-        fileType = 'document'
-      } else if (type === 'image') {
-        fileType = 'image'
-      } else if (type === 'video') {
-        fileType = 'video'
-      } else if (type === 'audio') {
-        fileType = 'voice'
-      }
       message = {
         senderId: currentUser?._id,
         receiverId: person?._id,
@@ -80,7 +71,7 @@ const AllMessages = ({ person, conversation }) => {
   }
   const getMessages = async () => {
     setMessages([])
-    await fetch(`http://localhost:3001/api/message/get/${conversation?._id}`, {
+    await fetch(`${server_url}/api/message/get/${conversation?._id}`, {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json',
