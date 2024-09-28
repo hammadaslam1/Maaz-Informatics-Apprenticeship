@@ -17,16 +17,23 @@ const ConversationButton = ({ user, me }) => {
   const [message, setMessage] = useState("");
   const [time, setTime] = useState("");
   const [messageCount, setMessageCount] = useState(0);
+  const [newMessages, setNewMessages] = useState(me?.newChats);
   const [conversation, setConversation] = useState(null);
   const { selectedUser } = useSelector((state) => state.conversation);
   const dispatch = useDispatch();
 
-  const getUser = async () => {
+  const createConversation = async () => {
+    if (selectedUser?._id !== user?._id) {
+      socket.emit("newConversation", {
+        senderId: me?._id,
+        receiverId: user?._id,
+      });
+    }
     dispatch(setConversationSelected(user));
-
-    socket.emit("newConversation", {
-      senderId: me?._id,
+    socket.emit("seenAllMessages", {
+      conversationId: conversation?._id,
       receiverId: user?._id,
+      senderId: me?._id,
     });
   };
   const getConversation = async () => {
@@ -45,12 +52,28 @@ const ConversationButton = ({ user, me }) => {
       });
   };
 
+  const getUser = async () => {
+    fetch(`${server_url}/api/user/getuser/${me?._id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setNewMessages(data?.newChats);
+      });
+  };
+
   useEffect(() => {
     getConversation();
-    socket.on("newMessage", (data) => {
-      getConversation();
-    });
+    getUser();
   }, [conversation]);
+  useEffect(() => {
+    const newChats = newMessages;
+    const length = newChats?.filter((item) => item === user?._id).length;
+    setMessageCount(length);
+  }, [newMessages]);
   return (
     <Button
       sx={{
@@ -62,14 +85,14 @@ const ConversationButton = ({ user, me }) => {
         textTransform: "capitalize",
         color: "#000",
       }}
-      onClick={() => getUser()}
+      onClick={() => createConversation()}
     >
-      <Box>
+      <Box sx={{ height: "40px", width: "40px" }}>
         <Avatar src="" children={`${user.name.split(" ")[0][0]}`} />
       </Box>
-      <Box style={{ width: "100%", paddingLeft: "13px" }}>
+      <Box style={{ flex: 1, paddingLeft: "13px" }}>
         <Box sx={{ display: "flex" }}>
-          <Typography>{user?.name}</Typography>
+          <Typography sx={{ textAlign: "left" }}>{user?.name}</Typography>
           {conversation && (
             <Typography
               sx={{
@@ -89,6 +112,9 @@ const ConversationButton = ({ user, me }) => {
               display: "block",
               color: "rgba(0,0,0,0.6)",
               fontSize: "14px",
+              width: "130px",
+              overflow: "hidden",
+              textAlign: "left",
             }}
           >
             {message}

@@ -49,11 +49,24 @@ export const socketHandler = (io) => {
         io.emit("receiveConversation", conversation);
       });
     });
-
+    socket.on("seenAllMessages", async (data) => {
+      await User.findByIdAndUpdate(data?.senderId, {
+        $pull: { newChats: data?.receiverId },
+      });
+      await Message.updateMany(
+        {
+          conversationId: data?.conversationId,
+          receiverId: data?.senderId,
+        },
+        {
+          status: "seen",
+        }
+      );
+    });
     socket.on("sendMessage", async (data) => {
       const status = Object.keys(onlineUsers).includes(data?.receiverId);
-      await User.findByIdAndUpdate(data?.receiverId, {
-        $pull: { newChats: data?.senderId },
+      await User.findByIdAndUpdate(data?.senderId, {
+        $pull: { newChats: data?.receiverId },
       });
       await Message.updateMany(
         {

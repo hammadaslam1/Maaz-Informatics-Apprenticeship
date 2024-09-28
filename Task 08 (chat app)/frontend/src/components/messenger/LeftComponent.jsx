@@ -4,22 +4,23 @@ import { useEffect, useState } from "react";
 import ConversationButton from "../buttons/ConversationButton";
 
 import { useSelector, useDispatch } from "react-redux";
-import io from 'socket.io-client';
-const server_url = process.env.REACT_APP_SERVER_URL
+import io from "socket.io-client";
+const server_url = process.env.REACT_APP_SERVER_URL;
 const socket = io(server_url);
 const LeftComponent = ({ users }) => {
   // const [users, setUsers] = useState(null);
-  const { currentUser } = useSelector(state => state.user)
+  const { currentUser } = useSelector((state) => state.user);
   // const {conversation} = useSelector(state => state.conversation)
-  const [conversation, setConversation] = useState(null)
-  const dispatch = useDispatch()
+  const [conversation, setConversation] = useState(null);
+  const dispatch = useDispatch();
 
   return (
-    <Box>
-      <Box sx={{ height: 'calc(100vh - 30px)' }}>
+    <Box sx={{ width: "100%" }}>
+      <Box sx={{ height: "calc(100vh - 30px)", width: "100%" }}>
         <AllChatsHeader />
-        <Box sx={{ overflowY: 'auto', height: '77vh' }}>
-          {users && users.length > 0 &&
+        <Box sx={{ overflowY: "auto", height: "77vh" }}>
+          {users &&
+            users.length > 0 &&
             users.map(
               (user, i) =>
                 user?._id !== currentUser?.user?._id && (
