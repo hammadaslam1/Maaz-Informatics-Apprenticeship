@@ -3,9 +3,9 @@ import { Box, Dialog } from "@mui/material";
 import LeftComponent from "../components/messenger/LeftComponent";
 import RightComponent from "../components/messenger/RightComponent";
 import { useEffect, useState } from "react";
-import io from 'socket.io-client';
+import io from "socket.io-client";
 import { useSelector } from "react-redux";
-const server_url = process.env.REACT_APP_SERVER_URL
+const server_url = process.env.REACT_APP_SERVER_URL;
 const socket = io(server_url);
 const dialogStyle = {
   height: "95%",
@@ -19,36 +19,12 @@ const dialogStyle = {
 };
 
 const ChatDialog = () => {
-  const { currentUser } = useSelector(state => state.user)
+  const { currentUser } = useSelector((state) => state.user);
   const [users, setUsers] = useState(null);
   useEffect(() => {
-    fetch(`${server_url}/api/user/getallusers`, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json',
-      }
-    }).then((response) => {
-      if (response.ok) {
-        return response.json();
-      } else {
-        throw new Error("Failed to fetch users");
-      }
-    }).then((data) => setUsers(data))
-  }, []);
-  useEffect(() => {
-    socket.emit('userOnline', currentUser._id);
-
-    // socket.on('updateUserStatus', ({ onlineUsers }) => {
-    //   // setActiveUsers(onlineUsers);
-    //   // if (Object.keys(onlineUsers).includes(person?._id)) {
-    //   //   fetch('http://localhost:3001/api/message/update-delivered', {
-    //   //     method: 'POST',
-    //   //     headers: { 'Content-Type': 'application/json' },
-    //   //     body: JSON.stringify({ receiverId: currentUser?._id, senderId: person?._id }),
-    //   //   })
-    //   // }
-    // });
-
+    socket.emit("userOnline", currentUser._id);
+    socket.emit("userRegistered");
+    socket.on("getAllUsers", (users) => setUsers(users));
   }, []);
   return (
     <Dialog

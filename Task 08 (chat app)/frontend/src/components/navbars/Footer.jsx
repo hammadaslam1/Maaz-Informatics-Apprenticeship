@@ -23,7 +23,7 @@ const Footer = ({ sendText, value, setValue, setFile, setAudio, sendMessage, sen
   };
   const addAudioElement = (blob) => {
     convertFileToBase64(blob).then((url) => {
-      sendVoiceMessage(url, 'voice')
+      sendVoiceMessage(url, 'audio')
     })
 
   };

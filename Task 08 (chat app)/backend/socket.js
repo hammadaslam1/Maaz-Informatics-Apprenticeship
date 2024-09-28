@@ -11,15 +11,25 @@ const removeUser = (socketId) => {
 
 export const socketHandler = (io) => {
   io.on("connection", async (socket) => {
+    const conversations = await getAllConversations();
+    if (conversations.length > 0) {
+      conversations.forEach((conversation) => {
+        socket.join(conversation?._id);
+      });
+    }
+    socket.emit("getAllUsers", await getAllUsers());
     socket.on("joinConversation", (room) => {
       socket.join(room);
     });
-    const users = await User.find().select({
-      password: 0,
-      __v: 0,
+    socket.on("userRegistered", async () => {
+      const newCon = await getAllConversations();
+      if (newCon.length > 0) {
+        newCon.forEach((conversation) => {
+          socket.join(conversation?._id);
+        });
+      }
+      socket.emit("getAllUsers", await getAllUsers());
     });
-    socket.emit("getAllUsers", users);
-
     socket.on("getConversation", (data) => {
       Conversation.findOne({
         members: { $all: [data.senderId, data.receiverId] },
@@ -31,37 +41,52 @@ export const socketHandler = (io) => {
       const exist = await Conversation.findOne({
         members: { $all: [data.receiverId, data.senderId] },
       });
-
-      if (exist) {
-        return;
-      }
+      if (exist) return;
       const newConversation = new Conversation({
         members: [data.senderId, data.receiverId],
       });
       newConversation.save().then((conversation) => {
-        console.log(conversation);
-
         io.emit("receiveConversation", conversation);
       });
     });
 
     socket.on("sendMessage", async (data) => {
-      const status = Object.keys(onlineUsers).includes(data?.receiverId)
+      const status = Object.keys(onlineUsers).includes(data?.receiverId);
+      await User.findByIdAndUpdate(data?.receiverId, {
+        $pull: { newChats: data?.senderId },
+      });
+      await Message.updateMany(
+        {
+          conversationId: data?.conversationId,
+          receiverId: data?.senderId,
+        },
+        {
+          status: "seen",
+        }
+      );
       const newMessage = new Message({
         ...data,
-        status: status ? 'delivered' : 'sent'
+        status: status ? "delivered" : "sent",
       });
       await newMessage.save();
-
+      await User.findByIdAndUpdate(data?.receiverId, {
+        $push: {
+          newChats: data?.senderId,
+        },
+      });
       Conversation.findByIdAndUpdate(data.conversationId, {
-        message: data.text,
+        message: data.type === "text" ? data.text : "media",
       }).then((conversation) => {
         io.to(data.conversationId).emit("newMessage", {
           ...newMessage,
         });
-        Message.find({ conversationId: data.conversationId }).then((messages) => {
-          io.to(data.conversationId).emit("getMessage", messages);
-        });
+        Message.find({ conversationId: data.conversationId }).then(
+          async (messages) => {
+            io.emit("getAllUsers", await getAllUsers());
+            io.emit("receiveConversation", conversation);
+            io.to(data.conversationId).emit("getMessage", messages);
+          }
+        );
       });
     });
 
@@ -71,10 +96,11 @@ export const socketHandler = (io) => {
       });
     });
 
-    socket.on("userOnline", (userId) => {
+    socket.on("userOnline", async (userId) => {
       if (!onlineUsers[userId]) {
         onlineUsers[userId] = socket.id;
       }
+      io.emit("getAllUsers", await getAllUsers());
       io.emit("updateUserStatus", { onlineUsers });
     });
 
@@ -92,5 +118,14 @@ export const socketHandler = (io) => {
     return Object.keys(onlineUsers).find(
       (key) => onlineUsers[key] === socketId
     );
+  };
+
+  const getAllConversations = async () => {
+    const conversations = await Conversation.find({});
+    return conversations;
+  };
+  const getAllUsers = async () => {
+    const users = await User.find().select({ password: 0 });
+    return users;
   };
 };
