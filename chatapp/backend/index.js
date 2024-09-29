@@ -59,6 +59,7 @@ server.listen(hostingPort, () => {
 });
 app.get('/',checkServerIp)
 app.use("/api/user", (req, res)=>{
+  console.log("fuytfuytr")
   res.json("running well")
 });
 // app.use("/api/user", userRoutes);
