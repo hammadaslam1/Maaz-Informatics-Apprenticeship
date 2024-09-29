@@ -57,12 +57,12 @@ const hostingPort = process.env.PORT || port;
 server.listen(hostingPort, () => {
   console.log(`Server is running on port ${hostingPort}`);
 });
-app.use('/',checkServerIp)
-app.use("/chat/user", (req, res)=>{
-  console.log("fuytfuytr")
-  res.json("running well")
-});
-// app.use("/chat/user", userRoutes);
+// app.use('/',checkServerIp)
+// app.use("/chat/user", (req, res)=>{
+//   console.log("fuytfuytr")
+//   res.json("running well")
+// });
+app.use("/chat/user", userRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/server", IpRoute);
