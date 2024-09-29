@@ -13,7 +13,7 @@ import IpRoute from "./mongodb/routes/server.route.js";
 import http from "http";
 import { Server } from "socket.io";
 import { socketHandler } from "./socket.js";
-import { checkServerIp } from "../controllers/server.controller.js";
+import { checkServerIp } from "./mongodb/controllers/server.controller.js";
 
 dotenv.config();
 // const upload = multer()
