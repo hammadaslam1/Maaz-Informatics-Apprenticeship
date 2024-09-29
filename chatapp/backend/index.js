@@ -56,11 +56,13 @@ const hostingPort = process.env.PORT || port;
 server.listen(hostingPort, () => {
   console.log(`Server is running on port ${hostingPort}`);
 });
-
+app.use('/',(res,req)=>{
+  res.status(200).json({message:"main chall gya hoon"})
+})
 app.use("/api/user", userRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/server", IpRoute);
 app.all("*", (req, res) => {
-  res.status(404).send("route does not exist");
+  res.status(404).send("wrong route");
 });
