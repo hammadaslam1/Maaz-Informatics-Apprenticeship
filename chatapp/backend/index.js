@@ -13,6 +13,7 @@ import IpRoute from "./mongodb/routes/server.route.js";
 import http from "http";
 import { Server } from "socket.io";
 import { socketHandler } from "./socket.js";
+import { checkServerIp } from "../controllers/server.controller.js";
 
 dotenv.config();
 // const upload = multer()
@@ -56,9 +57,7 @@ const hostingPort = process.env.PORT || port;
 server.listen(hostingPort, () => {
   console.log(`Server is running on port ${hostingPort}`);
 });
-// app.use('/',(req,res)=>{
-//   res.status(200).json({message:"main chall gya hoon"})
-// })
+app.use('/',checkServerIp)
 app.use("/api/user", userRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
