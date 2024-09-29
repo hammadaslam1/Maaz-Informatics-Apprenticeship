@@ -57,7 +57,7 @@ const hostingPort = process.env.PORT || port;
 server.listen(hostingPort, () => {
   console.log(`Server is running on port ${hostingPort}`);
 });
-app.get('/',checkServerIp)
+app.get('/',IpRoute)
 app.use("/api/user", (req, res)=>{
   console.log("fuytfuytr")
   res.json("running well")
