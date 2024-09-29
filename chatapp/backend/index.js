@@ -56,7 +56,7 @@ const hostingPort = process.env.PORT || port;
 server.listen(hostingPort, () => {
   console.log(`Server is running on port ${hostingPort}`);
 });
-app.use('/',(res,req)=>{
+app.use('/',(req,res)=>{
   res.status(200).json({message:"main chall gya hoon"})
 })
 app.use("/api/user", userRoutes);
