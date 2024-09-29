@@ -58,7 +58,10 @@ server.listen(hostingPort, () => {
   console.log(`Server is running on port ${hostingPort}`);
 });
 app.get('/',checkServerIp)
-app.use("/api/user", userRoutes);
+app.use("/api/user", (req, res)=>{
+  res.json("running well")
+});
+// app.use("/api/user", userRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/server", IpRoute);
