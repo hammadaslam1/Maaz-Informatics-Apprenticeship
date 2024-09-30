@@ -11,6 +11,7 @@ const removeUser = (socketId) => {
 
 export const socketHandler = (io) => {
   io.on("connection", async (socket) => {
+    console.log("user connected: ", socket.id)
     const conversations = await getAllConversations();
     if (conversations.length > 0) {
       conversations.forEach((conversation) => {

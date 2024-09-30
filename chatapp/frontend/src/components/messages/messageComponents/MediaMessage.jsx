@@ -17,8 +17,8 @@ const MediaMessage = ({ message }) => {
       >
         <CardMedia
           component="img"
-          width={300}
-          height="100%"
+          // width={300}
+          // height={300}
           image={server_url + message?.text}
           alt="media not available"
           popovertarget="image"

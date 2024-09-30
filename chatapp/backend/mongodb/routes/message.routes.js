@@ -8,17 +8,7 @@ const router = express.Router();
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        let dir = ''
-        // if (req.body.type === 'media') {
-        //     dir = path.join("files", 'media');
-        // } else if (req.body.type === 'document') {
-        //     dir = path.join("files", 'document');
-        // } else if (req.body.type === 'voice') {
-        //     dir = path.join("files", 'voice');
-        // } else {
-        //     dir = path.join("files", 'garbage');
-        // }
-        dir = path.join("files");
+        let dir = path.join("files");
         if (!fs.existsSync(dir)) {
             fs.mkdirSync(dir, { recursive: true });
         }
