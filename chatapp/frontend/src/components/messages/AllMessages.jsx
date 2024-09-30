@@ -5,11 +5,11 @@ import { Alert, Box } from "@mui/material";
 import Footer from "../navbars/Footer";
 import SelfMessage from "./SelfMessage";
 import SenderMessage from "./SenderMessage";
-import { useState, useRef, useEffect } from 'react'
-import { io } from 'socket.io-client';
+import { useState, useRef, useEffect } from "react";
+import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 
-const server_url = process.env.REACT_APP_SERVER_URL
+const server_url = process.env.REACT_APP_SERVER_URL;
 const socket = io(server_url);
 
 const AllMessages = ({ person, conversation }) => {
@@ -20,7 +20,7 @@ const AllMessages = ({ person, conversation }) => {
   const [audio, setAudio] = useState();
   const [image, setImage] = useState();
   const [activeUsers, setActiveUsers] = useState(null);
-  const currentUser = useSelector(state => state.user.currentUser?.user)
+  const currentUser = useSelector((state) => state.user.currentUser?.user);
   const scrollRef = useRef();
 
   const sendMessage = async () => {
@@ -30,57 +30,83 @@ const AllMessages = ({ person, conversation }) => {
         senderId: currentUser?._id,
         receiverId: person?._id,
         conversationId: conversation?._id,
-        type: 'text',
-        text: value
+        type: "text",
+        text: value,
       };
     } else {
-      const base64File = await convertFileToBase64(file);
-      console.log(base64File)
-      const type = base64File.split(':')[1].split('/')[0]
-      let fileType = type
+      // const base64File = await convertFileToBase64(file);
+      // console.log(base64File);
+      const type = file.split(".");
+      let fileType = await getFileType(type[type?.length - 1]);
       message = {
         senderId: currentUser?._id,
         receiverId: person?._id,
         conversationId: conversation?._id,
         type: fileType,
-        text: base64File
+        text: file,
       };
     }
     // alert(JSON.stringify(message))
-    socket.emit('sendMessage', message);
-    setValue('');
+    socket.emit("sendMessage", message);
+    setValue("");
     setFile();
-    setImage('');
-  }
+    setImage("");
+  };
+  const getFileType = (extension) => {
+    const documentExtensions = [
+      "pdf",
+      "doc",
+      "docx",
+      "xls",
+      "xlsx",
+      "ppt",
+      "pptx",
+      "txt",
+    ];
+    const imageExtensions = ["jpg", "jpeg", "png", "gif", "bmp", "svg", "webp"];
+    const videoExtensions = ["mp4", "mkv", "webm", "avi", "mov", "wmv"];
+    const audioExtensions = ["mp3", "wav", "ogg", "flac", "aac"];
+
+    if (documentExtensions.includes(extension)) {
+      return "application";
+    } else if (imageExtensions.includes(extension)) {
+      return "image";
+    } else if (videoExtensions.includes(extension)) {
+      return "video";
+    } else if (audioExtensions.includes(extension)) {
+      return "audio";
+    } else {
+      return "text";
+    }
+  };
   const sendVoiceMessage = async (voice, fileType) => {
     const message = {
       senderId: currentUser?._id,
       receiverId: person?._id,
       conversationId: conversation?._id,
       type: fileType,
-      text: voice
+      text: voice,
     };
-    socket.emit('sendMessage', message);
-  }
+    socket.emit("sendMessage", message);
+  };
   const sendText = async (e) => {
     let code = e.keyCode || e.which;
     if (!value) return;
     if (code === 13) {
-      sendMessage()
+      sendMessage();
     }
-  }
+  };
   const getMessages = async () => {
-    setMessages([])
+    setMessages([]);
     await fetch(`${server_url}/api/message/get/${conversation?._id}`, {
-      method: 'GET',
+      method: "GET",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
     })
       .then((response) => response.json())
       .then((data) => {
         console.log(person?.name);
-
         console.log(data);
         if (data.length > 0) {
           setMessages(data);
@@ -88,7 +114,7 @@ const AllMessages = ({ person, conversation }) => {
           setMessages([]);
         }
       });
-  }
+  };
   const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -98,15 +124,15 @@ const AllMessages = ({ person, conversation }) => {
     });
   };
   useEffect(() => {
-    socket.on('newMessage', data => {
+    socket.on("newMessage", (data) => {
       setIncomingMessage({
         ...data.message,
-        createdAt: Date.now()
-      })
-    })
+        createdAt: Date.now(),
+      });
+    });
     return () => {
-      socket.off('newMessage');
-    }
+      socket.off("newMessage");
+    };
   }, [conversation]);
   useEffect(() => {
     if (conversation?._id) {
@@ -114,55 +140,57 @@ const AllMessages = ({ person, conversation }) => {
     }
   }, [conversation]);
   useEffect(() => {
-    getMessages()
-  }, [conversation])
+    getMessages();
+  }, [conversation]);
   useEffect(() => {
     socket.on("receiveConversation", (data) => {
-      socket.emit('getMessages', data?._id)
-    })
+      socket.emit("getMessages", data?._id);
+    });
     socket.on("getMessage", (data) => {
       if (data[0]?.conversationId === conversation?._id) {
-
         console.log(data);
         setMessages((prev) => data);
-        setValue('');
+        setValue("");
         setFile();
-        setImage('');
+        setImage("");
       } else {
-        console.log('not in the conversation');
+        console.log("not in the conversation");
         setMessages([]);
-        setValue('');
+        setValue("");
         setFile();
-        setImage('');
+        setImage("");
         setIncomingMessage(null);
       }
-    })
+    });
     return () => {
       socket.off("receiveConversation");
       socket.off("getMessage");
-    }
+    };
   }, [conversation]);
   useEffect(() => {
-    scrollRef.current?.scrollIntoView({ transition: "smooth" })
+    scrollRef.current?.scrollIntoView({ transition: "smooth" });
   }, [messages]);
   useEffect(() => {
-    incomingMessage && conversation?.members?.includes(incomingMessage.senderId) &&
+    incomingMessage &&
+      conversation?.members?.includes(incomingMessage.senderId) &&
       setMessages((prev) => [...prev, incomingMessage]);
   }, [incomingMessage, conversation]);
   useEffect(() => {
-    socket.emit('userOnline', currentUser._id);
+    socket.emit("userOnline", currentUser._id);
 
-    socket.on('updateUserStatus', ({ onlineUsers }) => {
+    socket.on("updateUserStatus", ({ onlineUsers }) => {
       setActiveUsers(onlineUsers);
       if (Object.keys(onlineUsers).includes(person?._id)) {
-        fetch('http://localhost:3001/api/message/update-delivered', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ receiverId: currentUser?._id, senderId: person?._id }),
-        })
+        fetch("http://localhost:3001/api/message/update-delivered", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            receiverId: currentUser?._id,
+            senderId: person?._id,
+          }),
+        });
       }
     });
-
   }, [person]);
   return (
     <Box
@@ -172,18 +200,16 @@ const AllMessages = ({ person, conversation }) => {
       }}
     >
       <Box sx={{ height: "79vh", overflowY: "scroll" }}>
-        {messages && messages.length > 0 &&
+        {messages &&
+          messages.length > 0 &&
           messages.map((message, i) => (
-            // message.senderId === person?._id && message.status === 'seen' && 
-            <Box
-              sx={{ padding: "1px 80px" }}
-              key={i}
-              ref={scrollRef}
-            >
-              {person?._id == message.senderId ?
-                <SenderMessage message={message} /> :
+            // message.senderId === person?._id && message.status === 'seen' &&
+            <Box sx={{ padding: "1px 80px" }} key={i} ref={scrollRef}>
+              {person?._id == message.senderId ? (
+                <SenderMessage message={message} />
+              ) : (
                 <SelfMessage message={message} />
-              }
+              )}
             </Box>
           ))}
         {/* {messages[messages.length - 1].status !== 'seen' && <Alert>new messages</Alert>}

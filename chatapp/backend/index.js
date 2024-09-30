@@ -36,22 +36,26 @@ const io = new Server(server, {
 socketHandler(io);
 // app.use(upload.none());
 app.use("/files", express.static(path.join(__dirname, "files")));
-app.use(bodyParser.json());
+app.use(
+  bodyParser.json({
+    limit: "50mb",
+  })
+);
 app.use(cookieParser());
 app.use(express.urlencoded({ extended: false }));
 app.use(
   cors({
-    origin: [
-      "http://localhost:3000",
-      "https://hammad-chatapp.vercel.app",
-      "*",
-    ],
+    origin: ["http://localhost:3000", "https://hammad-chatapp.vercel.app", "*"],
     credentials: true,
     exposedHeaders: ["Set-Cookie", "Date", "ETag"],
   })
 );
-
-// app.use("/files", express.static(path.join(__dirname, "files")));
+app.use((req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.setHeader("Access-Control-Allow-Credentials", "true");
+  next();
+});
+app.use("/files", express.static(path.join(__dirname, "files")));
 const port = process.env.port || 3002;
 const hostingPort = process.env.PORT || port;
 server.listen(hostingPort, () => {
@@ -62,7 +66,7 @@ server.listen(hostingPort, () => {
 //   console.log("fuytfuytr")
 //   res.json("running well")
 // });
-app.use("/chat/user", userRoutes);
+app.use("/api/user", userRoutes);
 app.use("/api/conversation", conversationRoutes);
 app.use("/api/message", messageRoutes);
 app.use("/api/server", IpRoute);

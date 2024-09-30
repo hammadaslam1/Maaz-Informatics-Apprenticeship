@@ -5,14 +5,36 @@ import AttachFileIcon from "@mui/icons-material/AttachFile";
 import ToggleButton from "../buttons/ToggleButton";
 import SendIcon from "@mui/icons-material/Send";
 import { useRef } from "react";
-import { AudioRecorder } from 'react-audio-voice-recorder';
-const Footer = ({ sendText, value, setValue, setFile, setAudio, sendMessage, sendVoiceMessage }) => {
+import { AudioRecorder } from "react-audio-voice-recorder";
+import { io } from "socket.io-client";
+
+const server_url = process.env.REACT_APP_SERVER_URL;
+const socket = io(server_url);
+const Footer = ({
+  sendText,
+  value,
+  setValue,
+  setFile,
+  setAudio,
+  sendMessage,
+  sendVoiceMessage,
+}) => {
   const fileRef = useRef(null);
 
-  const onFileChange = (e) => {
-    setValue(e.target.files[0].name);
-    setFile(e.target.files[0]);
-  }
+  const onFileChange = async (e) => {
+    const { files } = e.target;
+    const formData = new FormData();
+    formData.append("text", files[0]);
+    setValue(files[0].name);
+    // setFile(files[0]);
+    await fetch(`${server_url}/api/message/upload`, {
+      method: "POST",
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => setFile(`/${data.path}`))
+      .catch((error) => alert(error));
+  };
   const convertFileToBase64 = (file) => {
     return new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -23,9 +45,8 @@ const Footer = ({ sendText, value, setValue, setFile, setAudio, sendMessage, sen
   };
   const addAudioElement = (blob) => {
     convertFileToBase64(blob).then((url) => {
-      sendVoiceMessage(url, 'audio')
-    })
-
+      sendVoiceMessage(url, "audio");
+    });
   };
   return (
     <Box
@@ -81,7 +102,11 @@ const Footer = ({ sendText, value, setValue, setFile, setAudio, sendMessage, sen
         />
       </Box>
       {value?.length > 0 ? (
-        <ToggleButton icon={<SendIcon />} onClick={() => sendMessage()} variant={"icon"} />
+        <ToggleButton
+          icon={<SendIcon />}
+          onClick={() => sendMessage()}
+          variant={"icon"}
+        />
       ) : (
         <AudioRecorder
           onRecordingComplete={addAudioElement}
