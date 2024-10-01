@@ -31,7 +31,6 @@ const Footer = ({
   const fileRef = useRef(null);
   const [open, setOpen] = useState(false);
 
-  
   const onFileChange = async (e) => {
     const { files } = e.target;
     const formData = new FormData();
@@ -44,7 +43,7 @@ const Footer = ({
     })
       .then((response) => response.json())
       .then((data) => {
-        alert(data.path);
+        // alert(data.path);
         setFile(`/${data.path}`);
         setOpen(true);
       })
@@ -77,9 +76,7 @@ const Footer = ({
           color: "#919191",
         },
       }}
-      
     >
-      
       <ToggleButton icon={<EmojiEmotionsIcon />} variant={"icon"} />
       <label htmlFor="fileInput">
         <ToggleButton

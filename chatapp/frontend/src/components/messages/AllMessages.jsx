@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty-pattern */
-import { Alert, Box, CardMedia, ToggleButton } from "@mui/material";
+import { Alert, Box, CardMedia } from "@mui/material";
 import Footer from "../navbars/Footer";
 import SelfMessage from "./SelfMessage";
 import SenderMessage from "./SenderMessage";
@@ -9,6 +9,8 @@ import { useState, useRef, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import SendIcon from "@mui/icons-material/Send";
+import CancelIcon from "@mui/icons-material/Cancel";
+import ToggleButton from "../buttons/ToggleButton";
 
 const server_url = process.env.REACT_APP_SERVER_URL;
 const socket = io(server_url);
@@ -255,12 +257,18 @@ const AllMessages = ({ person, conversation }) => {
               objectFit: "cover",
             }}
           />
-          <ToggleButton
-          sx={{ position: 'absolute'}}
-          icon={<SendIcon />}
-          onClick={() => sendMessage()}
-          variant={"icon"}
-        />
+          <div className="flex justify-between">
+            <ToggleButton
+              icon={<CancelIcon />}
+              onClick={() => handleReset()}
+              variant={"icon"}
+            />
+            <ToggleButton
+              icon={<SendIcon />}
+              onClick={() => sendMessage()}
+              variant={"icon"}
+            />
+          </div>
         </div>
       )}
       <Footer
