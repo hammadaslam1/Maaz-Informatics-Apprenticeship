@@ -10,6 +10,7 @@ import multer from "multer";
 import fs from "fs";
 import path from "path";
 import { base64ToMulterMiddleware } from "../middlewares/file.middleware.js";
+import { uploadImage } from "../controllers/file.upload.js";
 
 const router = express.Router();
 
@@ -19,10 +20,11 @@ const storage = multer.diskStorage({
     if (!fs.existsSync(dir)) {
       fs.mkdirSync(dir, { recursive: true });
     }
+    console.log(file);
     cb(null, dir);
   },
   filename: (req, file, cb) => {
-    cb(null, file.originalname);
+    cb(null, `file-${new Date().getTime()}.${path.extname(file.originalname)}`);
   },
 });
 
@@ -40,10 +42,13 @@ router.post("/update-delivered", setDelivered);
 router.post("/update-seen", setSeen);
 router.post(
   "/send-image",
-//   (req, res, next) => console.log("send image"),
-  base64ToMulterMiddleware,
-  upload.single("file"),
-  uploadFile
+  //   base64ToMulterMiddleware,
+  //   (req, res, next) => {
+  //     console.log("send image");
+  //     next();
+  //   },
+  //   upload.single("file"),
+  uploadImage
 );
 
 export default router;
