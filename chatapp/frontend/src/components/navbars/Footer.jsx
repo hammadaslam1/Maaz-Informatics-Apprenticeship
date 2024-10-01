@@ -1,10 +1,18 @@
 /* eslint-disable react-hooks/exhaustive-deps */
-import { Box, InputBase } from "@mui/material";
+import {
+  Box,
+  CardMedia,
+  Fade,
+  InputBase,
+  Paper,
+  Popper,
+  Typography,
+} from "@mui/material";
 import EmojiEmotionsIcon from "@mui/icons-material/EmojiEmotions";
 import AttachFileIcon from "@mui/icons-material/AttachFile";
 import ToggleButton from "../buttons/ToggleButton";
 import SendIcon from "@mui/icons-material/Send";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import { AudioRecorder } from "react-audio-voice-recorder";
 import { io } from "socket.io-client";
 
@@ -18,9 +26,12 @@ const Footer = ({
   setAudio,
   sendMessage,
   sendVoiceMessage,
+  file,
 }) => {
   const fileRef = useRef(null);
+  const [open, setOpen] = useState(false);
 
+  
   const onFileChange = async (e) => {
     const { files } = e.target;
     const formData = new FormData();
@@ -32,7 +43,11 @@ const Footer = ({
       body: formData,
     })
       .then((response) => response.json())
-      .then((data) => setFile(`/${data.path}`))
+      .then((data) => {
+        alert(data.path);
+        setFile(`/${data.path}`);
+        setOpen(true);
+      })
       .catch((error) => alert(error));
   };
   const convertFileToBase64 = (file) => {
@@ -62,7 +77,9 @@ const Footer = ({
           color: "#919191",
         },
       }}
+      
     >
+      
       <ToggleButton icon={<EmojiEmotionsIcon />} variant={"icon"} />
       <label htmlFor="fileInput">
         <ToggleButton

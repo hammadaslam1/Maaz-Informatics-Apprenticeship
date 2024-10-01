@@ -15,10 +15,12 @@ export const newMessage = async (req, res) => {
 };
 
 export const uploadFile = async (req, res) => {
-  const { path, filename } = req.file
+  const { path, filename } = req.file;
   const newPath = path.replace(/\\/g, "/");
-  res.status(200).json({ path: newPath })
-}
+  console.log(newPath);
+
+  res.status(200).json({ path: newPath });
+};
 
 export const getMessage = async (req, res) => {
   try {
@@ -29,7 +31,6 @@ export const getMessage = async (req, res) => {
   }
 };
 
-
 export const setDelivered = async (req, res) => {
   const { senderId, receiverId } = req.body;
 
@@ -38,9 +39,9 @@ export const setDelivered = async (req, res) => {
       {
         senderId: senderId,
         receiverId: receiverId,
-        status: 'sent'
+        status: "sent",
       },
-      { $set: { status: 'delivered' } }
+      { $set: { status: "delivered" } }
     );
 
     if (updatedMessages.nModified === 0) {
@@ -60,9 +61,9 @@ export const setSeen = async (req, res) => {
       {
         senderId: senderId,
         receiverId: receiverId,
-        status: 'delivered'
+        status: "delivered",
       },
-      { $set: { status: 'seen' } }
+      { $set: { status: "seen" } }
     );
 
     if (updatedMessages.nModified === 0) {

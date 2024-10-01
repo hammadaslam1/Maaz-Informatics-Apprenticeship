@@ -11,7 +11,7 @@ const removeUser = (socketId) => {
 
 export const socketHandler = (io) => {
   io.on("connection", async (socket) => {
-    console.log("user connected: ", socket.id)
+    console.log("user connected: ", socket.id);
     const conversations = await getAllConversations();
     if (conversations.length > 0) {
       conversations.forEach((conversation) => {
@@ -116,6 +116,7 @@ export const socketHandler = (io) => {
       }
       io.emit("getAllUsers", await getAllUsers());
       io.emit("updateUserStatus", { onlineUsers });
+      console.log(onlineUsers);
     });
 
     socket.on("disconnect", () => {

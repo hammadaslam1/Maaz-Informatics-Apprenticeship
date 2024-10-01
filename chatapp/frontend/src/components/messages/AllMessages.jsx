@@ -1,13 +1,14 @@
 /* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable no-unused-vars */
 /* eslint-disable no-empty-pattern */
-import { Alert, Box } from "@mui/material";
+import { Alert, Box, CardMedia, ToggleButton } from "@mui/material";
 import Footer from "../navbars/Footer";
 import SelfMessage from "./SelfMessage";
 import SenderMessage from "./SenderMessage";
 import { useState, useRef, useEffect } from "react";
 import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
+import SendIcon from "@mui/icons-material/Send";
 
 const server_url = process.env.REACT_APP_SERVER_URL;
 const socket = io(server_url);
@@ -123,6 +124,17 @@ const AllMessages = ({ person, conversation }) => {
       reader.onerror = (error) => reject(error);
     });
   };
+  const handleReset = () => {
+    // setOpen(false);
+    setValue("");
+    setFile(null);
+    setAudio(null);
+  };
+  const handleKeyDown = (event) => {
+    if (event.key === "Escape") {
+      handleReset();
+    }
+  };
   useEffect(() => {
     socket.on("newMessage", (data) => {
       setIncomingMessage({
@@ -198,6 +210,7 @@ const AllMessages = ({ person, conversation }) => {
         backgroundImage: `url(${"https://user-images.githubusercontent.com/15075759/28719144-86dc0f70-73b1-11e7-911d-60d70fcded21.png"})`,
         backgroundSize: "70%",
       }}
+      onKeyDown={handleKeyDown}
     >
       <Box sx={{ height: "79vh", overflowY: "scroll" }}>
         {messages &&
@@ -227,13 +240,36 @@ const AllMessages = ({ person, conversation }) => {
             </Box>
           ))} */}
       </Box>
+      {file && (
+        <div className="aspect-square bg-[#dcf8c6] p-2 ml-4 z-50 absolute bottom-1 rounded-md">
+          <CardMedia
+            component="img"
+            // width={300}
+            // height={300}
+            image={server_url + file}
+            alt="media not available"
+            sx={{
+              background: "linear-gradient(to top, #cccccc 0%, #ffffff 100%)",
+              width: 400,
+              height: 400,
+              objectFit: "cover",
+            }}
+          />
+          <ToggleButton
+          sx={{ position: 'absolute'}}
+          icon={<SendIcon />}
+          onClick={() => sendMessage()}
+          variant={"icon"}
+        />
+        </div>
+      )}
       <Footer
         sendText={sendText}
         value={value}
         setValue={setValue}
         setFile={setFile}
-        setAudio={setAudio}
         file={file}
+        setAudio={setAudio}
         setImage={setImage}
         sendMessage={sendMessage}
         sendVoiceMessage={sendVoiceMessage}
