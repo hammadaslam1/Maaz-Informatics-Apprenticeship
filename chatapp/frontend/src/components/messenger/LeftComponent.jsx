@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Box, Divider } from "@mui/material";
 import AllChatsHeader from "../navbars/AllChatsHeader";
 import { useEffect, useState } from "react";
@@ -8,9 +9,7 @@ import io from "socket.io-client";
 const server_url = process.env.REACT_APP_SERVER_URL;
 const socket = io(server_url);
 const LeftComponent = ({ users }) => {
-  // const [users, setUsers] = useState(null);
   const { currentUser } = useSelector((state) => state.user);
-  // const {conversation} = useSelector(state => state.conversation)
   const [conversation, setConversation] = useState(null);
   const dispatch = useDispatch();
 

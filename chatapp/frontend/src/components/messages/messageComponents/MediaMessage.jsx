@@ -53,9 +53,6 @@ const MediaMessage = ({ message }) => {
             className="h-[80vh] aspect-auto transition-all"
             src={server_url + message?.text}
             alt="media not available"
-            style={{
-              background: "linear-gradient(to top, #cccccc 0%, #ffffff 100%)",
-            }}
           />
         </div>
       </Modal>

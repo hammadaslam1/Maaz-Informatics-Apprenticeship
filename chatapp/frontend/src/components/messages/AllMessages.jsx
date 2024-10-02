@@ -140,7 +140,7 @@ const AllMessages = ({ person, conversation }) => {
   useEffect(() => {
     socket.on("newMessage", (data) => {
       setIncomingMessage({
-        ...data.message,
+        ...data?.message,
         createdAt: Date.now(),
       });
     });
@@ -186,7 +186,7 @@ const AllMessages = ({ person, conversation }) => {
   }, [messages]);
   useEffect(() => {
     incomingMessage &&
-      conversation?.members?.includes(incomingMessage.senderId) &&
+      conversation?.members?.includes(incomingMessage?.senderId) &&
       setMessages((prev) => [...prev, incomingMessage]);
   }, [incomingMessage, conversation]);
   useEffect(() => {
@@ -220,40 +220,22 @@ const AllMessages = ({ person, conversation }) => {
           messages.map((message, i) => (
             // message.senderId === person?._id && message.status === 'seen' &&
             <Box sx={{ padding: "1px 80px" }} key={i} ref={scrollRef}>
-              {person?._id == message.senderId ? (
+              {person?._id == message?.senderId ? (
                 <SenderMessage message={message} />
               ) : (
                 <SelfMessage message={message} />
               )}
             </Box>
           ))}
-        {/* {messages[messages.length - 1].status !== 'seen' && <Alert>new messages</Alert>}
-        {messages && messages.length > 0 &&
-          messages.map((message, i) => (
-            (message.status !== 'seen' || message.senderId === person?._id) && <Box
-              sx={{ padding: "1px 80px" }}
-              key={i}
-              ref={scrollRef}
-            >
-              {person?._id == message.senderId ?
-                <SenderMessage message={message} /> :
-                <SelfMessage message={message} />
-              }
-            </Box>
-          ))} */}
       </Box>
       {file && (
-        <div className="aspect-square bg-[#dcf8c6] p-2 ml-4 z-50 absolute bottom-1 rounded-md">
+        <div className="w-96 aspect-auto bg-[#dcf8c6] p-2 ml-4 z-50 absolute bottom-1 rounded-md">
           <CardMedia
             component="img"
-            // width={300}
-            // height={300}
             image={server_url + file}
-            alt="media not available"
+            alt="media not supported"
             sx={{
               background: "linear-gradient(to top, #cccccc 0%, #ffffff 100%)",
-              width: 400,
-              height: 400,
               objectFit: "cover",
             }}
           />

@@ -22,7 +22,7 @@ const ChatDialog = () => {
   const { currentUser } = useSelector((state) => state.user);
   const [users, setUsers] = useState(null);
   useEffect(() => {
-    socket.emit("userOnline", currentUser._id);
+    socket.emit("userOnline", currentUser?._id);
     socket.emit("userRegistered");
     socket.on("getAllUsers", (users) => setUsers(users));
   }, []);
