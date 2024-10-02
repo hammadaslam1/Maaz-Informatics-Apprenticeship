@@ -68,20 +68,9 @@ export const socketHandler = (io) => {
     });
     socket.on("sendMessage", async (data) => {
       const status = Object.keys(onlineUsers).includes(data?.receiverId);
-      // const room = io.sockets.adapter.rooms.get(data?.conversationId);
       const receiverSocketId = onlineUsers[`${data?.receiverId}`];
-      // const chats = io.sockets.sockets.get(receiverSocketId);
-      // const array = Array.from(chats.rooms);
-      // console.log("chat rooms: ", array[array.length - 1]);
-      // console.log("chat rooms: ", array);
-      // console.log("conversationId: ", data?.conversationId);
-      // console.log("room: ", Array.from(room));
-      console.log(receiverSocketId);
-
       const isRecipientInRoom =
         currentChats[receiverSocketId] === data?.conversationId;
-      // room && Array.from(room).includes(receiverSocketId);
-      console.log("isRecipientInRoom: ", isRecipientInRoom);
 
       await User.findByIdAndUpdate(data?.senderId, {
         $pull: { newChats: data?.receiverId },
@@ -100,11 +89,12 @@ export const socketHandler = (io) => {
         status: isRecipientInRoom ? "seen" : status ? "delivered" : "sent",
       });
       await newMessage.save();
-      await User.findByIdAndUpdate(data?.receiverId, {
-        $push: {
-          newChats: data?.senderId,
-        },
-      });
+      !isRecipientInRoom &&
+        (await User.findByIdAndUpdate(data?.receiverId, {
+          $push: {
+            newChats: data?.senderId,
+          },
+        }));
       Conversation.findByIdAndUpdate(data.conversationId, {
         message: data.type === "text" ? data.text : "media",
       }).then((conversation) => {
@@ -140,6 +130,7 @@ export const socketHandler = (io) => {
       const disconnectedUserId = getUserIdBySocketId(socket.id);
       if (disconnectedUserId) {
         delete onlineUsers[disconnectedUserId];
+        delete currentChats[disconnectedUserId];
       }
       removeUser(socket.id);
       io.emit("updateUserStatus", { onlineUsers });
