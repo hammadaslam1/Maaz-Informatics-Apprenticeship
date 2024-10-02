@@ -6,14 +6,15 @@ import Footer from "../navbars/Footer";
 import SelfMessage from "./SelfMessage";
 import SenderMessage from "./SenderMessage";
 import { useState, useRef, useEffect } from "react";
-import { io } from "socket.io-client";
 import { useSelector } from "react-redux";
 import SendIcon from "@mui/icons-material/Send";
 import CancelIcon from "@mui/icons-material/Cancel";
 import ToggleButton from "../buttons/ToggleButton";
+import ImageDisplay from "./displayBox/ImageDisplay";
+import VideoDisplay from "./displayBox/VideoDisplay";
+import socket from "../../socket.js";
 
 const server_url = process.env.REACT_APP_SERVER_URL;
-const socket = io(server_url);
 
 const AllMessages = ({ person, conversation }) => {
   const [messages, setMessages] = useState([]);
@@ -49,7 +50,6 @@ const AllMessages = ({ person, conversation }) => {
         text: file,
       };
     }
-    // alert(JSON.stringify(message))
     socket.emit("sendMessage", message);
     setValue("");
     setFile();
@@ -229,16 +229,9 @@ const AllMessages = ({ person, conversation }) => {
           ))}
       </Box>
       {file && (
-        <div className="w-96 aspect-auto bg-[#dcf8c6] p-2 ml-4 z-50 absolute bottom-1 rounded-md">
-          <CardMedia
-            component="img"
-            image={server_url + file}
-            alt="media not supported"
-            sx={{
-              background: "linear-gradient(to top, #cccccc 0%, #ffffff 100%)",
-              objectFit: "cover",
-            }}
-          />
+        <div className="h-96 aspect-auto bg-[#dcf8c6] p-2 ml-4 z-50 absolute bottom-1 rounded-md">
+          {/* <ImageDisplay source={server_url + file} /> */}
+          <VideoDisplay source={server_url + file} />
           <div className="flex justify-between">
             <ToggleButton
               icon={<CancelIcon />}

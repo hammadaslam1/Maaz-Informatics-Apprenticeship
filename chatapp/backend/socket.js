@@ -4,6 +4,7 @@ import User from "./mongodb/models/user.model.js";
 
 let users = [];
 let onlineUsers = {};
+let currentChats = {};
 
 const removeUser = (socketId) => {
   users = users.filter((user) => user.socketId !== socketId);
@@ -21,6 +22,7 @@ export const socketHandler = (io) => {
     socket.emit("getAllUsers", await getAllUsers());
     socket.on("joinConversation", (room) => {
       socket.join(room);
+      currentChats[socket.id] = room;
     });
     socket.on("userRegistered", async () => {
       const newCon = await getAllConversations();
@@ -66,6 +68,21 @@ export const socketHandler = (io) => {
     });
     socket.on("sendMessage", async (data) => {
       const status = Object.keys(onlineUsers).includes(data?.receiverId);
+      // const room = io.sockets.adapter.rooms.get(data?.conversationId);
+      const receiverSocketId = onlineUsers[`${data?.receiverId}`];
+      // const chats = io.sockets.sockets.get(receiverSocketId);
+      // const array = Array.from(chats.rooms);
+      // console.log("chat rooms: ", array[array.length - 1]);
+      // console.log("chat rooms: ", array);
+      // console.log("conversationId: ", data?.conversationId);
+      // console.log("room: ", Array.from(room));
+      console.log(receiverSocketId);
+
+      const isRecipientInRoom =
+        currentChats[receiverSocketId] === data?.conversationId;
+      // room && Array.from(room).includes(receiverSocketId);
+      console.log("isRecipientInRoom: ", isRecipientInRoom);
+
       await User.findByIdAndUpdate(data?.senderId, {
         $pull: { newChats: data?.receiverId },
       });
@@ -80,7 +97,7 @@ export const socketHandler = (io) => {
       );
       const newMessage = new Message({
         ...data,
-        status: status ? "delivered" : "sent",
+        status: isRecipientInRoom ? "seen" : status ? "delivered" : "sent",
       });
       await newMessage.save();
       await User.findByIdAndUpdate(data?.receiverId, {

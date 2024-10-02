@@ -6,9 +6,9 @@ import { AppBar, Toolbar } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { signoutSuccess } from "../../redux/userReducer/UserReducer";
 import { setConversationClosed } from "../../redux/userReducer/ConversationReducer";
-
+import socket from "../../socket.js";
 const AllChatsHeader = () => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
   return (
     <>
       <AppBar
@@ -25,10 +25,10 @@ const AllChatsHeader = () => {
               name={"Hammad Aslam"}
               variant={"avatar"}
               onClick={() => {
-                dispatch(setConversationClosed())
-                dispatch(signoutSuccess())
+                dispatch(setConversationClosed());
+                dispatch(signoutSuccess());
               }}
-            // disableRipple
+              // disableRipple
             />
           </div>
           <div>

@@ -27,6 +27,7 @@ const Footer = ({
   sendMessage,
   sendVoiceMessage,
   file,
+  handleEmoji,
 }) => {
   const fileRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -77,7 +78,11 @@ const Footer = ({
         },
       }}
     >
-      <ToggleButton icon={<EmojiEmotionsIcon />} variant={"icon"} />
+      <ToggleButton
+        icon={<EmojiEmotionsIcon />}
+        variant={"icon"}
+        onClick={handleEmoji}
+      />
       <label htmlFor="fileInput">
         <ToggleButton
           icon={<AttachFileIcon sx={{ transform: "rotate(40deg)" }} />}

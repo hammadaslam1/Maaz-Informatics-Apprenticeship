@@ -9,9 +9,8 @@ import {
   setConversationSelected,
 } from "../../redux/userReducer/ConversationReducer";
 import { formatDate } from "../../utils/CommonUtils";
-import io from "socket.io-client";
+import socket from "../../socket.js";
 const server_url = process.env.REACT_APP_SERVER_URL;
-const socket = io(server_url);
 const ConversationButton = ({ user, me }) => {
   const [name, setName] = useState("Hammad Aslam");
   const [message, setMessage] = useState("");

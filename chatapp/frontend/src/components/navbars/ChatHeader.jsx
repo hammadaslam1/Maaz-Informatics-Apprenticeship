@@ -6,9 +6,8 @@ import ToggleButton from "../buttons/ToggleButton";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
 import SearchIcon from "@mui/icons-material/Search";
 import { useSelector } from "react-redux";
-import io from 'socket.io-client';
+import socket from '../../socket.js'
 const server_url = process.env.REACT_APP_SERVER_URL
-const socket = io(server_url);
 const ChatHeader = ({ person }) => {
   const [activeUsers, setActiveUsers] = useState([]);
   const [isOnline, setOnline] = useState(false)

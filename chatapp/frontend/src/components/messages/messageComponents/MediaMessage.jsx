@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { CardActionArea, CardMedia, Modal, Typography } from "@mui/material";
 import { downloadMedia, formatDate } from "../../../utils/CommonUtils";
 import { useState } from "react";
@@ -17,8 +18,8 @@ const MediaMessage = ({ message }) => {
       >
         <CardMedia
           component="img"
-          // width={300}
-          // height={300}
+          width={300}
+          height={300}
           image={server_url + message?.text}
           alt="media not available"
           popovertarget="image"
@@ -41,7 +42,6 @@ const MediaMessage = ({ message }) => {
             bottom: 0,
             right: 0,
             paddingRight: "3px",
-            // textShadow: "0 0 15px #000",
           }}
         >
           {formatDate(message?.createdAt)}

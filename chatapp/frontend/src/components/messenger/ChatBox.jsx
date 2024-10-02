@@ -5,9 +5,7 @@ import ChatHeader from "../navbars/ChatHeader";
 import AllMessages from "../messages/AllMessages";
 import { useSelector } from "react-redux";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 const server_url = process.env.REACT_APP_SERVER_URL;
-// const socket = io(server_url);
 const ChatBox = () => {
   const { currentUser } = useSelector((state) => state.user);
   const { selectedUser } = useSelector((state) => state.conversation);

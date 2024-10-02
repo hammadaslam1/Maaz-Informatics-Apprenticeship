@@ -3,10 +3,9 @@ import { Box, Dialog } from "@mui/material";
 import LeftComponent from "../components/messenger/LeftComponent";
 import RightComponent from "../components/messenger/RightComponent";
 import { useEffect, useState } from "react";
-import io from "socket.io-client";
 import { useSelector } from "react-redux";
-const server_url = process.env.REACT_APP_SERVER_URL;
-const socket = io(server_url);
+import socket from "../socket.js";
+
 const dialogStyle = {
   height: "95%",
   width: "100%",
