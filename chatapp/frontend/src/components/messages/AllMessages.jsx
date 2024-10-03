@@ -13,10 +13,13 @@ import ToggleButton from "../buttons/ToggleButton";
 import ImageDisplay from "./displayBox/ImageDisplay";
 import VideoDisplay from "./displayBox/VideoDisplay";
 import socket from "../../socket.js";
+import EmojiBox from "./displayBox/EmojiBox";
+import { Emoji } from "emoji-picker-react";
 
 const server_url = process.env.REACT_APP_SERVER_URL;
 
 const AllMessages = ({ person, conversation }) => {
+  const [emoji, setEmoji] = useState(false);
   const [messages, setMessages] = useState([]);
   const [incomingMessage, setIncomingMessage] = useState(null);
   const [value, setValue] = useState();
@@ -39,7 +42,6 @@ const AllMessages = ({ person, conversation }) => {
       };
     } else {
       // const base64File = await convertFileToBase64(file);
-      // console.log(base64File);
       const type = file.split(".");
       let fileType = await getFileType(type[type?.length - 1]);
       message = {
@@ -109,8 +111,6 @@ const AllMessages = ({ person, conversation }) => {
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(person?.name);
-        console.log(data);
         if (data.length > 0) {
           setMessages(data);
         } else {
@@ -162,13 +162,11 @@ const AllMessages = ({ person, conversation }) => {
     });
     socket.on("getMessage", (data) => {
       if (data[0]?.conversationId === conversation?._id) {
-        console.log(data);
         setMessages((prev) => data);
         setValue("");
         setFile();
         setImage("");
       } else {
-        console.log("not in the conversation");
         setMessages([]);
         setValue("");
         setFile();
@@ -190,7 +188,7 @@ const AllMessages = ({ person, conversation }) => {
       setMessages((prev) => [...prev, incomingMessage]);
   }, [incomingMessage, conversation]);
   useEffect(() => {
-    socket.emit("userOnline", currentUser._id);
+    socket.emit("userOnline", currentUser?._id);
 
     socket.on("updateUserStatus", ({ onlineUsers }) => {
       setActiveUsers(onlineUsers);
@@ -246,9 +244,15 @@ const AllMessages = ({ person, conversation }) => {
           </div>
         </div>
       )}
+      {emoji && (
+        <div className="bg-[#dcf8c6] p-2 ml-4 z-55 absolute bottom-16 rounded-md">
+          <EmojiBox setValue={setValue} />
+        </div>
+      )}
       <Footer
         sendText={sendText}
         value={value}
+        setEmoji={setEmoji}
         setValue={setValue}
         setFile={setFile}
         file={file}

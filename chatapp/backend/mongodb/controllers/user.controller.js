@@ -53,7 +53,6 @@ export const login = async (req, res) => {
     }
     const token = createToken(user._id);
     const { password, ...rest } = user._doc;
-    console.log(token);
 
     res
       .status(200)

@@ -27,7 +27,7 @@ const Footer = ({
   sendMessage,
   sendVoiceMessage,
   file,
-  handleEmoji,
+  setEmoji,
 }) => {
   const fileRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -79,9 +79,21 @@ const Footer = ({
       }}
     >
       <ToggleButton
-        icon={<EmojiEmotionsIcon />}
+        icon={
+          // <EmojiEmotionsIcon
+          //   sx={{
+          //     color: "#ffbb00",
+          //     filter: "drop-shadow(0 0 2px #6e6e6e)",
+          //   }}
+          // />
+          <img
+            src="https://cdn.jsdelivr.net/npm/emoji-datasource-apple/img/apple/64/1f600.png"
+            alt=""
+            className="w-7 aspect-square"
+          />
+        }
         variant={"icon"}
-        onClick={handleEmoji}
+        onClick={() => setEmoji((prev) => !prev)}
       />
       <label htmlFor="fileInput">
         <ToggleButton
