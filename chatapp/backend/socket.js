@@ -121,9 +121,9 @@ export const socketHandler = (io) => {
       if (!onlineUsers[userId]) {
         onlineUsers[userId] = socket.id;
       }
+      console.log(onlineUsers);
       io.emit("getAllUsers", await getAllUsers());
       io.emit("updateUserStatus", { onlineUsers });
-      console.log(onlineUsers);
     });
 
     socket.on("disconnect", () => {

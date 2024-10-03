@@ -28,6 +28,7 @@ const Footer = ({
   sendVoiceMessage,
   file,
   setEmoji,
+  setType,
 }) => {
   const fileRef = useRef(null);
   const [open, setOpen] = useState(false);
@@ -46,6 +47,8 @@ const Footer = ({
       .then((data) => {
         // alert(data.path);
         setFile(`/${data.path}`);
+        const type = data.path;
+        setType(type.split("."));
         setOpen(true);
       })
       .catch((error) => alert(error));

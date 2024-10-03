@@ -27,7 +27,7 @@ const VoiceMessage = ({ message }) => {
                     right: 0,
                 }}
             >
-                <GetAppIcon
+                {/* <GetAppIcon
                     onClick={(e) => downloadMedia(e, message?.text)}
                     fontSize="small"
                     style={{
@@ -35,7 +35,7 @@ const VoiceMessage = ({ message }) => {
                         border: "1px solid grey",
                         borderRadius: "50%",
                     }}
-                />
+                /> */}
                 {formatDate(message?.createdAt)}
             </Typography>
         </div>

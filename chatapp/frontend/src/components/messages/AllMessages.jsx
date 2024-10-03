@@ -22,13 +22,14 @@ const AllMessages = ({ person, conversation }) => {
   const [emoji, setEmoji] = useState(false);
   const [messages, setMessages] = useState([]);
   const [incomingMessage, setIncomingMessage] = useState(null);
-  const [value, setValue] = useState();
+  const [value, setValue] = useState("");
   const [file, setFile] = useState();
   const [audio, setAudio] = useState();
   const [image, setImage] = useState();
   const [activeUsers, setActiveUsers] = useState(null);
   const currentUser = useSelector((state) => state.user.currentUser?.user);
   const scrollRef = useRef();
+  const [type, setType] = useState(null);
 
   const sendMessage = async () => {
     let message = {};
@@ -42,7 +43,7 @@ const AllMessages = ({ person, conversation }) => {
       };
     } else {
       // const base64File = await convertFileToBase64(file);
-      const type = file.split(".");
+      setType(file.split("."));
       let fileType = await getFileType(type[type?.length - 1]);
       message = {
         senderId: currentUser?._id,
@@ -228,8 +229,14 @@ const AllMessages = ({ person, conversation }) => {
       </Box>
       {file && (
         <div className="h-96 aspect-auto bg-[#dcf8c6] p-2 ml-4 z-50 absolute bottom-1 rounded-md">
-          {/* <ImageDisplay source={server_url + file} /> */}
-          <VideoDisplay source={server_url + file} />
+          {getFileType(type[type?.length - 1]) === "image" ? (
+            <ImageDisplay source={server_url + file} />
+          ) : getFileType(type[type?.length - 1]) === "video" ? (
+            <VideoDisplay source={server_url + file} />
+          ) : (
+            ""
+          )}
+          {/* <VideoDisplay source={server_url + file} /> */}
           <div className="flex justify-between">
             <ToggleButton
               icon={<CancelIcon />}
@@ -260,6 +267,7 @@ const AllMessages = ({ person, conversation }) => {
         setImage={setImage}
         sendMessage={sendMessage}
         sendVoiceMessage={sendVoiceMessage}
+        setType={setType}
       />
     </Box>
   );

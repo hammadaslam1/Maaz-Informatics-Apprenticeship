@@ -36,7 +36,7 @@ const VideoMessage = ({ message }) => {
             right: 0,
           }}
         >
-          <GetAppIcon
+          {/* <GetAppIcon
             onClick={(e) => downloadMedia(e, message?.text)}
             fontSize="small"
             style={{
@@ -44,7 +44,7 @@ const VideoMessage = ({ message }) => {
               border: "1px solid grey",
               borderRadius: "50%",
             }}
-          />
+          /> */}
           {formatDate(message?.createdAt)}
         </Typography>
       </CardActionArea>

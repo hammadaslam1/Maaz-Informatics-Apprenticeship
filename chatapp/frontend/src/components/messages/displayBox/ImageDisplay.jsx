@@ -8,7 +8,8 @@ const ImageDisplay = ({ source }) => {
       alt="media not supported"
       sx={{
         background: "linear-gradient(to top, #cccccc 0%, #ffffff 100%)",
-        objectFit: "cover",
+        objectFit: "contain",
+        height: "90%",
       }}
     />
   );
