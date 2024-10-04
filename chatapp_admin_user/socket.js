@@ -1,13 +1,30 @@
 import { Server } from "socket.io";
 
-const socket = (server) => {
+const getAllUsers = async () => {
+  // const users = await User.find().select({ password: 0 });
+  const response = await fetch("http://localhost:3000/api/users/", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (data.success) {
+    return data.users;
+  } else {
+    return data.message;
+  }
+};
+
+const socket = async (server) => {
   const io = new Server(server);
   console.log("socket is called");
 
   // Socket.io connection
-  io.on("connection", (socket) => {
+  io.on("connection", async (socket) => {
     console.log("New client connected:", socket.id);
 
+    socket.emit("getAllUsers", await getAllUsers());
     socket.on("sendMessage", async (message) => {
       // Here you would save the message to the MySQL database
       // and broadcast it to all clients
