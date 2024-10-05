@@ -24,7 +24,9 @@ const socket = async (server) => {
   io.on("connection", async (socket) => {
     console.log("New client connected:", socket.id);
 
-    socket.emit("getAllUsers", await getAllUsers());
+    socket.on("userOnline", async () => {
+      socket.emit("getAllUsers", await getAllUsers());
+    });
     socket.on("sendMessage", async (message) => {
       // Here you would save the message to the MySQL database
       // and broadcast it to all clients

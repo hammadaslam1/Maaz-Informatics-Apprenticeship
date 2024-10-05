@@ -5,10 +5,11 @@ import { useState, useEffect } from "react";
 const Page = () => {
   const [users, setUsers] = useState([]);
   useEffect(() => {
+    socketio.emit("userOnline");
     socketio.on("getAllUsers", async (data) => {
-      setUsers(data); 
+      setUsers(data);
     });
-  }, [users]);
+  }, []);
   return (
     <div>
       <h1>All Users</h1>
