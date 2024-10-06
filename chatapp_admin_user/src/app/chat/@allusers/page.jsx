@@ -25,7 +25,7 @@ const Page = () => {
     });
   }, []);
   return (
-    <Box className="flex flex-col h-screen w-full">
+    <Box className="flex flex-col h-screen w-full no-scrollbar">
       <Box className=" w-full h-16 flex justify-center items-center bg-[#23022e] text-white">
         <PiChatTeardropTextFill size={"40px"} />
         <h1 className="text-3xl">&nbsp;Chat App</h1>
@@ -75,19 +75,21 @@ const Page = () => {
         </Box>
       </Box>
       <Box className="h-px bg-gray-500"></Box>
-      {users && users.length > 0 ? (
-        users.map((user, i) => (
-          <Box key={i} className="flex">
-            <ConversationButton id={user.id} name={user.name} />
+      <Box className=" flex-grow overflow-auto no-scrollbar">
+        {users && users.length > 0 ? (
+          users.map((user, i) => (
+            <Box key={i} className="flex">
+              <ConversationButton id={user.id} name={user.name} />
+            </Box>
+          ))
+        ) : (
+          <Box className="flex flex-grow justify-center items-center">
+            <Typography variant="h6" className="text-[#cecfc7] font-bold">
+              No user has joined
+            </Typography>
           </Box>
-        ))
-      ) : (
-        <Box className="flex flex-grow justify-center items-center">
-          <Typography variant="h6" className="text-[#cecfc7] font-bold">
-            No user has joined
-          </Typography>
-        </Box>
-      )}
+        )}
+      </Box>
     </Box>
   );
 };
