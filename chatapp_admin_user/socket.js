@@ -2,7 +2,7 @@ import { Server } from "socket.io";
 
 const getAllUsers = async () => {
   // const users = await User.find().select({ password: 0 });
-  const response = await fetch("http://localhost:3000/api/users/", {
+  const response = await fetch("http://localhost:3000/api/users/admin", {
     method: "GET",
     headers: {
       "Content-Type": "application/json",

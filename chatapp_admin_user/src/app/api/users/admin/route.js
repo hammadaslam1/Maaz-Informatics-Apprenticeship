@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import database from "../../../../lib/database";
+import database from "../../../../../lib/database";
 import bcryptjs from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -11,9 +11,7 @@ const createToken = (email) => {
 };
 export const GET = async (req) => {
   try {
-    const [results] = await database.query(
-      "SELECT * FROM users where is_admin = 1"
-    );
+    const [results] = await database.query("SELECT * FROM users");
     if (!results.length) {
       return NextResponse.json({
         success: false,
