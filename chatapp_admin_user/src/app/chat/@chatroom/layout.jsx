@@ -11,7 +11,11 @@ const layout = ({ selfmessage, receivedmessage }) => {
         {new Array(20)
           .fill(1)
           .map((data, i) =>
-            i % 2 === 0 ? <SelfMessage key={i} index={i} /> : <ReceivedMessage key={i} index={i} />
+            i % 2 === 0 ? (
+              <SelfMessage key={i} index={i} />
+            ) : (
+              <ReceivedMessage key={i} index={i} />
+            )
           )}
       </div>
       <div className="flex min-h-14 w-full items-center bg-[#eff8e2]">

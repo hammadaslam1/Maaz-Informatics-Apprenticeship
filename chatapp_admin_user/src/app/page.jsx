@@ -1,46 +1,11 @@
 "use client";
-import Image from "next/image";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
-export default function Home() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+import LoginForm from "@/components/forms/LoginForm";
 
-  const handleNavigation = (path) => {
-    router.push(path);
-  };
-  const handleTest = async () => {
-    await fetch("/api/users/login", {
-      method: "GET",
-    }).then((response) => console.log(response));
-  };
-  const handleLogin = () => {
-    fetch("/api/users/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email: email,
-        password: password,
-      }),
-    })
-      .then((response) => {
-        return response.json();
-      })
-      .then((data) => {
-        if (data.success) {
-          router.push("/chat");
-        } else {
-          alert("Invalid email or password");
-        }
-      })
-      .catch((error) => console.error("Error:", error));
-  };
+export default function Home() {
+  
   return (
-    <div className="min-h-screen bg-cyan-200 flex justify-center items-center">
-      <div className="rounded-3xl bg-cyan-50 p-7 shadow-2xl flex flex-col items-center gap-6">
+    <div className="min-h-screen bg-[#cecfc7] flex justify-center items-center">
+      {/* <div className="rounded-3xl bg-cyan-50 p-7 shadow-2xl flex flex-col items-center gap-6">
         <h1 className="text-cyan-900 text-3xl font-semibold">Login</h1>
         <div className="min-w-96 flex flex-col gap-4">
           <input
@@ -64,7 +29,8 @@ export default function Home() {
             Login
           </button>
         </div>
-      </div>
+      </div> */}
+      <LoginForm />
     </div>
   );
 }

@@ -19,7 +19,7 @@ const Page = () => {
   const [anchorEl, setAnchorEl] = useState(null);
   const settings = ["Profile", "settings", "logout"];
   useEffect(() => {
-    socketio.emit("userOnline");
+    socketio.emit("adminOnline");
     socketio.on("getAllUsers", async (data) => {
       setUsers(data);
     });

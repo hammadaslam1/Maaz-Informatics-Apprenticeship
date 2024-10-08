@@ -1,5 +1,20 @@
 import { Server } from "socket.io";
 
+const getAdmins = async () => {
+  // const users = await User.find().select({ password: 0 });
+  const response = await fetch("http://localhost:3000/api/users", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (data.success) {
+    return data.users;
+  } else {
+    return data.message;
+  }
+};
 const getAllUsers = async () => {
   // const users = await User.find().select({ password: 0 });
   const response = await fetch("http://localhost:3000/api/users/admin", {
@@ -24,8 +39,11 @@ const socket = async (server) => {
   io.on("connection", async (socket) => {
     console.log("New client connected:", socket.id);
 
-    socket.on("userOnline", async () => {
+    socket.on("adminOnline", async () => {
       socket.emit("getAllUsers", await getAllUsers());
+    });
+    socket.on("userOnline", async () => {
+      socket.emit("getAdmins", await getAdmins());
     });
     socket.on("sendMessage", async (message) => {
       // Here you would save the message to the MySQL database
