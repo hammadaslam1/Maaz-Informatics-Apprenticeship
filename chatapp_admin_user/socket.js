@@ -31,6 +31,22 @@ const getAllUsers = async () => {
   }
 };
 
+const getMessages = async (id) => {
+  // const messages = await Message.find({ userId: id }).select({ _id: 0 });
+  const response = await fetch(`http://localhost:3000/api/messages/${id}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+  const data = await response.json();
+  if (data.success) {
+    return data.messages;
+  } else {
+    return data.message;
+  }
+}
+
 const socket = async (server) => {
   const io = new Server(server);
   console.log("socket is called");
@@ -50,6 +66,9 @@ const socket = async (server) => {
       // and broadcast it to all clients
       socket.broadcast.emit("receiveMessage", message);
     });
+    socket.on('getMessages', async (id) => {
+      socket.emit("receiveMessages", await getMessages(id));
+    })
 
     socket.on("disconnect", () => {
       console.log("Client disconnected:", socket.id);

@@ -1,20 +1,34 @@
+/* eslint-disable react-hooks/exhaustive-deps */
+"use client";
+
+import { useSelector } from "react-redux";
 import ReceivedMessage from "./ReceivedMessage";
 import SelfMessage from "./SelfMessage";
+import { useEffect, useState } from "react";
+import socketio from "@/app/socketio";
 
-const layout = ({ selfmessage, receivedmessage }) => {
+const ChatroomLayout = ({ selfmessage, receivedmessage }) => {
+  const { selectedUser } = useSelector((state) => state.user);
+  const [messages, setMessages] = useState(null);
+  useEffect(() => {
+    socketio.emit("getMessages", selectedUser?.id);
+    socketio.on("receiveMessages", (messages) => {
+      setMessages(messages);
+    });
+  }, []);
   return (
     <div className="flex flex-col h-screen w-full">
       <div className="flex min-h-16 w-full items-center bg-[#ada8b6]">
         user name
       </div>
       <div className="flex flex-grow flex-col w-full overflow-auto no-scrollbar">
-        {new Array(20)
-          .fill(1)
-          .map((data, i) =>
+        {messages &&
+          messages.length > 0 &&
+          messages.map((data, i) =>
             i % 2 === 0 ? (
-              <SelfMessage key={i} index={i} />
+              <SelfMessage message={data} key={i} index={i} />
             ) : (
-              <ReceivedMessage key={i} index={i} />
+              <ReceivedMessage message={data} key={i} index={i} />
             )
           )}
       </div>
@@ -25,4 +39,4 @@ const layout = ({ selfmessage, receivedmessage }) => {
   );
 };
 
-export default layout;
+export default ChatroomLayout;

@@ -12,16 +12,27 @@ import { useState, useEffect } from "react";
 import { PiChatTeardropTextFill } from "react-icons/pi";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ConversationButton from "@/components/buttons/ConversationButton";
+import { signoutSuccess } from "../../../../lib/redux/userSlice/UserReducer";
+import { useDispatch, useSelector } from "react-redux";
 
-const Page = () => {
+const AllUsers = () => {
+  const dispatch = useDispatch();
+  const { currentUser, selectedUser } = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
-  const settings = ["Profile", "settings", "logout"];
+  const settings = [
+    {
+      label: "Logout",
+      onClick: () => dispatch(signoutSuccess()),
+    },
+  ];
+
   useEffect(() => {
     socketio.emit("adminOnline");
     socketio.on("getAllUsers", async (data) => {
       setUsers(data);
+      console.log(data);
     });
   }, []);
   return (
@@ -67,8 +78,14 @@ const Page = () => {
             onClose={() => setOpen(false)}
           >
             {settings.map((setting, i) => (
-              <MenuItem key={i} className="hover:bg-[#23022e] hover:text-white">
-                <Typography sx={{ textAlign: "center" }}>{setting}</Typography>
+              <MenuItem
+                key={i}
+                onClick={setting.onClick}
+                className="hover:bg-[#23022e] hover:text-white"
+              >
+                <Typography sx={{ textAlign: "center" }}>
+                  {setting.label}
+                </Typography>
               </MenuItem>
             ))}
           </Menu>
@@ -77,11 +94,14 @@ const Page = () => {
       <Box className="h-px bg-gray-500"></Box>
       <Box className=" flex-grow overflow-auto no-scrollbar">
         {users && users.length > 0 ? (
-          users.map((user, i) => (
-            <Box key={i} className="flex">
-              <ConversationButton id={user.id} name={user.name} />
-            </Box>
-          ))
+          users.map(
+            (user, i) =>
+              user.id !== currentUser?.id && (
+                <Box key={i} className="flex">
+                  <ConversationButton user={user} me={currentUser} />
+                </Box>
+              )
+          )
         ) : (
           <Box className="flex flex-grow justify-center items-center">
             <Typography variant="h6" className="text-[#cecfc7] font-bold">
@@ -94,4 +114,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default AllUsers;
