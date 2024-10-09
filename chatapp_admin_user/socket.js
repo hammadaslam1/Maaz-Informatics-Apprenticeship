@@ -1,8 +1,13 @@
 import { Server } from "socket.io";
+import dotenv from "dotenv";
+
+dotenv.config();
+
+const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
 
 const getAdmins = async () => {
   // const users = await User.find().select({ password: 0 });
-  const response = await fetch("http://localhost:3000/api/users", {
+  const response = await fetch(`${server_url}/api/users`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -17,7 +22,7 @@ const getAdmins = async () => {
 };
 const getAllUsers = async () => {
   // const users = await User.find().select({ password: 0 });
-  const response = await fetch("http://localhost:3000/api/users/admin", {
+  const response = await fetch(`${server_url}/api/users/admin`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
@@ -33,14 +38,14 @@ const getAllUsers = async () => {
 
 const getMessages = async (id) => {
   // const messages = await Message.find({ userId: id }).select({ _id: 0 });
-  const response = await fetch(`http://localhost:3000/api/messages/${id}`, {
+  const response = await fetch(`${server_url}/api/messages/${id}`, {
     method: "GET",
     headers: {
       "Content-Type": "application/json",
     },
   });
   const data = await response.json();
-  // console.log(data.success && data?.messages);
+  console.log(data.success && data?.messages);
   return data;
 };
 

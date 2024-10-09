@@ -5,7 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start",
+    "start": "nodemon server.js",
     "lint": "next lint",
     "server": "nodemon server.js"
   },
@@ -17,6 +17,7 @@
     "@reduxjs/toolkit": "^2.2.8",
     "aos": "^2.3.4",
     "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.5",
     "express": "^4.21.0",
     "jsonwebtoken": "^9.0.2",
     "mysql2": "^3.11.3",
