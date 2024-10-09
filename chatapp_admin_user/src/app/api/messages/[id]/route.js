@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
 import database from "../../../../../lib/database";
+import jwt from "jsonwebtoken";
 
 const createToken = (email) => {
   const token = jwt.sign({ email }, process.env.JWT_SECRET, {
@@ -9,8 +9,8 @@ const createToken = (email) => {
   });
   return token;
 };
-export const GET = async (req) => {
-  const id = req.params.id;
+export const GET = async (req, {params}) => {
+  const id = params.id;
   try {
     const [results] = await database.query(
       "SELECT * FROM messages where conversation_id = " + id
@@ -29,7 +29,7 @@ export const GET = async (req) => {
     return NextResponse.json({
       success: true,
       message: "Users retrieved successfully",
-      users: users,
+      messages: users,
     });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message });

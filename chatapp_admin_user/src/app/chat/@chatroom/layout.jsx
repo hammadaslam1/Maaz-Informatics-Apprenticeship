@@ -7,15 +7,19 @@ import SelfMessage from "./SelfMessage";
 import { useEffect, useState } from "react";
 import socketio from "@/app/socketio";
 
-const ChatroomLayout = ({ selfmessage, receivedmessage }) => {
+const ChatroomLayout = () => {
   const { selectedUser } = useSelector((state) => state.user);
   const [messages, setMessages] = useState(null);
   useEffect(() => {
     socketio.emit("getMessages", selectedUser?.id);
-    socketio.on("receiveMessages", (messages) => {
-      setMessages(messages);
+    socketio.on("receiveMessages", (data) => {
+      if (data.success) {
+        setMessages(data.messages);
+      } else {
+        setMessages(null);
+      }
     });
-  }, []);
+  }, [selectedUser]);
   return (
     <div className="flex flex-col h-screen w-full">
       <div className="flex min-h-16 w-full items-center bg-[#ada8b6]">

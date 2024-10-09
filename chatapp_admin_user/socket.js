@@ -40,12 +40,9 @@ const getMessages = async (id) => {
     },
   });
   const data = await response.json();
-  if (data.success) {
-    return data.messages;
-  } else {
-    return data.message;
-  }
-}
+  // console.log(data.success && data?.messages);
+  return data;
+};
 
 const socket = async (server) => {
   const io = new Server(server);
@@ -66,9 +63,9 @@ const socket = async (server) => {
       // and broadcast it to all clients
       socket.broadcast.emit("receiveMessage", message);
     });
-    socket.on('getMessages', async (id) => {
+    socket.on("getMessages", async (id) => {
       socket.emit("receiveMessages", await getMessages(id));
-    })
+    });
 
     socket.on("disconnect", () => {
       console.log("Client disconnected:", socket.id);
