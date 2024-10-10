@@ -32,7 +32,7 @@ const LoginForm = () => {
       .then((data) => {
         if (data?.success) {
           dispatch(signinSuccess(data?.user));
-          router.push("/chat");
+          router.replace("/chat");
         } else {
           alert("Invalid email or password");
         }

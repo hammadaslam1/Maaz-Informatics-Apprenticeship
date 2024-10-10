@@ -14,19 +14,32 @@ import MoreIcon from "@mui/icons-material/MoreVert";
 import ConversationButton from "@/components/buttons/ConversationButton";
 import { signoutSuccess } from "../../../../lib/redux/userSlice/UserReducer";
 import { useDispatch, useSelector } from "react-redux";
+import { useRouter } from "next/navigation";
 
 const AllUsers = () => {
   const dispatch = useDispatch();
+  const router = useRouter();
   const { currentUser, selectedUser } = useSelector((state) => state.user);
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const settings = [
+    currentUser?.full_access && {
+      label: "Add User",
+      onClick: () => {
+        alert("Please enter your username");
+        setOpen(false);
+      },
+    },
     {
       label: "Logout",
-      onClick: () => dispatch(signoutSuccess()),
+      onClick: () => {
+        setOpen(false);
+        dispatch(signoutSuccess());
+        router.replace("/");
+      },
     },
-  ];
+  ].filter(Boolean);
 
   useEffect(() => {
     socketio.emit("adminOnline");
@@ -49,7 +62,7 @@ const AllUsers = () => {
           variant="body1"
           className="h-full  overflow-hidden flex-grow flex pl-1 text-nowrap items-center"
         >
-          Hammad Aslam
+          {currentUser?.name}
         </Typography>
         <Box className="h-full aspect-auto flex justify-center items-center">
           <IconButton
@@ -80,11 +93,16 @@ const AllUsers = () => {
             {settings.map((setting, i) => (
               <MenuItem
                 key={i}
-                onClick={setting.onClick}
-                className="hover:bg-[#23022e] hover:text-white"
+                onClick={setting?.onClick}
+                sx={{
+                  "&:hover": {
+                    bgcolor: "#23022e",
+                    color: "#fff",
+                  },
+                }}
               >
                 <Typography sx={{ textAlign: "center" }}>
-                  {setting.label}
+                  {setting?.label}
                 </Typography>
               </MenuItem>
             ))}

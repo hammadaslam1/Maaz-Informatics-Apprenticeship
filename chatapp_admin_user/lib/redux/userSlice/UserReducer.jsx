@@ -13,12 +13,21 @@ const userSlice = createSlice({
   reducers: {
     signinSuccess: (state, action) => {
       state.currentUser = action.payload;
+      state.conversationSelected = false;
+      state.selectedUser = null;
+      state.conversation = null;
     },
     signinFailure: (state) => {
       state.currentUser = null;
+      state.conversationSelected = false;
+      state.selectedUser = null;
+      state.conversation = null;
     },
     signoutSuccess: (state) => {
       state.currentUser = null;
+      state.conversationSelected = false;
+      state.selectedUser = null;
+      state.conversation = null;
     },
     setConversationSelected: (state, action) => {
       state.conversationSelected = true;

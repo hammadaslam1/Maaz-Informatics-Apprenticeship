@@ -2,10 +2,13 @@
 "use client";
 
 import { useSelector } from "react-redux";
-import ReceivedMessage from "./ReceivedMessage";
-import SelfMessage from "./SelfMessage";
+import ReceivedMessage from "../../../components/messageBoxes/ReceivedMessage";
+import SelfMessage from "../../../components/messageBoxes/SelfMessage";
 import { useEffect, useState } from "react";
 import socketio from "@/app/socketio";
+import { Avatar, IconButton } from "@mui/material";
+import { MdOutlineKeyboardBackspace } from "react-icons/md";
+import ChatHeader from "@/components/appbars/ChatHeader";
 
 const ChatroomLayout = () => {
   const { selectedUser } = useSelector((state) => state.user);
@@ -22,9 +25,7 @@ const ChatroomLayout = () => {
   }, [selectedUser]);
   return (
     <div className="flex flex-col h-screen w-full">
-      <div className="flex min-h-16 w-full items-center bg-[#ada8b6]">
-        user name
-      </div>
+      <ChatHeader />
       <div className="flex flex-grow flex-col w-full overflow-auto no-scrollbar">
         {messages &&
           messages.length > 0 &&

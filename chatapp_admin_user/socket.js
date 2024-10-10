@@ -5,6 +5,8 @@ dotenv.config();
 
 const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
 
+let currentChats = {};
+
 const getAdmins = async () => {
   // const users = await User.find().select({ password: 0 });
   const response = await fetch(`${server_url}/api/users`, {
@@ -49,6 +51,19 @@ const getMessages = async (id) => {
   return data;
 };
 
+const joinConversation = async (user_id, admin_id) => {
+  const response = await fetch(`${server_url}/api/conversation`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ user_id, admin_id }),
+  });
+  const data = await response.json();
+  console.log(data);
+  return data;
+};
+
 const socket = async (server) => {
   const io = new Server(server);
   console.log("socket is called");
@@ -62,6 +77,12 @@ const socket = async (server) => {
     });
     socket.on("userOnline", async () => {
       socket.emit("getAdmins", await getAdmins());
+    });
+    socket.on("joinConversation", async ({ user_id, admin_id, id }) => {
+      socket.join(id);
+      currentChats[socket.id] = user_id;
+      const data = await joinConversation(user_id, admin_id);
+      socket.emit("conversationJoined", data);
     });
     socket.on("sendMessage", async (message) => {
       // Here you would save the message to the MySQL database
