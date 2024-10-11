@@ -9,10 +9,40 @@ import socketio from "@/app/socketio";
 import { Avatar, IconButton } from "@mui/material";
 import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import ChatHeader from "@/components/appbars/ChatHeader";
+import MessageBar from "@/components/appbars/MessageBar";
 
 const ChatroomLayout = () => {
-  const { selectedUser } = useSelector((state) => state.user);
+  const { selectedUser, currentUser, conversation } = useSelector(
+    (state) => state.user
+  );
   const [messages, setMessages] = useState(null);
+  const [msgInput, setMsgInput] = useState("");
+  const handleMessage = async () => {
+    if (msgInput.trim() === "") return;
+    socketio.emit("sendMessage", {
+      conversation_id: selectedUser?.is_admin
+        ? currentUser?.id
+        : selectedUser?.id,
+      sender_id: currentUser?.id,
+      text: msgInput,
+      type: "text",
+    });
+    setMsgInput("");
+  };
+  useEffect(() => {
+    socketio.on("newMessage", async (data) => {
+      if (data.success) {
+        if (data?.newMessage?.conversation_id !== selectedUser?.id) {
+          return;
+        }
+        setMessages([...messages, data?.newMessage]);
+        console.log("the new message is " + data?.newMessage);
+      }
+    });
+    return () => {
+      socketio.off("newMessage");
+    };
+  }, [conversation]);
   useEffect(() => {
     socketio.emit("getMessages", selectedUser?.id);
     socketio.on("receiveMessages", (data) => {
@@ -30,16 +60,14 @@ const ChatroomLayout = () => {
         {messages &&
           messages.length > 0 &&
           messages.map((data, i) =>
-            i % 2 === 0 ? (
+            data?.sender_id === currentUser?.id ? (
               <SelfMessage message={data} key={i} index={i} />
             ) : (
               <ReceivedMessage message={data} key={i} index={i} />
             )
           )}
       </div>
-      <div className="flex min-h-14 w-full items-center bg-[#eff8e2]">
-        message box
-      </div>
+      <MessageBar />
     </div>
   );
 };

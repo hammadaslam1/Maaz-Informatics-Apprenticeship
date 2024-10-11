@@ -1,8 +1,10 @@
 import { Avatar, IconButton } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { MdOutlineKeyboardBackspace } from "react-icons/md";
+import { MdOutlineKeyboardBackspace, MdOutlineMoreVert } from "react-icons/md";
 import { useDispatch, useSelector } from "react-redux";
 import { setConversationClosed } from "../../../lib/redux/userSlice/UserReducer";
+import { IoSearch } from "react-icons/io5";
+import { IoIosCall } from "react-icons/io";
 const ChatHeader = () => {
   const { selectedUser } = useSelector((state) => state.user);
   const router = useRouter();
@@ -24,12 +26,17 @@ const ChatHeader = () => {
       </div>
       <div className="h-full w-fit flex justify-center items-center">
         <IconButton>
-          <Avatar />
+          <IoIosCall />
         </IconButton>
       </div>
       <div className="h-full w-fit flex justify-center items-center">
         <IconButton>
-          <Avatar />
+          <IoSearch />
+        </IconButton>
+      </div>
+      <div className="h-full w-fit flex justify-center items-center">
+        <IconButton>
+          <MdOutlineMoreVert />
         </IconButton>
       </div>
     </div>

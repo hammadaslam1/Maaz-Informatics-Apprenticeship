@@ -39,7 +39,6 @@ const getAllUsers = async () => {
 };
 
 const getMessages = async (id) => {
-  // const messages = await Message.find({ userId: id }).select({ _id: 0 });
   const response = await fetch(`${server_url}/api/messages/${id}`, {
     method: "GET",
     headers: {
@@ -48,6 +47,18 @@ const getMessages = async (id) => {
   });
   const data = await response.json();
   console.log(data.success && data?.messages);
+  return data;
+};
+const sendMessage = async (message) => {
+  const response = await fetch(`${server_url}/api/messages`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(message),
+  });
+  const data = await response.json();
+  console.log(data);
   return data;
 };
 
@@ -85,9 +96,9 @@ const socket = async (server) => {
       socket.emit("conversationJoined", data);
     });
     socket.on("sendMessage", async (message) => {
-      // Here you would save the message to the MySQL database
-      // and broadcast it to all clients
-      socket.broadcast.emit("receiveMessage", message);
+      socket
+        .to(message?.conversation_id)
+        .emit("newMessage", await sendMessage(message));
     });
     socket.on("getMessages", async (id) => {
       socket.emit("receiveMessages", await getMessages(id));
