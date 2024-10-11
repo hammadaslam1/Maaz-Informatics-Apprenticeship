@@ -15,9 +15,11 @@ const ChatroomLayout = () => {
   const { selectedUser, currentUser, conversation } = useSelector(
     (state) => state.user
   );
-  const [messages, setMessages] = useState(null);
+  const [messages, setMessages] = useState([]);
   const [msgInput, setMsgInput] = useState("");
   const handleMessage = async () => {
+    console.log(msgInput);
+
     if (msgInput.trim() === "") return;
     socketio.emit("sendMessage", {
       conversation_id: selectedUser?.is_admin
@@ -29,14 +31,20 @@ const ChatroomLayout = () => {
     });
     setMsgInput("");
   };
+
   useEffect(() => {
     socketio.on("newMessage", async (data) => {
-      if (data.success) {
+      console.log(data);
+      if (data?.success) {
         if (data?.newMessage?.conversation_id !== selectedUser?.id) {
+          console.log("Not the selected user's conversation");
           return;
         }
-        setMessages([...messages, data?.newMessage]);
-        console.log("the new message is " + data?.newMessage);
+        console.log(typeof messages);
+        // setMessages(data.newMessage);
+        setMessages((prev) => [...prev, data?.newMessage]);
+      } else {
+        console.error("Failed: ", data);
       }
     });
     return () => {
@@ -67,7 +75,11 @@ const ChatroomLayout = () => {
             )
           )}
       </div>
-      <MessageBar />
+      <MessageBar
+        setMsgInput={setMsgInput}
+        msgInput={msgInput}
+        handleMessage={handleMessage}
+      />
     </div>
   );
 };

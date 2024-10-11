@@ -46,7 +46,6 @@ const getMessages = async (id) => {
     },
   });
   const data = await response.json();
-  console.log(data.success && data?.messages);
   return data;
 };
 const sendMessage = async (message) => {
@@ -58,7 +57,6 @@ const sendMessage = async (message) => {
     body: JSON.stringify(message),
   });
   const data = await response.json();
-  console.log(data);
   return data;
 };
 
@@ -71,7 +69,6 @@ const joinConversation = async (user_id, admin_id) => {
     body: JSON.stringify({ user_id, admin_id }),
   });
   const data = await response.json();
-  console.log(data);
   return data;
 };
 
@@ -84,24 +81,24 @@ const socket = async (server) => {
     console.log("New client connected:", socket.id);
 
     socket.on("adminOnline", async () => {
-      socket.emit("getAllUsers", await getAllUsers());
+      io.emit("getAllUsers", await getAllUsers());
     });
     socket.on("userOnline", async () => {
-      socket.emit("getAdmins", await getAdmins());
+      io.emit("getAdmins", await getAdmins());
     });
     socket.on("joinConversation", async ({ user_id, admin_id, id }) => {
       socket.join(id);
       currentChats[socket.id] = user_id;
       const data = await joinConversation(user_id, admin_id);
-      socket.emit("conversationJoined", data);
+      io.to(user_id).emit("conversationJoined", data);
     });
     socket.on("sendMessage", async (message) => {
-      socket
-        .to(message?.conversation_id)
-        .emit("newMessage", await sendMessage(message));
+      const data = await sendMessage(message);
+      console.log("the new message is: ", data);
+      io.emit("newMessage", data);
     });
     socket.on("getMessages", async (id) => {
-      socket.emit("receiveMessages", await getMessages(id));
+      io.emit("receiveMessages", await getMessages(id));
     });
 
     socket.on("disconnect", () => {
