@@ -6,8 +6,22 @@ import { MdEmojiEmotions, MdKeyboardVoice } from "react-icons/md";
 import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
 const MessageBar = ({ setMsgInput, msgInput, handleMessage }) => {
+  const handleKeyDown = (e) => {
+    if (e.key === "Enter") {
+      if (e.shiftKey) {
+        e.preventDefault();
+        setMsgInput((prevMessage) => prevMessage + "\n");
+      } else {
+        e.preventDefault();
+        handleMessage();
+      }
+    }
+  };
   return (
-    <div className="flex min-h-14 max-h-40 w-full items-end bg-[#eff8e2]">
+    <div
+      className="flex min-h-14 max-h-40 w-full items-end bg-[#eff8e2]"
+      onKeyDown={handleKeyDown}
+    >
       <div className="h-14 w-fit flex justify-center items-center mx-1">
         <Fab
           size="small"
@@ -50,6 +64,7 @@ const MessageBar = ({ setMsgInput, msgInput, handleMessage }) => {
           }}
           value={msgInput}
           onChange={(e) => setMsgInput(e.target.value)}
+          // onKeyDown={handleKeyDown}
         />
       </div>
       <div className="h-14 w-fit flex justify-center items-center mx-1">

@@ -1,7 +1,6 @@
 export const formatTime = (dateString) => {
   const date = new Date(dateString);
 
-  // Adjust to GMT+5
   const localTime = new Date(date.getTime());
 
   const now = new Date();

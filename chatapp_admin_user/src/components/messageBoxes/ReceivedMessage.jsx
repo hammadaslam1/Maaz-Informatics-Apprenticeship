@@ -11,22 +11,22 @@ const ReceivedMessage = ({ message, index }) => {
   return (
     <div
       key={index}
-      className="flex min-h-16 min-w-28 w-fit m-4 bg-[#eff8e2] flex-col rounded-lg"
+      className="flex max-h-60 min-w-28 max-w-96 w-fit h-fit m-4 bg-[#eff8e2] flex-col rounded-lg"
       ref={scrollRef}
     >
       <div className="flex items-center h-fit pt-1 px-2 font-bold text-xs text-gray-700">
         ~{selectedUser?.username}
       </div>
       {/* <div className="h-1"></div> */}
-      <div className="flex items-center flex-grow px-3 pb-1">
+      <p className="flex items-center flex-grow px-3 pb-1 break-words overflow-x-hidden text-ellipsis text-sm leading-none">
         {message?.text}
-      </div>
+      </p>
       <div className="flex items-center h-4">
         <div className="flex items-center h-4 flex-grow"></div>
-        <div className="flex items-center h-4 w-fit font-bold text-xs text-gray-700">
+        <div className="flex items-center h-4 w-fit font-bold text-[0.6rem] text-gray-700">
           {formatTime(message?.created_at)}
         </div>
-        <div className="flex items-center h-4 aspect-square justify-center text-xs"></div>
+        <div className="flex items-center w-1 aspect-square justify-center text-xs"></div>
       </div>
     </div>
   );
