@@ -15,6 +15,7 @@ import ConversationButton from "@/components/buttons/ConversationButton";
 import { signoutSuccess } from "../../../../lib/redux/userSlice/UserReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
+import AddUserModal from "@/components/modals/AddUserModal";
 
 const AllUsers = () => {
   const dispatch = useDispatch();
@@ -23,12 +24,14 @@ const AllUsers = () => {
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
+  const [addUserModalOpen, setAddUserModalOpen] = useState(false);
   const settings = [
     currentUser?.full_access && {
       label: "Add User",
       onClick: () => {
-        alert("Please enter your username");
+        // alert("Please enter your username");
         setOpen(false);
+        setAddUserModalOpen(true);
       },
     },
     {
@@ -128,6 +131,7 @@ const AllUsers = () => {
           </Box>
         )}
       </Box>
+      <AddUserModal setOpen={setAddUserModalOpen} open={addUserModalOpen} />
     </Box>
   );
 };
