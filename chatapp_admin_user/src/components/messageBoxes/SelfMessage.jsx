@@ -1,5 +1,6 @@
 "use client";
 
+import { formatTime } from "@/utils/commonUtils";
 import { useEffect, useRef } from "react";
 import { useSelector } from "react-redux";
 
@@ -25,7 +26,7 @@ const SelfMessage = ({ message, index }) => {
       <div className="flex items-center h-4">
         <div className="flex items-center h-4 flex-grow"></div>
         <div className="flex items-center h-4 w-fit font-bold text-xs text-gray-700">
-          {message?.created_at}
+          {formatTime(message?.created_at)}
         </div>
         <div className="flex items-center h-4 aspect-square justify-center text-xs"></div>
       </div>

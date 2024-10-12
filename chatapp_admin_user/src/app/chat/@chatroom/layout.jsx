@@ -43,6 +43,7 @@ const ChatroomLayout = () => {
         console.log(typeof messages);
         // setMessages(data.newMessage);
         setMessages((prev) => [...prev, data?.newMessage]);
+        console.log(messages)
       } else {
         console.error("Failed: ", data);
       }
@@ -50,14 +51,14 @@ const ChatroomLayout = () => {
     return () => {
       socketio.off("newMessage");
     };
-  }, [conversation]);
+  }, [selectedUser]);
   useEffect(() => {
     socketio.emit("getMessages", selectedUser?.id);
     socketio.on("receiveMessages", (data) => {
       if (data.success) {
         setMessages(data.messages);
       } else {
-        setMessages(null);
+        setMessages([]);
       }
     });
   }, [selectedUser]);
