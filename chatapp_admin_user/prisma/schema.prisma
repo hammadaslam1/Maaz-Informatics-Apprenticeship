@@ -13,28 +13,27 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-
-model User {
-  id       Int   @id @default(autoincrement())
-  name     String
-  username String   @unique
-  email    String   @unique
-  password String
-  is_admin Boolean @default(false)
-  full_access Boolean @default(false)
-  created_at DateTime @default(now())
-  updated_at DateTime @default(now()) @updatedAt
+model Users {
+  id          Int      @id @default(autoincrement())
+  name        String
+  username    String   @unique
+  email       String   @unique
+  password    String
+  is_admin    Boolean  @default(false)
+  full_access Boolean  @default(false)
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
 }
 
-model Message {
-  id             Int      @id @default(autoincrement())
-  conversation_id Int    
-  sender_id      Int   
-  text           String?  
-  type           MessageType @default(text)
-  status         MessageStatus @default(sent)
-  created_at     DateTime @default(now())
-  updated_at     DateTime @default(now()) @updatedAt
+model Messages {
+  id              Int           @id @default(autoincrement())
+  conversation_id Int
+  sender_id       Int
+  text            String?
+  type            MessageType   @default(text)
+  status          MessageStatus @default(sent)
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @default(now()) @updatedAt
 }
 
 enum MessageType {
@@ -51,12 +50,11 @@ enum MessageStatus {
   seen
 }
 
-
-model Conversation {
-  id          Int      @id @default(autoincrement())
-  user_id     Int?     
-  admin_id    Int?     
-  last_message String? 
-  created_at  DateTime @default(now())
-  updated_at  DateTime @default(now()) @updatedAt
+model Conversations {
+  id           Int      @id @default(autoincrement())
+  user_id      Int?
+  admin_id     Int?
+  last_message String?
+  created_at   DateTime @default(now())
+  updated_at   DateTime @default(now()) @updatedAt
 }
