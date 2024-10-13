@@ -1,0 +1,62 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id       Int   @id @default(autoincrement())
+  name     String
+  username String   @unique
+  email    String   @unique
+  password String
+  is_admin Boolean @default(false)
+  full_access Boolean @default(false)
+  created_at DateTime @default(now())
+  updated_at DateTime @default(now()) @updatedAt
+}
+
+model Message {
+  id             Int      @id @default(autoincrement())
+  conversation_id Int    
+  sender_id      Int   
+  text           String?  
+  type           MessageType @default(text)
+  status         MessageStatus @default(sent)
+  created_at     DateTime @default(now())
+  updated_at     DateTime @default(now()) @updatedAt
+}
+
+enum MessageType {
+  text
+  image
+  application
+  video
+  audio
+}
+
+enum MessageStatus {
+  sent
+  delivered
+  seen
+}
+
+
+model Conversation {
+  id          Int      @id @default(autoincrement())
+  user_id     Int?     
+  admin_id    Int?     
+  last_message String? 
+  created_at  DateTime @default(now())
+  updated_at  DateTime @default(now()) @updatedAt
+}

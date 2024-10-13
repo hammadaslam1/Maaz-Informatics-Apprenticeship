@@ -16,7 +16,17 @@ const ChatDefault = () => {
         <p className="text-base text-[#ada8b6] text-center">
           Use the chat input field to send messages.
         </p>
-
+        <h1 className="text-2xl font-semibold text-center text-[#ada8b6]">
+          Powered by{" "}
+          <a
+            className="text-3xl font-semibold text-center text-[#23022e] underline"
+            href="http://github.com/hammadaslam1"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Hammad Aslam
+          </a>
+        </h1>
       </div>
     </div>
   );

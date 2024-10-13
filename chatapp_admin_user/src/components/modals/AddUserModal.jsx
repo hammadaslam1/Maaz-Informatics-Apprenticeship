@@ -1,7 +1,7 @@
 import { Button } from "@mui/material";
 import { useState } from "react";
 
-const { Modal } = require("antd");
+import { Modal } from "antd";
 
 const AddUserModal = ({ open, setOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
@@ -16,7 +16,6 @@ const AddUserModal = ({ open, setOpen }) => {
   };
   return (
     <Modal
-      //   title="Add New User"
       centered
       open={open}
       onOk={() => setIsLoading(true)}
