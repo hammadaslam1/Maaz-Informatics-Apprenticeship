@@ -1,35 +1,34 @@
 import { NextResponse } from "next/server";
-import database from "../../../../lib/database";
+import prisma from "../../../../prisma/client";
 
 export const POST = async (req) => {
   try {
     const body = await req.json();
     const { user_id, admin_id } = body;
-
-    const get =
-      "SELECT * FROM conversations WHERE user_id = ? AND admin_id = ?";
-    const getValues = [user_id, admin_id];
-    const [got] = await database.query(get, getValues);
-
-    if (got.length) {
+    const exist = await prisma.conversations.findUnique({
+      where: {
+        user_id,
+        admin_id,
+      },
+    });
+    if (exist) {
       return NextResponse.json({
         success: true,
         message: "Conversation already exists",
-        conversation: got[0],
+        conversation: exist,
       });
     }
-
-    const insertQuery =
-      "INSERT INTO conversations (id, user_id, admin_id) VALUES (?, ?, ?)";
-    const insertValues = [user_id, user_id, admin_id];
-    await database.query(insertQuery, insertValues);
-
-    const [newConversation] = await database.query(get, getValues);
-
+    const newConversation = await prisma.conversations.create({
+      data: {
+        id: user_id,
+        user_id,
+        admin_id,
+      },
+    });
     return NextResponse.json({
       success: true,
       message: "Conversation created successfully",
-      conversation: newConversation[0],
+      conversation: newConversation,
     });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message });

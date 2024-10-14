@@ -1,35 +1,24 @@
 import { NextResponse } from "next/server";
-import bcryptjs from "bcryptjs";
-import database from "../../../../../lib/database";
-import jwt from "jsonwebtoken";
+import prisma from "../../../../../prisma/client";
 
-const createToken = (email) => {
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-    expiresIn: "1month",
-  });
-  return token;
-};
-export const GET = async (req, {params}) => {
-  const id = params.id;
+export const GET = async (req, { params }) => {
   try {
-    const [results] = await database.query(
-      "SELECT * FROM messages where conversation_id = " + id
-    );
-    if (!results.length) {
+    const id = params.id;
+    const messages = await prisma.messages.findMany({
+      where: {
+        conversation_id: id,
+      },
+    });
+    if (!messages.length) {
       return NextResponse.json({
         success: false,
-        message: "no user not found",
+        message: "No messages found",
       });
     }
-    let users = [];
-    results.forEach((row) => {
-      const { password, ...selectedUser } = row;
-      users.push(selectedUser);
-    });
     return NextResponse.json({
       success: true,
-      message: "Users retrieved successfully",
-      messages: users,
+      message: "Messages retrieved successfully",
+      messages,
     });
   } catch (error) {
     return NextResponse.json({ success: false, message: error.message });

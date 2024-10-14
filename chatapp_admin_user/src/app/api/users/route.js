@@ -1,19 +1,14 @@
 import { NextResponse } from "next/server";
-import database from "../../../../lib/database";
-import bcryptjs from "bcryptjs";
-import jwt from "jsonwebtoken";
+import prisma from "../../../../prisma/client";
 
-const createToken = (email) => {
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
-    expiresIn: "1month",
-  });
-  return token;
-};
 export const GET = async (req) => {
   try {
-    const [results] = await database.query(
-      "SELECT * FROM users where is_admin = 1"
-    );
+    const results = await prisma.users.findMany({
+      where: {
+        is_admin: true,
+        full_access: true,
+      },
+    });
     if (!results.length) {
       return NextResponse.json({
         success: false,
