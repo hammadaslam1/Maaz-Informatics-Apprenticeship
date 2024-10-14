@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 "use client";
 import socketio from "@/app/socketio";
 import {
@@ -12,7 +13,10 @@ import { useState, useEffect } from "react";
 import { PiChatTeardropTextFill } from "react-icons/pi";
 import MoreIcon from "@mui/icons-material/MoreVert";
 import ConversationButton from "@/components/buttons/ConversationButton";
-import { signoutSuccess } from "../../../../lib/redux/userSlice/UserReducer";
+import {
+  setOtherUsers,
+  signoutSuccess,
+} from "../../../../lib/redux/userSlice/UserReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { useRouter } from "next/navigation";
 import AddUserModal from "@/components/modals/AddUserModal";
@@ -20,7 +24,9 @@ import AddUserModal from "@/components/modals/AddUserModal";
 const AllUsers = () => {
   const dispatch = useDispatch();
   const router = useRouter();
-  const { currentUser, selectedUser } = useSelector((state) => state.user);
+  const { currentUser, selectedUser, otherUsers } = useSelector(
+    (state) => state.user
+  );
   const [users, setUsers] = useState([]);
   const [open, setOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
@@ -47,7 +53,7 @@ const AllUsers = () => {
   useEffect(() => {
     socketio.emit("adminOnline");
     socketio.on("getAllUsers", async (data) => {
-      setUsers(data);
+      dispatch(setOtherUsers(data));
       console.log(data);
     });
   }, []);
@@ -114,8 +120,8 @@ const AllUsers = () => {
       </Box>
       <Box className="h-px bg-gray-500"></Box>
       <Box className=" flex-grow overflow-auto no-scrollbar">
-        {users && users.length > 0 ? (
-          users.map(
+        {otherUsers && otherUsers.length > 0 ? (
+          otherUsers.map(
             (user, i) =>
               user.id !== currentUser?.id && (
                 <Box key={i} className="flex">

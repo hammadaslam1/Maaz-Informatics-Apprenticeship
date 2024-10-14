@@ -10,6 +10,16 @@ const createToken = (email) => {
   return token;
 };
 
+const select = {
+  id: true,
+  name: true,
+  email: true,
+  username: true,
+  full_access: true,
+  is_admin: true,
+  created_at: true,
+  updated_at: true,
+};
 export const POST = async (req) => {
   try {
     const body = await req.json();
@@ -28,11 +38,31 @@ export const POST = async (req) => {
     }
     console.log(result);
     const { password, ...selectedUser } = result;
+    let users = [];
+    if (result.full_access) {
+      users = await prisma.users.findMany({
+        where: { full_access: false },
+        select,
+      });
+    } else if (result.is_admin) {
+      users = await prisma.users.findMany({
+        where: { is_admin: false },
+        select,
+      });
+    } else {
+      users = await prisma.users.findMany({
+        where: {
+          is_admin: true,
+        },
+        select,
+      });
+    }
     const token = createToken(result.email);
     return NextResponse.json({
       success: true,
       message: "User retrieved successfully",
       user: selectedUser,
+      otherUsers: users,
       token,
     });
   } catch (error) {

@@ -6,7 +6,10 @@ import Image from "next/image";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { signinSuccess } from "../../../lib/redux/userSlice/UserReducer";
+import {
+  setOtherUsers,
+  signinSuccess,
+} from "../../../lib/redux/userSlice/UserReducer";
 
 const LoginForm = () => {
   const router = useRouter();
@@ -32,6 +35,7 @@ const LoginForm = () => {
       .then((data) => {
         if (data?.success) {
           dispatch(signinSuccess(data?.user));
+          dispatch(setOtherUsers(data?.otherUsers));
           router.replace("/chat");
         } else {
           alert("Invalid email or password");
