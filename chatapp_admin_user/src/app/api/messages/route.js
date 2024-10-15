@@ -21,7 +21,7 @@ export const POST = async (req) => {
         type: type,
       },
     });
-    await prisma.conversations.update({
+    await prisma.conversations.updateMany({
       where: {
         user_id: conv_id,
       },

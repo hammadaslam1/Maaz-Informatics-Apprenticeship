@@ -2,11 +2,17 @@ import { Button } from "@mui/material";
 import { useState } from "react";
 
 import { Modal } from "antd";
+import socketio from "@/app/socketio";
+import { useDispatch } from "react-redux";
+import { addUserInList } from "../../../lib/redux/userSlice/UserReducer";
 
 const AddUserModal = ({ open, setOpen }) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [isAdmin, setIsAdmin] = useState(true);
-  const [fullAccess, setFullAccess] = useState(true);
+  const dispatch = useDispatch();
+  const [formdata, setFormData] = useState({
+    is_admin: false,
+    full_access: false,
+  });
   const handleCancel = () => {
     if (isLoading) {
       setIsLoading(false);
@@ -14,11 +20,45 @@ const AddUserModal = ({ open, setOpen }) => {
       setOpen(false);
     }
   };
+  const handleFormData = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value,
+    }));
+  };
+  const handleAddUser = () => {
+    setIsLoading(true);
+    // alert(JSON.stringify(formdata));
+    // setIsLoading(false);
+    fetch("/api/users/signup", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(formdata),
+    })
+      .then((response) => {
+        return response.json();
+      })
+      .then((data) => {
+        if (data?.success) {
+          dispatch(addUserInList(data.user));
+        } else {
+          alert(data?.message);
+        }
+        setIsLoading(false);
+        setOpen(false);
+      })
+      .catch(() => {
+        setIsLoading(false);
+        alert("Failed to add user");
+      });
+  };
   return (
     <Modal
       centered
       open={open}
-      onOk={() => setIsLoading(true)}
+      onOk={() => handleAddUser()}
       onCancel={handleCancel}
       okText="Add User"
       confirmLoading={isLoading}
@@ -38,15 +78,17 @@ const AddUserModal = ({ open, setOpen }) => {
             type="text"
             placeholder="Full Name"
             className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-[#23022e]"
-            // value={email}
-            // onChange={(e) => setEmail(e.target.value)}
+            name="name"
+            value={formdata?.name}
+            onChange={(e) => handleFormData(e)}
           />
           <input
             type="email"
             placeholder="Email"
             className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-[#23022e]"
-            // value={email}
-            // onChange={(e) => setEmail(e.target.value)}
+            name="email"
+            value={formdata?.email}
+            onChange={(e) => handleFormData(e)}
           />
           <div className="flex items-center w-full">
             <div className="flex flex-1 justify-evenly items-center">
@@ -55,13 +97,11 @@ const AddUserModal = ({ open, setOpen }) => {
               </span>
               <input
                 type="checkbox"
-                name="isadmin"
-                value={isAdmin}
-                onChange={(e) => {
-                  setIsAdmin((prev) => !prev);
-                  console.log(isAdmin);
-                }}
+                name="is_admin"
+                value={formdata?.is_admin}
+                onChange={(e) => handleFormData(e)}
                 id=""
+                defaultValue={false}
               />
             </div>
             <div className="flex flex-1 justify-evenly items-center">
@@ -70,13 +110,11 @@ const AddUserModal = ({ open, setOpen }) => {
               </span>
               <input
                 type="checkbox"
-                name="fullaccess"
-                value={fullAccess}
-                onChange={(e) => {
-                  setFullAccess((prev) => !prev);
-                  console.log(fullAccess);
-                }}
+                name="full_access"
+                value={formdata?.full_access}
+                onChange={(e) => handleFormData(e)}
                 id=""
+                defaultValue={false}
               />
             </div>
           </div>
@@ -84,8 +122,9 @@ const AddUserModal = ({ open, setOpen }) => {
             type="password"
             placeholder="Password"
             className="w-full px-3 py-2 rounded-md focus:outline-none focus:ring-[#23022e]"
-            // value={password}
-            // onChange={(e) => setPassword(e.target.value)}
+            name="password"
+            value={formdata?.password}
+            onChange={(e) => handleFormData(e)}
           />
         </div>
       </div>

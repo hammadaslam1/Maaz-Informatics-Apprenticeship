@@ -38,6 +38,26 @@ export const POST = async (req) => {
         password: hashedPassword,
       },
     });
+    if (!is_admin) {
+      const admins = await prisma.users.findMany({
+        where: {
+          is_admin: true,
+        },
+        select: {
+          id: true,
+        },
+      });
+      let data = [];
+      admins.forEach((admin) => {
+        data.push({
+          user_id: result.id,
+          admin_id: admin.id,
+        });
+      });
+      await prisma.conversations.createMany({
+        data: data,
+      });
+    }
     const messages = await prisma.messages.findMany();
     console.log(result);
     const { password, ...user } = result;
