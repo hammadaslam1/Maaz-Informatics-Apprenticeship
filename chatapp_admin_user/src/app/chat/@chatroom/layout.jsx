@@ -39,7 +39,7 @@ const ChatroomLayout = () => {
       if (data?.success) {
         dispatch(setNewMessage(data?.newMessage));
       } else {
-        console.error("Failed: ", data);
+        console.log("Failed: ", data);
       }
     });
     return () => {
