@@ -35,7 +35,6 @@ const AllUsers = () => {
     currentUser?.full_access && {
       label: "Add User",
       onClick: () => {
-        // alert("Please enter your username");
         setOpen(false);
         setAddUserModalOpen(true);
       },

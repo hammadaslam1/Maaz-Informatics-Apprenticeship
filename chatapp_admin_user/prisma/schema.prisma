@@ -52,8 +52,8 @@ enum MessageStatus {
 
 model Conversations {
   id           Int      @id @default(autoincrement())
-  user_id      Int?
-  admin_id     Int?
+  user_id      Int      @unique
+  admin_id     Int
   last_message String?
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now()) @updatedAt

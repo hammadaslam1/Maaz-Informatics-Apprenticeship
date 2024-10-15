@@ -38,6 +38,7 @@ export const POST = async (req) => {
         password: hashedPassword,
       },
     });
+    const messages = await prisma.messages.findMany();
     console.log(result);
     const { password, ...user } = result;
     const token = createToken(result.email);
@@ -45,6 +46,7 @@ export const POST = async (req) => {
       success: true,
       message: "User added successfully",
       user,
+      messages,
       token,
     });
   } catch (error) {}

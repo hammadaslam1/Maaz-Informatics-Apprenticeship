@@ -46,7 +46,7 @@ export const POST = async (req) => {
       });
     } else if (result.is_admin) {
       users = await prisma.users.findMany({
-        where: { is_admin: false },
+        where: { id: { not: result.id } },
         select,
       });
     } else {
@@ -57,12 +57,14 @@ export const POST = async (req) => {
         select,
       });
     }
+    const messages = await prisma.messages.findMany();
     const token = createToken(result.email);
     return NextResponse.json({
       success: true,
       message: "User retrieved successfully",
       user: selectedUser,
       otherUsers: users,
+      messages,
       token,
     });
   } catch (error) {
