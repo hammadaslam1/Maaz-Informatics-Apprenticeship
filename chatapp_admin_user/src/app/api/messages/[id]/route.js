@@ -6,7 +6,7 @@ export const GET = async (req, { params }) => {
     const id = params.id;
     const messages = await prisma.messages.findMany({
       where: {
-        conversation_id: id,
+        conversation_id: typeof id === "string" ? parseInt(id, 10) : id,
       },
     });
     if (!messages.length) {

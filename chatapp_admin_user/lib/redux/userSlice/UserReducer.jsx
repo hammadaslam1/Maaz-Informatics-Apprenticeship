@@ -6,6 +6,7 @@ const initialState = {
   selectedUser: null,
   conversation: null,
   otherUsers: [],
+  messages: [],
 };
 
 const userSlice = createSlice({
@@ -51,6 +52,12 @@ const userSlice = createSlice({
     addUserInList: (state, action) => {
       state.otherUsers.push(action.payload);
     },
+    setMessages: (state, action) => {
+      state.messages = action.payload;
+    },
+    setNewMessage: (state, action) => {
+      state.messages.push(action.payload);
+    },
   },
 });
 
@@ -64,6 +71,8 @@ export const {
   removeOtherUsers,
   setOtherUsers,
   addUserInList,
+  setMessages,
+  setNewMessage,
 } = userSlice.actions;
 
 export default userSlice.reducer;
