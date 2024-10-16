@@ -28,14 +28,10 @@ const Page = () => {
           data?.newMessage?.sender_id !== currentUser?.id &&
           data?.newMessage?.conversation_id !== selectedUser?.id
         ) {
-          let name;
-          let user;
           otherUsers.forEach((user) => {
             if (user.id == data?.newMessage?.conversation_id) {
-              setChat(user);
-              name = user.name;
               if (Notification.permission === "granted") {
-                const notification = new Notification(name, {
+                const notification = new Notification(user?.name, {
                   body: data?.newMessage?.text,
                 });
                 console.log("new user is: ", user);
