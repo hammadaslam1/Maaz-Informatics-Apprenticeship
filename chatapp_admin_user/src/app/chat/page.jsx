@@ -34,20 +34,19 @@ const Page = () => {
             if (user.id == data?.newMessage?.conversation_id) {
               setChat(user);
               name = user.name;
-              alert(JSON.stringify(chat));
+              if (Notification.permission === "granted") {
+                const notification = new Notification(name, {
+                  body: data?.newMessage?.text,
+                });
+                console.log("new user is: ", user);
+                notification.onclick = function () {
+                  dispatch(setConversationSelected(user));
+                };
+              } else {
+                Notification.requestPermission();
+              }
             }
           });
-          if (Notification.permission === "granted") {
-            const notification = new Notification(name, {
-              body: data?.newMessage?.text,
-            });
-            console.log("new user is: ", chat);
-            notification.onclick = function () {
-              dispatch(setConversationSelected(chat));
-            };
-          } else {
-            Notification.requestPermission();
-          }
         }
       } else {
         console.log("Failed: ", data);
