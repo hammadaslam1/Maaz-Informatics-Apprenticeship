@@ -38,6 +38,22 @@ const LoginForm = () => {
           dispatch(signinSuccess(data?.user));
           dispatch(setOtherUsers(data?.otherUsers));
           dispatch(setMessages(data?.messages));
+          if (Notification.permission === "granted") {
+            const notification = new Notification("New Login!", {
+              body: `You are logged in as ${
+                data?.user?.is_admin ? "admin" : "user"
+              }`,
+              // icon: "/path/to/icon.png",
+            });
+            console.log("notifications are ok");
+
+            notification.onclick = function () {
+              alert("Notification clicked");
+            };
+          } else {
+            Notification.requestPermission();
+          }
+
           router.replace("/chat");
         } else {
           alert("Invalid email or password");

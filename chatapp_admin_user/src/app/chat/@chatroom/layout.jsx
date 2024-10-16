@@ -13,9 +13,8 @@ import MessageBar from "@/components/appbars/MessageBar";
 import { setNewMessage } from "../../../../lib/redux/userSlice/UserReducer";
 
 const ChatroomLayout = () => {
-  const { selectedUser, currentUser, conversation, messages } = useSelector(
-    (state) => state.user
-  );
+  const { selectedUser, currentUser, conversation, messages, otherUsers } =
+    useSelector((state) => state.user);
   const dispatch = useDispatch();
   const room = selectedUser?.is_admin ? currentUser?.id : selectedUser?.id;
   // const [messages, setMessages] = useState([]);
@@ -33,19 +32,7 @@ const ChatroomLayout = () => {
     setMsgInput("");
   };
 
-  useEffect(() => {
-    socketio.on("newMessage", async (data) => {
-      console.log(data);
-      if (data?.success) {
-        dispatch(setNewMessage(data?.newMessage));
-      } else {
-        console.log("Failed: ", data);
-      }
-    });
-    return () => {
-      socketio.off("newMessage");
-    };
-  }, [selectedUser]);
+  
   return (
     <div className="flex flex-col h-screen w-full">
       <ChatHeader />

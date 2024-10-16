@@ -41,20 +41,28 @@ const AllUsers = () => {
     },
     {
       label: "Logout",
-      onClick: () => {
-        setOpen(false);
-        dispatch(signoutSuccess());
-        router.replace("/");
-      },
+      onClick: () => handleLogout(),
     },
   ].filter(Boolean);
 
+  const handleLogout = () => {
+    setOpen(false);
+    dispatch(signoutSuccess());
+    if (Notification.permission === "granted") {
+      const notification = new Notification("Logout!", {
+        body: `You are logged out Successfully!`,
+        // icon: "/path/to/icon.png",
+      });
+      notification.onclick = function () {
+        alert("Notification clicked");
+      };
+    } else {
+      Notification.requestPermission();
+    }
+    router.replace("/");
+  };
   useEffect(() => {
     socketio.emit("adminOnline");
-    socketio.on("getAllUsers", async (data) => {
-      dispatch(setOtherUsers(data));
-      console.log(data);
-    });
   }, []);
   return (
     <Box className="flex flex-col h-screen w-full no-scrollbar">
