@@ -45,7 +45,8 @@ const Page = () => {
           });
         } else if (
           !currentUser?.is_admin &&
-          data?.newMessage?.conversation_id === currentUser?.id
+          data?.newMessage?.conversation_id === currentUser?.id &&
+          !selectedUser
         ) {
           otherUsers.forEach((user) => {
             if (user.id == data?.newMessage?.sender_id) {
