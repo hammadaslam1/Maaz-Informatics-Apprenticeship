@@ -43,6 +43,25 @@ const Page = () => {
               }
             }
           });
+        } else if (
+          !currentUser?.is_admin &&
+          data?.newMessage?.conversation_id === currentUser?.id
+        ) {
+          otherUsers.forEach((user) => {
+            if (user.id == data?.newMessage?.sender_id) {
+              if (Notification.permission === "granted") {
+                const notification = new Notification(user?.name, {
+                  body: data?.newMessage?.text,
+                });
+                console.log("new user is: ", user);
+                notification.onclick = function () {
+                  dispatch(setConversationSelected(user));
+                };
+              } else {
+                Notification.requestPermission();
+              }
+            }
+          });
         }
       } else {
         console.log("Failed: ", data);
