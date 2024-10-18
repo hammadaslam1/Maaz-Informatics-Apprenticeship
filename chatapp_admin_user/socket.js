@@ -6,6 +6,7 @@ dotenv.config();
 const server_url = process.env.NEXT_PUBLIC_SERVER_URL;
 
 let currentChats = {};
+let devices = {};
 
 const getAdmins = async () => {
   // const users = await User.find().select({ password: 0 });
@@ -83,7 +84,9 @@ const socket = async (server) => {
     socket.on("adminOnline", async () => {
       io.emit("getAllUsers", await getAllUsers());
     });
-    socket.on("userOnline", async () => {
+    socket.on("userOnline", async (fcm = null, id) => {
+      devices[id] = fcm;
+      console.log("devices: ", devices);
       io.emit("getAdmins", await getAdmins());
     });
     socket.on("joinConversation", async ({ user_id, admin_id, id }) => {
