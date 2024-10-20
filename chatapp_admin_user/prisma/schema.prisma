@@ -27,8 +27,8 @@ model Users {
 
 model Messages {
   id               String @id @default(auto()) @map("_id") @db.ObjectId
-  conversation_id Int
-  sender_id       Int
+  conversation_id String
+  sender_id       String
   text            String?
   type            MessageType   @default(text)
   status          MessageStatus @default(sent)
@@ -52,8 +52,8 @@ enum MessageStatus {
 
 model Conversations {
   id            String @id @default(auto()) @map("_id") @db.ObjectId
-  user_id      Int
-  admin_id     Int
+  user_id      String
+  admin_id     String
   last_message String?
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now()) @updatedAt
