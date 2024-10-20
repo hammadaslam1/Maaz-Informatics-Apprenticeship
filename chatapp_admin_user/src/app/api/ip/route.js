@@ -1,4 +1,5 @@
 import os from "os";
+import { NextResponse } from "next/server";
 
 export const GET = async (req) => {
   const networkInterfaces = os.networkInterfaces();
