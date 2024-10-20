@@ -4,7 +4,7 @@ import jwt from "jsonwebtoken";
 import prisma from "../../../../../prisma/client";
 
 const createToken = (email) => {
-  const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+  const token = jwt.sign({ email }, process.env.NEXT_PUBLIC_JWT_SECRET, {
     expiresIn: "7d",
   });
   return token;
