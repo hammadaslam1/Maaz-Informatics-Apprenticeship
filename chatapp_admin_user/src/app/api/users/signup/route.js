@@ -69,5 +69,7 @@ export const POST = async (req) => {
       messages,
       token,
     });
-  } catch (error) {}
+  } catch (error) {
+    return NextResponse.json({ success: false, message: error.message });
+  }
 };
