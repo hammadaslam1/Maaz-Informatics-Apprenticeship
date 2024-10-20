@@ -10,7 +10,7 @@ dotenv.config()
 const dev = true;
 const nextApp = next({ dev });
 const handle = nextApp.getRequestHandler();
-const port = process.env.PORT
+const port = process.env.NEXT_PUBLIC_PORT
 nextApp.prepare().then(() => {
   const app = express();
   const server = createServer(app);
