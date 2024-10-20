@@ -6,12 +6,8 @@ export const POST = async (req) => {
   try {
     const body = await req.json();
     const { conversation_id, sender_id, text, type } = body;
-    const conv_id =
-      typeof conversation_id === "string"
-        ? parseInt(conversation_id, 10)
-        : conversation_id;
-    const send_id =
-      typeof sender_id === "string" ? parseInt(sender_id, 10) : sender_id;
+    const conv_id = conversation_id;
+    const send_id = sender_id;
     console.log(body);
     const newMessage = await prisma.messages.create({
       data: {

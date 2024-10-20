@@ -65,7 +65,7 @@ const Page = () => {
           });
         }
       } else {
-        console.log("Failed: ", data);
+        alert(JSON.stringify(data));
       }
     });
     return () => {
