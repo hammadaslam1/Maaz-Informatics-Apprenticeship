@@ -14,7 +14,7 @@ datasource db {
 }
 
 model Users {
-  id          Int      @id @default(autoincrement())
+  id           String @id @default(auto()) @map("_id") @db.ObjectId
   name        String
   username    String   @unique
   email       String   @unique
@@ -26,7 +26,7 @@ model Users {
 }
 
 model Messages {
-  id              Int           @id @default(autoincrement())
+  id               String @id @default(auto()) @map("_id") @db.ObjectId
   conversation_id Int
   sender_id       Int
   text            String?
@@ -51,7 +51,7 @@ enum MessageStatus {
 }
 
 model Conversations {
-  id           Int      @id @default(autoincrement())
+  id            String @id @default(auto()) @map("_id") @db.ObjectId
   user_id      Int
   admin_id     Int
   last_message String?
