@@ -34,8 +34,8 @@ const LoginForm = () => {
         return response.json();
       })
       .then((data) => {
-        if (data?.success) {
           alert(JSON.stringify(data));
+        if (data?.success) {
           dispatch(signinSuccess(data?.user));
           dispatch(setOtherUsers(data?.otherUsers));
           dispatch(setMessages(data?.messages));
