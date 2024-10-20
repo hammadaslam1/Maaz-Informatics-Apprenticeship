@@ -9,7 +9,7 @@ generator client {
 }
 
 datasource db {
-  provider = env("NEXT_PUBLIC_PROVIDER")
+  provider = "mongodb"
   url      = env("NEXT_PUBLIC_DATABASE_URL")
 }
 
