@@ -44,14 +44,14 @@ export const POST = async (req) => {
           is_admin: true,
         },
         select: {
-          id: true,
+          _id: true,
         },
       });
       let data = [];
       admins.forEach((admin) => {
         data.push({
-          user_id: result.id,
-          admin_id: admin.id,
+          user_id: result._id,
+          admin_id: admin._id,
         });
       });
       await prisma.conversations.createMany({
