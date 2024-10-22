@@ -74,7 +74,9 @@ const joinConversation = async (user_id, admin_id) => {
 };
 
 const socket = async (server) => {
-  const io = new Server(server);
+  const io = new Server(server, {
+    transports: ["polling"],
+  });
   console.log("socket is called");
 
   // Socket.io connection
