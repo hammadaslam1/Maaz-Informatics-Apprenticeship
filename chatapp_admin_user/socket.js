@@ -76,6 +76,10 @@ const joinConversation = async (user_id, admin_id) => {
 const socket = async (server) => {
   const io = new Server(server, {
     transports: ["polling"],
+    cors: {
+      origin: "https://hammad-chat-next.vercel.app",
+      methods: ["GET", "POST"],
+    },
   });
   console.log("socket is called");
 
@@ -98,6 +102,7 @@ const socket = async (server) => {
       io.to(user_id).emit("conversationJoined", data);
     });
     socket.on("sendMessage", async (message) => {
+      console.log("message: ", message);
       const data = await sendMessage(message);
       console.log("the new message is: ", data);
       io.emit("newMessage", data);

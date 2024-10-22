@@ -19,6 +19,9 @@ const Page = () => {
   const [chat, setChat] = useState(null);
   const dispatch = useDispatch();
   useEffect(() => {
+    socketio.on("connect", () => {
+      console.log("Connected to server with ID:", socketio.id);
+    });
     socketio.on("newMessage", async (data) => {
       console.log(data);
       if (data?.success) {
