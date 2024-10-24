@@ -48,14 +48,11 @@ const AllUsers = () => {
   const handleLogout = () => {
     setOpen(false);
     dispatch(signoutSuccess());
+    router.push("/");
     if (Notification.permission === "granted") {
       const notification = new Notification("Logout!", {
         body: `You are logged out Successfully!`,
-        // icon: "/path/to/icon.png",
       });
-      notification.onclick = function () {
-        alert("Notification clicked");
-      };
     } else {
       Notification.requestPermission();
     }

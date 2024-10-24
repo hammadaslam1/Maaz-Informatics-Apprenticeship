@@ -34,30 +34,25 @@ const LoginForm = () => {
         return response.json();
       })
       .then((data) => {
-          alert(JSON.stringify(data));
         if (data?.success) {
           dispatch(signinSuccess(data?.user));
           dispatch(setOtherUsers(data?.otherUsers));
           dispatch(setMessages(data?.messages));
+          router.push('/chat')
           if (Notification.permission === "granted") {
             const notification = new Notification("New Login!", {
               body: `You are logged in as ${
                 data?.user?.is_admin ? "admin" : "user"
               }`,
-              // icon: "/path/to/icon.png",
             });
             console.log("notifications are ok");
-
-            notification.onclick = function () {
-              alert("Notification clicked");
-            };
           } else {
             Notification.requestPermission();
           }
 
           router.replace("/chat");
         } else {
-          alert("Invalid email or password");
+          alert(JSON.stringify(data.message));
         }
       })
       .catch((error) => console.error("Error:", error));

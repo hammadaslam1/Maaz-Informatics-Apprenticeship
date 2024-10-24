@@ -74,13 +74,14 @@ const joinConversation = async (user_id, admin_id) => {
 };
 
 const socket = async (server) => {
-  const io = new Server(server, {
-    transports: ["polling"],
-    cors: {
-      origin: "https://hammad-chat-next.vercel.app",
-      methods: ["GET", "POST"],
-    },
-  });
+  const io = new Server(server);
+  // const io = new Server(server, {
+  //   transports: ["polling"],
+  //   cors: {
+  //     origin: "https://hammad-chat-next.vercel.app",
+  //     methods: ["GET", "POST"],
+  //   },
+  // });
   console.log("socket is called");
 
   // Socket.io connection

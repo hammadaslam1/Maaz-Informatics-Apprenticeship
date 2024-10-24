@@ -8,13 +8,17 @@ generator client {
   provider = "prisma-client-js"
 }
 
+// datasource db {
+//   provider = "mongodb"
+//   url      = env("NEXT_PUBLIC_DATABASE_URL")
+// }
 datasource db {
-  provider = "mongodb"
-  url      = env("NEXT_PUBLIC_DATABASE_URL")
+  provider = "mysql"
+  url      = env("DATABASE_URL")
 }
 
 model Users {
-  id           String @id @default(auto()) @map("_id") @db.ObjectId
+  id          Int      @id @default(autoincrement())
   name        String
   username    String   @unique
   email       String   @unique
@@ -26,9 +30,9 @@ model Users {
 }
 
 model Messages {
-  id               String @id @default(auto()) @map("_id") @db.ObjectId
-  conversation_id String
-  sender_id       String
+  id              Int           @id @default(autoincrement())
+  conversation_id Int?
+  sender_id       Int?
   text            String?
   type            MessageType   @default(text)
   status          MessageStatus @default(sent)
@@ -50,10 +54,11 @@ enum MessageStatus {
   seen
 }
 
+// id            String @id @default(auto()) @map("_id") @db.ObjectId
 model Conversations {
-  id            String @id @default(auto()) @map("_id") @db.ObjectId
-  user_id      String
-  admin_id     String
+  id           Int      @id @default(autoincrement())
+  user_id      Int
+  admin_id     Int
   last_message String?
   created_at   DateTime @default(now())
   updated_at   DateTime @default(now()) @updatedAt
