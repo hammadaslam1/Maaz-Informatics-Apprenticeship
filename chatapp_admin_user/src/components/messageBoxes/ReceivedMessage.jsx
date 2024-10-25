@@ -5,6 +5,8 @@ import { useSelector } from "react-redux";
 const ReceivedMessage = ({ message, index }) => {
   const { selectedUser } = useSelector((state) => state.user);
   const scrollRef = useRef(null);
+  const { status, text } = message;
+  const str = text?.replace(/(?:\r\n|\r|\n)/g, `<br>`);
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ transition: "smooth" });
   }, [message]);
@@ -18,8 +20,11 @@ const ReceivedMessage = ({ message, index }) => {
         ~{selectedUser?.username}
       </div>
       {/* <div className="h-1"></div> */}
-      <p className="flex items-center flex-grow px-3 pb-1 break-words overflow-x-hidden text-ellipsis text-sm leading-none">
-        {message?.text}
+      <p
+        className="flex items-center min-h-fit flex-grow text-sm px-3 pb-1 break-words leading-none min-h-4"
+        dangerouslySetInnerHTML={{ __html: str }}
+      >
+        {/* {str} */}
       </p>
       <div className="flex items-center h-4">
         <div className="flex items-center h-4 flex-grow"></div>

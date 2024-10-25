@@ -31,8 +31,8 @@ model Users {
 
 model Messages {
   id              Int           @id @default(autoincrement())
-  conversation_id Int?
-  sender_id       Int?
+  conversation_id Int
+  sender_id       Int
   text            String?
   type            MessageType   @default(text)
   status          MessageStatus @default(sent)
