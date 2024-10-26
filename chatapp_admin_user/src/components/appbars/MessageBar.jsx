@@ -5,7 +5,7 @@ import { CommentOutlined, CustomerServiceOutlined } from "@ant-design/icons";
 import { MdEmojiEmotions, MdKeyboardVoice } from "react-icons/md";
 import { GrAttachment } from "react-icons/gr";
 import { IoSend } from "react-icons/io5";
-const MessageBar = ({ setMsgInput, msgInput, handleMessage }) => {
+const MessageBar = ({ setMsgInput, msgInput, handleMessage, setEmoji }) => {
   const handleKeyDown = (e) => {
     if (e.key === "Enter") {
       if (e.shiftKey) {
@@ -33,6 +33,7 @@ const MessageBar = ({ setMsgInput, msgInput, handleMessage }) => {
               bgcolor: "#cecfc7",
             },
           }}
+          onClick={() => setEmoji((prev) => !prev)}
         >
           <MdEmojiEmotions fontSize={28} className="text-[#23022e]" />
         </Fab>

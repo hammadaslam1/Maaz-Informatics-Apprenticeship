@@ -11,8 +11,10 @@ import { MdOutlineKeyboardBackspace } from "react-icons/md";
 import ChatHeader from "@/components/appbars/ChatHeader";
 import MessageBar from "@/components/appbars/MessageBar";
 import { setNewMessage } from "../../../../lib/redux/userSlice/UserReducer";
+import EmojiBox from "@/components/displayBox/EmojiBox";
 
 const ChatroomLayout = () => {
+  const [emoji, setEmoji] = useState(false);
   const { selectedUser, currentUser, conversation, messages, otherUsers } =
     useSelector((state) => state.user);
   const dispatch = useDispatch();
@@ -32,7 +34,6 @@ const ChatroomLayout = () => {
     setMsgInput("");
   };
 
-  
   return (
     <div className="flex flex-col h-screen w-full">
       <ChatHeader />
@@ -49,10 +50,16 @@ const ChatroomLayout = () => {
               ))
           )}
       </div>
+      {emoji && (
+        <div className="bg-[#dcf8c6] p-2 ml-4 z-55 absolute bottom-16 rounded-md">
+          <EmojiBox setValue={setMsgInput} />
+        </div>
+      )}
       <MessageBar
         setMsgInput={setMsgInput}
         msgInput={msgInput}
         handleMessage={handleMessage}
+        setEmoji={setEmoji}
       />
     </div>
   );
